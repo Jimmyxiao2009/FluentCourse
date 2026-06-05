@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UserControl
+    x:Class="FluentCourse.Designer.Views.AssetsPane"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Grid Margin="12" RowSpacing="8">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Text="资源库" FontSize="15" FontWeight="SemiBold"/>
+
+        <Button Grid.Row="1" Content="+ 导入资源..." HorizontalAlignment="Stretch"
+                Click="OnImportAsset"/>
+
+        <ListView x:Name="AssetList" Grid.Row="2" Margin="0,8,0,0">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal" Spacing="8" Padding="4,4">
+                        <TextBlock Text="{Binding Key}" FontSize="13" FontWeight="SemiBold" Width="100"/>
+                        <TextBlock Text="{Binding Type}" FontSize="12"
+                                   Foreground="{ThemeResource TextFillColorTertiaryBrush}"/>
+                        <TextBlock Text="{Binding Path}" FontSize="11"
+                                   Foreground="{ThemeResource TextFillColorTertiaryBrush}" TextTrimming="CharacterEllipsis"/>
+                    </StackPanel>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+    </Grid>
+</UserControl>

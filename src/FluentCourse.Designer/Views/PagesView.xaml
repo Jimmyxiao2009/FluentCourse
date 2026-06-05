@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UserControl
+    x:Class="FluentCourse.Designer.Views.PagesView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Grid RowSpacing="4" Margin="8">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="8" Margin="0,4,0,8">
+            <TextBlock Text="页面列表" FontSize="15" FontWeight="SemiBold" VerticalAlignment="Center"/>
+            <Button x:Name="AddBtn" Content="+" Width="28" Height="28" FontSize="16"
+                    ToolTipService.ToolTip="添加页面" Click="OnAddPage"/>
+        </StackPanel>
+
+        <ListView x:Name="PageList" Grid.Row="1"
+                  SelectionMode="Single"
+                  SelectionChanged="OnPageSelected"
+                  IsItemClickEnabled="True"
+                  ItemClick="OnPageItemClick">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal" Spacing="8" Padding="4,6">
+                        <TextBlock Text="{Binding DisplayLabel}" FontSize="13" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+    </Grid>
+</UserControl>

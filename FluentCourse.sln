@@ -10,6 +10,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FluentCourse.Runtime", "src
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FluentCourse.Exporter", "src\FluentCourse.Exporter\FluentCourse.Exporter.csproj", "{A1A1A1A1-0001-0000-0000-000000000004}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FluentCourse.Designer", "src\FluentCourse.Designer\FluentCourse.Designer.csproj", "{A1A1A1A1-0001-0000-0000-000000000005}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|arm64 = Debug|arm64
@@ -50,6 +52,14 @@ Global
 		{A1A1A1A1-0001-0000-0000-000000000004}.Release|arm64.Build.0 = Release|arm64
 		{A1A1A1A1-0001-0000-0000-000000000004}.Release|x64.ActiveCfg = Release|x64
 		{A1A1A1A1-0001-0000-0000-000000000004}.Release|x64.Build.0 = Release|x64
+		{A1A1A1A1-0001-0000-0000-000000000005}.Debug|arm64.ActiveCfg = Debug|arm64
+		{A1A1A1A1-0001-0000-0000-000000000005}.Debug|arm64.Build.0 = Debug|arm64
+		{A1A1A1A1-0001-0000-0000-000000000005}.Debug|x64.ActiveCfg = Debug|x64
+		{A1A1A1A1-0001-0000-0000-000000000005}.Debug|x64.Build.0 = Debug|x64
+		{A1A1A1A1-0001-0000-0000-000000000005}.Release|arm64.ActiveCfg = Release|arm64
+		{A1A1A1A1-0001-0000-0000-000000000005}.Release|arm64.Build.0 = Release|arm64
+		{A1A1A1A1-0001-0000-0000-000000000005}.Release|x64.ActiveCfg = Release|x64
+		{A1A1A1A1-0001-0000-0000-000000000005}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UserControl
+    x:Class="FluentCourse.Designer.Views.AnimationEditor"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Grid RowSpacing="4">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="150"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="8" Margin="8,4">
+            <TextBlock Text="动画编辑" FontSize="15" FontWeight="SemiBold" VerticalAlignment="Center"/>
+            <Button x:Name="AddBtn" Content="+" Width="28" Height="28" FontSize="16"
+                    ToolTipService.ToolTip="添加动画" Click="OnAdd"/>
+            <Button x:Name="DelBtn" Content="×" Width="28" Height="28" FontSize="14"
+                    ToolTipService.ToolTip="删除选中" Click="OnDelete" Foreground="#FFFF6B6B"/>
+        </StackPanel>
+
+        <ListView x:Name="AnimList" Grid.Row="1" Margin="8,0"
+                  SelectionMode="Single" SelectionChanged="OnSelected" DisplayMemberPath="Name"/>
+
+        <ScrollViewer x:Name="EditForm" Grid.Row="2" Margin="8" VerticalScrollBarVisibility="Auto" Visibility="Collapsed">
+            <StackPanel Spacing="6">
+                <TextBlock Text="动画名称" Style="{StaticResource PropertyLabel}"/>
+                <TextBox x:Name="NameBox" TextChanged="OnChanged"/>
+
+                <Grid ColumnSpacing="8">
+                    <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="0">
+                        <TextBlock Text="时长 (ms)" Style="{StaticResource PropertyLabel}"/>
+                        <TextBox x:Name="DurationBox" TextChanged="OnChanged"/>
+                    </StackPanel>
+                    <StackPanel Grid.Column="1">
+                        <TextBlock Text="延迟 (ms)" Style="{StaticResource PropertyLabel}"/>
+                        <TextBox x:Name="DelayBox" TextChanged="OnChanged"/>
+                    </StackPanel>
+                </Grid>
+
+                <TextBlock Text="缓动函数" Style="{StaticResource PropertyLabel}"/>
+                <ComboBox x:Name="EasingBox" SelectionChanged="OnChanged">
+                    <ComboBoxItem>Linear</ComboBoxItem>
+                    <ComboBoxItem>EaseInQuad</ComboBoxItem><ComboBoxItem>EaseOutQuad</ComboBoxItem><ComboBoxItem>EaseInOutQuad</ComboBoxItem>
+                    <ComboBoxItem>EaseInCubic</ComboBoxItem><ComboBoxItem>EaseOutCubic</ComboBoxItem><ComboBoxItem>EaseInOutCubic</ComboBoxItem>
+                    <ComboBoxItem>EaseInCirc</ComboBoxItem><ComboBoxItem>EaseOutCirc</ComboBoxItem>
+                    <ComboBoxItem>EaseInBack</ComboBoxItem><ComboBoxItem>EaseOutBack</ComboBoxItem>
+                    <ComboBoxItem>EaseInElastic</ComboBoxItem><ComboBoxItem>EaseOutElastic</ComboBoxItem>
+                    <ComboBoxItem>EaseInBounce</ComboBoxItem><ComboBoxItem>EaseOutBounce</ComboBoxItem>
+                </ComboBox>
+
+                <Grid ColumnSpacing="8">
+                    <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="0">
+                        <TextBlock Text="重复次数 (0=永久)" Style="{StaticResource PropertyLabel}"/>
+                        <TextBox x:Name="RepeatBox" TextChanged="OnChanged"/>
+                    </StackPanel>
+                    <StackPanel Grid.Column="1" VerticalAlignment="Bottom" Margin="0,0,0,4">
+                        <CheckBox x:Name="AutoRevBox" Content="自动反向" Checked="OnChanged" Unchecked="OnChanged"/>
+                    </StackPanel>
+                </Grid>
+
+                <TextBlock Text="轨道列表" FontWeight="SemiBold" FontSize="13" Margin="0,12,0,4"/>
+                <ItemsControl x:Name="TracksList" Margin="0,0,0,8">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border BorderBrush="{ThemeResource ControlStrokeColorDefaultBrush}"
+                                    BorderThickness="1" CornerRadius="4" Padding="6" Margin="0,0,0,4">
+                                <Grid ColumnSpacing="4" RowSpacing="2">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/><ColumnDefinition Width="50"/><ColumnDefinition Width="50"/>
+                                        <ColumnDefinition Width="Auto"/><ColumnDefinition Width="50"/><ColumnDefinition Width="50"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions><RowDefinition/><RowDefinition/></Grid.RowDefinitions>
+                                    <ComboBox x:Name="TrackProp" Grid.Row="0" Grid.Column="0" MinWidth="90" FontSize="11"
+                                              Loaded="OnTrackComboLoaded" SelectionChanged="OnTrackChanged"/>
+                                    <TextBox x:Name="TrackFrom" Grid.Row="1" Grid.Column="1" FontSize="11" PlaceholderText="from" TextChanged="OnTrackChanged"/>
+                                    <TextBox x:Name="TrackTo"   Grid.Row="1" Grid.Column="2" FontSize="11" PlaceholderText="to" TextChanged="OnTrackChanged"/>
+                                    <TextBox x:Name="TrackFromColor" Grid.Row="1" Grid.Column="4" FontSize="11" PlaceholderText="#色" TextChanged="OnTrackChanged"/>
+                                    <TextBox x:Name="TrackToColor"   Grid.Row="1" Grid.Column="5" FontSize="11" PlaceholderText="#色" TextChanged="OnTrackChanged"/>
+                                    <Button Grid.Row="0" Grid.Column="6" Content="×" Width="22" Height="22" FontSize="10" Click="OnRemoveTrack"/>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+                <Button Content="+ 添加轨道" HorizontalAlignment="Stretch" Click="OnAddTrack"/>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

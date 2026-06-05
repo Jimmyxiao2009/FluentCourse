@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UserControl
+    x:Class="FluentCourse.Designer.Views.PagePropertiesView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <ScrollViewer Margin="12" VerticalScrollBarVisibility="Auto">
+        <StackPanel Spacing="8">
+            <TextBlock Text="页面属性" FontSize="15" FontWeight="SemiBold" Margin="0,0,0,8"/>
+            <TextBlock x:Name="PageIdLabel" FontSize="12" Foreground="{ThemeResource TextFillColorTertiaryBrush}"/>
+
+            <TextBlock Text="页面标题" Style="{StaticResource PropertyLabel}"/>
+            <TextBox x:Name="TitleBox" TextChanged="OnChanged"/>
+
+            <TextBlock Text="章节" Style="{StaticResource PropertyLabel}"/>
+            <TextBox x:Name="SectionBox" TextChanged="OnChanged"/>
+
+            <TextBlock Text="过渡动画" Style="{StaticResource PropertyLabel}"/>
+            <ComboBox x:Name="TransitionBox" SelectionChanged="OnChanged">
+                <ComboBoxItem>None</ComboBoxItem><ComboBoxItem>Fade</ComboBoxItem>
+                <ComboBoxItem>SlidePush</ComboBoxItem><ComboBoxItem>SlideUp</ComboBoxItem>
+                <ComboBoxItem>SlideDown</ComboBoxItem><ComboBoxItem>SlideLeft</ComboBoxItem>
+                <ComboBoxItem>SlideRight</ComboBoxItem><ComboBoxItem>Zoom</ComboBoxItem>
+            </ComboBox>
+
+            <TextBlock Text="过渡时长 (ms)" Style="{StaticResource PropertyLabel}"/>
+            <TextBox x:Name="DurationMsBox" TextChanged="OnChanged" InputScope="Number"/>
+
+            <TextBlock Text="页背景色 (#AARRGGBB)" Style="{StaticResource PropertyLabel}"/>
+            <TextBox x:Name="BgBox" PlaceholderText="#FF1F1F1F" TextChanged="OnChanged"/>
+
+            <TextBlock Text="演讲者备注" Style="{StaticResource PropertyLabel}"/>
+            <TextBox x:Name="NotesBox" AcceptsReturn="True" MinHeight="80"
+                     TextWrapping="Wrap" TextChanged="OnChanged"/>
+
+            <CheckBox x:Name="HiddenBox" Content="隐藏 (演示中跳过)" Checked="OnChanged" Unchecked="OnChanged"/>
+
+            <TextBlock Text="文件名 (相对路径)" Style="{StaticResource PropertyLabel}"/>
+            <TextBox x:Name="FileBox" TextChanged="OnChanged"/>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

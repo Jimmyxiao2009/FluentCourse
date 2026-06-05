@@ -7,5 +7,7 @@
     <Authors>FluentCourse Project</Authors>
     <Product>FluentCourse</Product>
     <RootNamespace>FluentCourse</RootNamespace>
+    <AppxPackage>false</AppxPackage>
+    <EnablePriGen>false</EnablePriGen>
   </PropertyGroup>
 </Project>

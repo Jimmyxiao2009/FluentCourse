@@ -99,6 +99,7 @@ public sealed partial class QuizControl : Control
     private Button? _retryButton;
     private TextBlock? _feedbackBlock;
     private TextBlock? _analysisBlock;
+    private Border? _analysisHost;
 
     public QuizControl()
     {
@@ -119,6 +120,7 @@ public sealed partial class QuizControl : Control
         _retryButton = GetTemplateChild("PART_Retry") as Button;
         _feedbackBlock = GetTemplateChild("PART_Feedback") as TextBlock;
         _analysisBlock = GetTemplateChild("PART_Analysis") as TextBlock;
+        _analysisHost  = GetTemplateChild("PART_AnalysisHost") as Border;
 
         if (_submitButton is not null) _submitButton.Click += OnSubmit;
         if (_retryButton is not null) _retryButton.Click += OnRetry;
@@ -159,7 +161,7 @@ public sealed partial class QuizControl : Control
             _analysisBlock.Text = explanations.Count > 0
                 ? string.Join("\n\n", explanations)
                 : "（本题暂无解析）";
-            _analysisBlock.Visibility = Visibility.Visible;
+            if (_analysisHost is not null) _analysisHost.Visibility = Visibility.Visible;
         }
 
         if (_retryButton is not null && AllowRetry)
@@ -240,7 +242,7 @@ public sealed partial class QuizControl : Control
         if (_analysisBlock is not null)
         {
             _analysisBlock.Text = "";
-            _analysisBlock.Visibility = Visibility.Collapsed;
+            if (_analysisHost is not null) _analysisHost.Visibility = Visibility.Collapsed;
         }
         if (_retryButton is not null) _retryButton.Visibility = Visibility.Collapsed;
         if (_submitButton is not null) _submitButton.IsEnabled = true;
