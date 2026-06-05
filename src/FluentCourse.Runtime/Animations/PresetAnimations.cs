@@ -39,6 +39,26 @@ internal static class PresetAnimations
                 new() { Property = "TranslateY", From = -24, To = 0 }
             }
         },
+        ["FadeInLeft"] = new()
+        {
+            DurationMs = 480,
+            Easing = "EaseOutCubic",
+            Tracks =
+            {
+                new() { Property = "Opacity", From = 0, To = 1 },
+                new() { Property = "TranslateX", From = -24, To = 0 }
+            }
+        },
+        ["FadeInRight"] = new()
+        {
+            DurationMs = 480,
+            Easing = "EaseOutCubic",
+            Tracks =
+            {
+                new() { Property = "Opacity", From = 0, To = 1 },
+                new() { Property = "TranslateX", From = 24, To = 0 }
+            }
+        },
         ["ZoomIn"] = new()
         {
             DurationMs = 360,
@@ -48,6 +68,17 @@ internal static class PresetAnimations
                 new() { Property = "Opacity", From = 0, To = 1 },
                 new() { Property = "ScaleX", From = 0.85, To = 1 },
                 new() { Property = "ScaleY", From = 0.85, To = 1 }
+            }
+        },
+        ["PopIn"] = new()
+        {
+            DurationMs = 400,
+            Easing = "EaseOutBack",
+            Tracks =
+            {
+                new() { Property = "Opacity", From = 0, To = 1 },
+                new() { Property = "ScaleX", From = 0.5, To = 1 },
+                new() { Property = "ScaleY", From = 0.5, To = 1 }
             }
         },
         ["Pulse"] = new()
@@ -69,6 +100,17 @@ internal static class PresetAnimations
             Tracks = { new() { Property = "TranslateX", From = -8, To = 8 } },
             Repeat = 4,
             AutoReverse = true
+        },
+        ["Bounce"] = new()
+        {
+            DurationMs = 600,
+            Easing = "EaseOutBounce",
+            Tracks =
+            {
+                new() { Property = "Opacity", From = 0, To = 1 },
+                new() { Property = "ScaleX", From = 0.3, To = 1 },
+                new() { Property = "ScaleY", From = 0.3, To = 1 }
+            }
         }
     };
 }

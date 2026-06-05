@@ -19,22 +19,44 @@
       "id": "cover",
       "file": "pages/01-cover.xaml",
       "title": "封面",
+      "section": "开场",
       "notes": "欢迎页 — 等观众落座后按空格继续。",
-      "transition": "Fade"
+      "transition": "Fade",
+      "transitionDurationMs": 600
     },
     {
       "id": "intro",
       "file": "pages/02-intro.xaml",
       "title": "什么是 FluentCourse",
+      "section": "教学",
       "notes": "强调三个关键点：原生、互动、可扩展。逐步显示要点。",
-      "transition": "SlidePush"
+      "transition": "SlidePush",
+      "background": "#FF2A2A2A"
     },
     {
       "id": "quiz",
       "file": "pages/03-quiz.xaml",
       "title": "小测一下",
+      "section": "练习",
       "notes": "正确答案是 B。给出反馈后继续到下一页。",
       "transition": "Zoom"
+    },
+    {
+      "id": "fill-quiz",
+      "file": "pages/04-quiz-fill.xaml",
+      "title": "填空题",
+      "section": "练习",
+      "notes": "两个空：Windows App SDK 缩写和 UI 层名。支持部分得分。",
+      "transition": "SlideDown",
+      "transitionDurationMs": 400
+    },
+    {
+      "id": "draft-notes",
+      "file": "pages/05-draft.xaml",
+      "title": "讲师备注草稿",
+      "section": "附录",
+      "hidden": true,
+      "notes": "不在演示流程中；手动展开查看。"
     }
   ],
   "triggers": [
@@ -52,6 +74,12 @@
       "page": "cover",
       "on": { "type": "Click", "target": "StartButton" },
       "do": [ { "type": "GoToPage", "page": "intro" } ]
+    },
+    {
+      "id": "t-cover-hover",
+      "page": "cover",
+      "on": { "type": "PointerEnter", "target": "StartButton", "once": true },
+      "do": [ { "type": "PlayAnimation", "target": "StartButton", "animation": "PopIn" } ]
     },
     {
       "id": "t-intro-next",
@@ -77,6 +105,12 @@
       "page": "quiz",
       "on": { "type": "ValueChanged", "target": "MainQuiz" },
       "do": [ { "type": "PlayAnimation", "target": "MainQuiz", "animation": "Pulse" } ]
+    },
+    {
+      "id": "t-fill-load",
+      "page": "fill-quiz",
+      "on": { "type": "PageLoaded" },
+      "do": [ { "type": "PlayAnimation", "target": "FillQuiz", "animation": "FadeInUp" } ]
     }
   ],
   "animations": {
@@ -86,6 +120,23 @@
       "tracks": [
         { "property": "Opacity", "from": 0, "to": 1 },
         { "property": "TranslateY", "from": 24, "to": 0 }
+      ]
+    },
+    "Glow": {
+      "duration": 400,
+      "easing": "EaseOutCubic",
+      "autoReverse": true,
+      "tracks": [
+        { "property": "Opacity", "from": 0.8, "to": 1 },
+        { "property": "ScaleX",  "from": 1, "to": 1.04 },
+        { "property": "ScaleY",  "from": 1, "to": 1.04 }
+      ]
+    },
+    "TextGrow": {
+      "duration": 320,
+      "easing": "EaseOutBack",
+      "tracks": [
+        { "property": "FontSize", "from": 28, "to": 36 }
       ]
     }
   },

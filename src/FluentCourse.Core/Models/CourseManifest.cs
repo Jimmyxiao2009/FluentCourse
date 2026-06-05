@@ -37,7 +37,11 @@ public sealed class PageDescriptor
     [JsonPropertyName("notes")] public string? Notes { get; set; }
     [JsonPropertyName("duration")] public double? Duration { get; set; }
     [JsonPropertyName("transition")] public string Transition { get; set; } = "Fade";
+    [JsonPropertyName("transitionDurationMs")] public int? TransitionDurationMs { get; set; }
     [JsonPropertyName("states")] public List<string> States { get; set; } = new();
+    [JsonPropertyName("hidden")] public bool Hidden { get; set; }
+    [JsonPropertyName("section")] public string? Section { get; set; }
+    [JsonPropertyName("background")] public string? Background { get; set; }
 }
 
 public sealed class AssetDescriptor
@@ -45,5 +49,8 @@ public sealed class AssetDescriptor
     [JsonPropertyName("key")] public string Key { get; set; } = "";
     [JsonPropertyName("path")] public string Path { get; set; } = "";
     [JsonPropertyName("type")] public string Type { get; set; } = "binary";
+    [JsonPropertyName("fit")] public string Fit { get; set; } = "stretch";
+    [JsonPropertyName("placeholderColor")] public string? PlaceholderColor { get; set; }
+    [JsonPropertyName("preload")] public string Preload { get; set; } = "eager";
     [JsonPropertyName("sha256")] public string? Sha256 { get; set; }
 }

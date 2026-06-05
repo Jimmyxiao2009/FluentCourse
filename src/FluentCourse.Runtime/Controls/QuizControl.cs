@@ -1,14 +1,17 @@
 using System.Collections.ObjectModel;
+using System.Text.RegularExpressions;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Markup;
 
 namespace FluentCourse.Runtime.Controls;
 
-public enum QuizMode { Single, Multiple, TrueFalse }
+public enum QuizMode { Single, Multiple, TrueFalse, FillInBlank }
 public enum QuizResult { Pending, Correct, Incorrect }
+public enum ScoreStrategy { AllOrNothing, PartialCredit, Proportional }
 
-/// <summary>One choice in a quiz. <see cref="IsAnswer"/> defines the scoring key.</summary>
+// ── QuizChoice ──
+
 [ContentProperty(Name = nameof(Text))]
 public sealed partial class QuizChoice : DependencyObject
 {
@@ -30,6 +33,28 @@ public sealed partial class QuizChoice : DependencyObject
     public string Explanation { get => (string)GetValue(ExplanationProperty); set => SetValue(ExplanationProperty, value); }
 }
 
+// ── QuizBlank (FillInBlank) ──
+
+[ContentProperty(Name = nameof(Pattern))]
+public sealed partial class QuizBlank : DependencyObject
+{
+    public static readonly DependencyProperty PatternProperty =
+        DependencyProperty.Register(nameof(Pattern), typeof(string), typeof(QuizBlank), new PropertyMetadata("*"));
+    public static readonly DependencyProperty CaseSensitiveProperty =
+        DependencyProperty.Register(nameof(CaseSensitive), typeof(bool), typeof(QuizBlank), new PropertyMetadata(false));
+    public static readonly DependencyProperty ExplanationProperty =
+        DependencyProperty.Register(nameof(Explanation), typeof(string), typeof(QuizBlank), new PropertyMetadata(""));
+    public static readonly DependencyProperty UserAnswerProperty =
+        DependencyProperty.Register(nameof(UserAnswer), typeof(string), typeof(QuizBlank), new PropertyMetadata(""));
+
+    public string Pattern { get => (string)GetValue(PatternProperty); set => SetValue(PatternProperty, value); }
+    public bool CaseSensitive { get => (bool)GetValue(CaseSensitiveProperty); set => SetValue(CaseSensitiveProperty, value); }
+    public string Explanation { get => (string)GetValue(ExplanationProperty); set => SetValue(ExplanationProperty, value); }
+    public string UserAnswer { get => (string)GetValue(UserAnswerProperty); set => SetValue(UserAnswerProperty, value); }
+}
+
+// ── QuizControl ──
+
 [ContentProperty(Name = nameof(Choices))]
 public sealed partial class QuizControl : Control
 {
@@ -40,28 +65,36 @@ public sealed partial class QuizControl : Control
     public static readonly DependencyProperty ChoicesProperty =
         DependencyProperty.Register(nameof(Choices), typeof(ObservableCollection<QuizChoice>), typeof(QuizControl),
             new PropertyMetadata(null));
+    public static readonly DependencyProperty BlanksProperty =
+        DependencyProperty.Register(nameof(Blanks), typeof(ObservableCollection<QuizBlank>), typeof(QuizControl),
+            new PropertyMetadata(null));
     public static readonly DependencyProperty ResultProperty =
         DependencyProperty.Register(nameof(Result), typeof(QuizResult), typeof(QuizControl),
             new PropertyMetadata(QuizResult.Pending, OnResultChanged));
     public static readonly DependencyProperty ScoreProperty =
         DependencyProperty.Register(nameof(Score), typeof(double), typeof(QuizControl), new PropertyMetadata(0.0));
+    public static readonly DependencyProperty ScoreStrategyProperty =
+        DependencyProperty.Register(nameof(ScoreStrategy), typeof(ScoreStrategy), typeof(QuizControl),
+            new PropertyMetadata(ScoreStrategy.AllOrNothing));
     public static readonly DependencyProperty ShowFeedbackProperty =
-        DependencyProperty.Register(nameof(ShowFeedback), typeof(bool), typeof(QuizControl),
-            new PropertyMetadata(true));
+        DependencyProperty.Register(nameof(ShowFeedback), typeof(bool), typeof(QuizControl), new PropertyMetadata(true));
     public static readonly DependencyProperty AllowRetryProperty =
         DependencyProperty.Register(nameof(AllowRetry), typeof(bool), typeof(QuizControl), new PropertyMetadata(true));
 
     public string Question { get => (string)GetValue(QuestionProperty); set => SetValue(QuestionProperty, value); }
     public QuizMode Mode { get => (QuizMode)GetValue(ModeProperty); set => SetValue(ModeProperty, value); }
     public ObservableCollection<QuizChoice> Choices => (ObservableCollection<QuizChoice>)GetValue(ChoicesProperty);
+    public ObservableCollection<QuizBlank> Blanks => (ObservableCollection<QuizBlank>)GetValue(BlanksProperty);
     public QuizResult Result { get => (QuizResult)GetValue(ResultProperty); private set => SetValue(ResultProperty, value); }
     public double Score { get => (double)GetValue(ScoreProperty); private set => SetValue(ScoreProperty, value); }
+    public ScoreStrategy ScoreStrategy { get => (ScoreStrategy)GetValue(ScoreStrategyProperty); set => SetValue(ScoreStrategyProperty, value); }
     public bool ShowFeedback { get => (bool)GetValue(ShowFeedbackProperty); set => SetValue(ShowFeedbackProperty, value); }
     public bool AllowRetry { get => (bool)GetValue(AllowRetryProperty); set => SetValue(AllowRetryProperty, value); }
 
     public event EventHandler<QuizSubmittedEventArgs>? Submitted;
 
     private ItemsControl? _choicesHost;
+    private ItemsControl? _blanksHost;
     private Button? _submitButton;
     private Button? _retryButton;
     private TextBlock? _feedbackBlock;
@@ -71,6 +104,7 @@ public sealed partial class QuizControl : Control
     {
         DefaultStyleKey = typeof(QuizControl);
         SetValue(ChoicesProperty, new ObservableCollection<QuizChoice>());
+        SetValue(BlanksProperty, new ObservableCollection<QuizBlank>());
     }
 
     protected override void OnApplyTemplate()
@@ -80,6 +114,7 @@ public sealed partial class QuizControl : Control
         if (_retryButton is not null) _retryButton.Click -= OnRetry;
 
         _choicesHost = GetTemplateChild("PART_Choices") as ItemsControl;
+        _blanksHost  = GetTemplateChild("PART_Blanks") as ItemsControl;
         _submitButton = GetTemplateChild("PART_Submit") as Button;
         _retryButton = GetTemplateChild("PART_Retry") as Button;
         _feedbackBlock = GetTemplateChild("PART_Feedback") as TextBlock;
@@ -91,30 +126,36 @@ public sealed partial class QuizControl : Control
 
     private void OnSubmit(object sender, RoutedEventArgs e)
     {
-        var picks = Choices.Where(c => c.IsSelected).ToList();
-        if (picks.Count == 0) return;
+        bool allCorrect;
+        double score;
 
-        var correctSet = Choices.Where(c => c.IsAnswer).ToHashSet();
-        var pickedSet = picks.ToHashSet();
-        var allCorrect = correctSet.SetEquals(pickedSet);
+        if (Mode == QuizMode.FillInBlank)
+        {
+            (allCorrect, score) = GradeFillInBlank();
+        }
+        else
+        {
+            var picks = Choices.Where(c => c.IsSelected).ToList();
+            if (picks.Count == 0) return;
+            (allCorrect, score) = GradeChoice(picks);
+        }
 
         Result = allCorrect ? QuizResult.Correct : QuizResult.Incorrect;
-        Score = allCorrect ? 1.0 : 0.0;
+        Score = score;
 
         if (_feedbackBlock is not null && ShowFeedback)
         {
             _feedbackBlock.Text = allCorrect
-                ? string.Join(' ', picks.Where(p => !string.IsNullOrEmpty(p.Feedback)).Select(p => p.Feedback))
+                ? "正确！"
                 : "再想想 — 答案不完全正确。";
         }
 
-        // 解析：始终展示正确答案的解析（不论对错），与反馈区分离
         if (_analysisBlock is not null && ShowFeedback)
         {
-            var explanations = correctSet
-                .Where(c => !string.IsNullOrEmpty(c.Explanation))
-                .Select(c => c.Explanation)
-                .ToList();
+            var explanations = Mode == QuizMode.FillInBlank
+                ? Blanks.Where(b => !string.IsNullOrEmpty(b.Explanation)).Select(b => b.Explanation).ToList()
+                : Choices.Where(c => c.IsAnswer && !string.IsNullOrEmpty(c.Explanation))
+                         .Select(c => c.Explanation).ToList();
             _analysisBlock.Text = explanations.Count > 0
                 ? string.Join("\n\n", explanations)
                 : "（本题暂无解析）";
@@ -129,9 +170,70 @@ public sealed partial class QuizControl : Control
         Submitted?.Invoke(this, new QuizSubmittedEventArgs(allCorrect, Score));
     }
 
+    private (bool allCorrect, double score) GradeChoice(List<QuizChoice> picks)
+    {
+        var correctSet = Choices.Where(c => c.IsAnswer).ToHashSet();
+        var pickedSet  = picks.ToHashSet();
+        var allCorrect = correctSet.SetEquals(pickedSet);
+
+        double score;
+        switch (ScoreStrategy)
+        {
+            case ScoreStrategy.AllOrNothing:
+                score = allCorrect ? 1.0 : 0.0;
+                break;
+            case ScoreStrategy.Proportional:
+                score = correctSet.Count > 0
+                    ? (double)correctSet.Intersect(pickedSet).Count() / correctSet.Count
+                    : 0.0;
+                break;
+            case ScoreStrategy.PartialCredit:
+                if (correctSet.Count == 0) { score = 0.0; break; }
+                int correctPicks = correctSet.Intersect(pickedSet).Count();
+                int wrongPicks   = pickedSet.Count(p => !correctSet.Contains(p));
+                double raw = (correctPicks - wrongPicks) / (double)correctSet.Count;
+                score = Math.Max(0.0, raw);
+                break;
+            default:
+                score = allCorrect ? 1.0 : 0.0;
+                break;
+        }
+
+        return (allCorrect, score);
+    }
+
+    private (bool allCorrect, double score) GradeFillInBlank()
+    {
+        if (Blanks.Count == 0) return (true, 1.0);
+        int matched = 0;
+        foreach (var blank in Blanks)
+        {
+            if (IsBlankCorrect(blank)) matched++;
+        }
+        bool all = matched == Blanks.Count;
+        double s = (double)matched / Blanks.Count;
+        return (all, s);
+    }
+
+    private static bool IsBlankCorrect(QuizBlank blank)
+    {
+        if (blank.Pattern == "*") return !string.IsNullOrWhiteSpace(blank.UserAnswer);
+        var options = blank.CaseSensitive ? RegexOptions.None : RegexOptions.IgnoreCase;
+        try
+        {
+            return Regex.IsMatch(blank.UserAnswer ?? "", blank.Pattern, options);
+        }
+        catch
+        {
+            return string.Equals(blank.UserAnswer ?? "", blank.Pattern,
+                blank.CaseSensitive ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase);
+        }
+    }
+
     private void OnRetry(object sender, RoutedEventArgs e)
     {
         foreach (var c in Choices) c.IsSelected = false;
+        foreach (var b in Blanks) b.UserAnswer = "";
         Result = QuizResult.Pending;
         Score = 0;
         if (_feedbackBlock is not null) _feedbackBlock.Text = "";

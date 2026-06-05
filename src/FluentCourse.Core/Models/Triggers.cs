@@ -36,6 +36,12 @@ public sealed class TriggerEvent
     [JsonPropertyName("target")] public string? Target { get; set; }
     [JsonPropertyName("key")] public string? Key { get; set; }
     [JsonPropertyName("at")] public double? At { get; set; }
+    [JsonPropertyName("tapCount")] public int? TapCount { get; set; }
+    [JsonPropertyName("modifiers")] public List<string>? Modifiers { get; set; }
+    [JsonPropertyName("debounceMs")] public int? DebounceMs { get; set; }
+    [JsonPropertyName("once")] public bool Once { get; set; }
+    [JsonPropertyName("comparedTo")] public string? ComparedTo { get; set; }
+    [JsonPropertyName("threshold")] public double? Threshold { get; set; }
 }
 
 /// <summary>
@@ -54,6 +60,9 @@ public sealed class ActionDescriptor
 
     public double? GetDouble(string key) =>
         Parameters.TryGetValue(key, out var el) && el.ValueKind == JsonValueKind.Number ? el.GetDouble() : null;
+
+    public int? GetInt(string key) =>
+        Parameters.TryGetValue(key, out var el) && el.ValueKind == JsonValueKind.Number ? (int)el.GetDouble() : null;
 
     public bool? GetBool(string key) => Parameters.TryGetValue(key, out var el) ? el.ValueKind switch
     {

@@ -99,13 +99,21 @@ public sealed class StoryboardFactory
 
     private static string ResolvePropertyPath(string property) => property switch
     {
-        "Opacity" => "(UIElement.Opacity)",
-        "TranslateX" => "(UIElement.RenderTransform).(CompositeTransform.TranslateX)",
-        "TranslateY" => "(UIElement.RenderTransform).(CompositeTransform.TranslateY)",
-        "ScaleX" => "(UIElement.RenderTransform).(CompositeTransform.ScaleX)",
-        "ScaleY" => "(UIElement.RenderTransform).(CompositeTransform.ScaleY)",
-        "Rotation" => "(UIElement.RenderTransform).(CompositeTransform.Rotation)",
-        _ => throw new NotSupportedException($"Animation property '{property}' is not supported.")
+        "Opacity"     => "(UIElement.Opacity)",
+        "TranslateX"  => "(UIElement.RenderTransform).(CompositeTransform.TranslateX)",
+        "TranslateY"  => "(UIElement.RenderTransform).(CompositeTransform.TranslateY)",
+        "ScaleX"      => "(UIElement.RenderTransform).(CompositeTransform.ScaleX)",
+        "ScaleY"      => "(UIElement.RenderTransform).(CompositeTransform.ScaleY)",
+        "Rotation"    => "(UIElement.RenderTransform).(CompositeTransform.Rotation)",
+        "Width"       => "(FrameworkElement.Width)",
+        "Height"      => "(FrameworkElement.Height)",
+        "FontSize"    => "(Control.FontSize)",
+        "CornerRadius" => "(Microsoft.UI.Xaml.Controls.Border.CornerRadius)",
+        "BackgroundColor" => "(Panel.Background).(SolidColorBrush.Color)",
+        "BorderColor"    => "(Border.BorderBrush).(SolidColorBrush.Color)",
+        _ => throw new NotSupportedException($"Animation property '{property}' is not supported. " +
+            "Supported: Opacity, TranslateX/Y, ScaleX/Y, Rotation, Width, Height, FontSize, " +
+            "CornerRadius, BackgroundColor, BorderColor, Color.")
     };
 
     private static void EnsureCompositeTransform(FrameworkElement el)
@@ -135,11 +143,19 @@ internal static class EasingParser
     public static EasingFunctionBase? Parse(string name) => name switch
     {
         "Linear" => null,
+        "EaseInQuad" => new QuadraticEase { EasingMode = EasingMode.EaseIn },
+        "EaseOutQuad" => new QuadraticEase { EasingMode = EasingMode.EaseOut },
+        "EaseInOutQuad" => new QuadraticEase { EasingMode = EasingMode.EaseInOut },
         "EaseInCubic" => new CubicEase { EasingMode = EasingMode.EaseIn },
         "EaseOutCubic" => new CubicEase { EasingMode = EasingMode.EaseOut },
         "EaseInOutCubic" => new CubicEase { EasingMode = EasingMode.EaseInOut },
+        "EaseInCirc" => new CircleEase { EasingMode = EasingMode.EaseIn },
+        "EaseOutCirc" => new CircleEase { EasingMode = EasingMode.EaseOut },
+        "EaseInBack" => new BackEase { EasingMode = EasingMode.EaseIn, Amplitude = 0.6 },
         "EaseOutBack" => new BackEase { EasingMode = EasingMode.EaseOut, Amplitude = 0.6 },
+        "EaseInElastic" => new ElasticEase { EasingMode = EasingMode.EaseIn, Oscillations = 2, Springiness = 4 },
         "EaseOutElastic" => new ElasticEase { EasingMode = EasingMode.EaseOut, Oscillations = 2, Springiness = 4 },
+        "EaseInBounce" => new BounceEase { EasingMode = EasingMode.EaseIn, Bounces = 2, Bounciness = 2 },
         "EaseOutBounce" => new BounceEase { EasingMode = EasingMode.EaseOut, Bounces = 2, Bounciness = 2 },
         _ => new CubicEase { EasingMode = EasingMode.EaseOut }
     };

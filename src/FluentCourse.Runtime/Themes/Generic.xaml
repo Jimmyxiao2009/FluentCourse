@@ -45,7 +45,7 @@
                                        TextWrapping="Wrap"/>
 
                             <ItemsControl x:Name="PART_Choices"
-                                          ItemsSource="{TemplateBinding Choices}">
+                                           ItemsSource="{TemplateBinding Choices}">
                                 <ItemsControl.ItemsPanel>
                                     <ItemsPanelTemplate>
                                         <StackPanel Spacing="8"/>
@@ -56,6 +56,23 @@
                                         <CheckBox Content="{Binding Text}"
                                                   IsChecked="{Binding IsSelected, Mode=TwoWay}"
                                                   HorizontalAlignment="Stretch"/>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+
+                            <!-- FillInBlank blanks -->
+                            <ItemsControl x:Name="PART_Blanks"
+                                          ItemsSource="{TemplateBinding Blanks}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <StackPanel Spacing="8"/>
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBox Text="{Binding UserAnswer, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                 PlaceholderText="输入答案"
+                                                 HorizontalAlignment="Stretch"/>
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>

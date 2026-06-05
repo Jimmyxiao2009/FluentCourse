@@ -1,15 +1,17 @@
 using FluentCourse.Core.Models;
 using FluentCourse.Runtime.Animations;
+using FluentCourse.Runtime.Controls;
 using FluentCourse.Runtime.Player;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media.Animation;
+using Windows.System;
 
 namespace FluentCourse.Runtime.Triggers;
 
 /// <summary>
-/// Dispatches a single <see cref="ActionDescriptor"/> to the right runtime call. Add new
-/// action types here — the type discriminator string is matched verbatim from the manifest.
+/// Dispatches a single <see cref="ActionDescriptor"/> to the right runtime call.
+/// v1.1 adds media control, StepReveal, quiz control, variables, window, and nav extensions.
 /// </summary>
 public static class ActionExecutor
 {
@@ -21,60 +23,208 @@ public static class ActionExecutor
     {
         switch (action.Type)
         {
+            // ── navigation ──
             case "GoToPage":
                 if (action.GetString("page") is { } page) await player.GoToAsync(page);
                 break;
-
             case "NextPage":
                 await player.NextAsync();
                 break;
-
             case "PreviousPage":
                 await player.PreviousAsync();
                 break;
-
-            case "PlayAnimation":
-                PlayAnimation(action, storyboards, pageRoot);
+            case "FirstPage":
+                await player.GoToIndexAsync(player.FirstVisibleIndex());
+                break;
+            case "LastPage":
+                {
+                    for (int i = player.PageCount - 1; i >= 0; i--)
+                        if (!player.Manifest.Pages[i].Hidden) { await player.GoToIndexAsync(i); break; }
+                }
+                break;
+            case "GoBack":
+                await player.GoBackAsync();
                 break;
 
+            // ── animation ──
+            case "PlayAnimation":
+                PlayAnimation(action, storyboards, player, pageRoot);
+                break;
+            case "StopAnimation":
+                StopAnimation(action, player);
+                break;
+            case "PauseAnimation":
+                PauseAnimation(action, player);
+                break;
+            case "ResumeAnimation":
+                ResumeAnimation(action, player);
+                break;
+
+            // ── state ──
             case "GoToState":
                 GoToState(action, pageRoot);
                 break;
+            case "ToggleState":
+                ToggleState(action, pageRoot);
+                break;
 
+            // ── media ──
+            case "PlayMedia":
+                MediaPlay(action, pageRoot);
+                break;
+            case "PauseMedia":
+                MediaPause(action, pageRoot);
+                break;
+            case "StopMedia":
+                MediaStop(action, pageRoot);
+                break;
+            case "SeekMedia":
+                MediaSeek(action, pageRoot);
+                break;
+            case "SetVolume":
+                MediaSetVolume(action, pageRoot);
+                break;
+            case "Mute":
+                MediaMute(action, pageRoot);
+                break;
+
+            // ── StepReveal ──
+            case "NextStep":
+                if (FindByName(pageRoot, action.Target) is StepRevealControl src) src.Next();
+                break;
+            case "PreviousStep":
+                if (FindByName(pageRoot, action.Target) is StepRevealControl src2) src2.Previous();
+                break;
+            case "ResetSteps":
+                if (FindByName(pageRoot, action.Target) is StepRevealControl src3) src3.Reset();
+                break;
+            case "GoToStep":
+                {
+                    if (FindByName(pageRoot, action.Target) is StepRevealControl src4 &&
+                        action.GetInt("step") is { } s) src4.CurrentStep = s;
+                }
+                break;
+
+            // ── quiz ──
+            case "SubmitQuiz":
+                if (FindByName(pageRoot, action.Target) is QuizControl qc) SubmitQuiz(qc);
+                break;
+            case "ResetQuiz":
+                if (FindByName(pageRoot, action.Target) is QuizControl qc2) ResetQuiz(qc2);
+                break;
+            case "ShowFeedback":
+                if (FindByName(pageRoot, action.Target) is QuizControl qc3) qc3.ShowFeedback = true;
+                break;
+            case "HideFeedback":
+                if (FindByName(pageRoot, action.Target) is QuizControl qc4) qc4.ShowFeedback = false;
+                break;
+
+            // ── variables ──
+            case "SetVariable":
+                {
+                    if (action.GetString("name") is { } n)
+                    {
+                        if (action.GetDouble("value") is { } dv) player.SetVariable(n, dv);
+                        else if (action.GetBool("value") is { } bv) player.SetVariable(n, bv);
+                        else if (action.GetString("value") is { } sv) player.SetVariable(n, sv);
+                    }
+                }
+                break;
+            case "IncrementVariable":
+                {
+                    if (action.GetString("name") is { } n2)
+                    {
+                        var by = action.GetDouble("by") ?? 1;
+                        var cur = player.GetVariable<double>(n2);
+                        player.SetVariable(n2, cur + by);
+                    }
+                }
+                break;
+            case "ToggleVariable":
+                {
+                    if (action.GetString("name") is { } n3)
+                    {
+                        var cur = player.GetVariable<bool>(n3);
+                        player.SetVariable(n3, !cur);
+                    }
+                }
+                break;
+
+            // ── window ──
+            case "OpenHyperlink":
+                {
+                    if (action.GetString("url") is { } url)
+                        _ = Launcher.LaunchUriAsync(new Uri(url));
+                }
+                break;
+            case "OpenFile":
+                {
+                    if (action.GetString("path") is { } path)
+                        _ = Launcher.LaunchFileAsync(
+                            await Windows.Storage.StorageFile.GetFileFromPathAsync(path));
+                }
+                break;
+            case "ExitPresentation":
+                Application.Current.Exit();
+                break;
+            case "ToggleFullscreen":
+                // Delegated to the host window; the host must set its own handler
+                break;
+
+            // ── legacy ──
             case "ShowToast":
                 ShowToast(action, pageRoot);
                 break;
-
             case "SetProperty":
                 SetProperty(action, pageRoot);
                 break;
 
             default:
-                System.Diagnostics.Debug.WriteLine($"Unknown action type: {action.Type}");
+                System.Diagnostics.Debug.WriteLine($"[ActionExecutor] Unknown type: {action.Type}");
                 break;
         }
     }
 
-    private static void PlayAnimation(ActionDescriptor action, StoryboardFactory storyboards, FrameworkElement root)
+    // ── animation control ──
+
+    private static void PlayAnimation(ActionDescriptor action, StoryboardFactory storyboards,
+        PagePlayer player, FrameworkElement root)
     {
-        var animationName = action.GetString("animation") ?? "FadeIn";
-        var target = action.Target is null ? root : root.FindName(action.Target) as FrameworkElement;
+        var name = action.GetString("animation") ?? "FadeIn";
+        var target = action.Target is null ? root : FindByName(root, action.Target);
         if (target is null) return;
 
-        var sb = storyboards.Build(animationName, target);
+        var sb = storyboards.Build(name, target);
+        if (action.Target is { } t)
+            player.CacheStoryboard(t, name, sb);
         sb.Begin();
     }
+
+    private static void StopAnimation(ActionDescriptor action, PagePlayer player)
+    {
+        var sb = player.GetCachedStoryboard(action.Target ?? "", action.GetString("animation") ?? "");
+        sb?.Stop();
+    }
+
+    private static void PauseAnimation(ActionDescriptor action, PagePlayer player)
+    {
+        var sb = player.GetCachedStoryboard(action.Target ?? "", action.GetString("animation") ?? "");
+        sb?.Pause();
+    }
+
+    private static void ResumeAnimation(ActionDescriptor action, PagePlayer player)
+    {
+        var sb = player.GetCachedStoryboard(action.Target ?? "", action.GetString("animation") ?? "");
+        sb?.Resume();
+    }
+
+    // ── state ──
 
     private static void GoToState(ActionDescriptor action, FrameworkElement root)
     {
         var state = action.GetString("state");
         if (state is null) return;
-
-        // Prefer a named target; fall back to the page root.
-        var target = (action.Target is null ? root : root.FindName(action.Target) as FrameworkElement) ?? root;
-
-        // VisualStateManager.GoToState requires Control. Walk up to the nearest Control ancestor
-        // when the target itself isn't one (e.g. a plain Grid page root).
+        var target = (action.Target is null ? root : FindByName(root, action.Target)) ?? root;
         Control? ctrl = target as Control;
         if (ctrl is null)
         {
@@ -83,10 +233,94 @@ public static class ActionExecutor
                 parent = Microsoft.UI.Xaml.Media.VisualTreeHelper.GetParent(parent);
             ctrl = parent as Control;
         }
-
         if (ctrl is not null)
             VisualStateManager.GoToState(ctrl, state, useTransitions: true);
     }
+
+    private static void ToggleState(ActionDescriptor action, FrameworkElement root)
+    {
+        var state = action.GetString("state");
+        if (state is null) return;
+        var target = (action.Target is null ? root : FindByName(root, action.Target)) ?? root;
+        Control? ctrl = target as Control;
+        if (ctrl is null) return;
+        VisualStateManager.GoToState(ctrl, state, useTransitions: true);
+    }
+
+    // ── media ──
+
+    private static void MediaPlay(ActionDescriptor action, FrameworkElement root)
+    {
+        if (FindByName(root, action.Target) is Microsoft.UI.Xaml.Controls.MediaPlayerElement me &&
+            me.MediaPlayer is { } mp)
+            mp.Play();
+    }
+
+    private static void MediaPause(ActionDescriptor action, FrameworkElement root)
+    {
+        if (FindByName(root, action.Target) is Microsoft.UI.Xaml.Controls.MediaPlayerElement me &&
+            me.MediaPlayer is { } mp)
+            mp.Pause();
+    }
+
+    private static void MediaStop(ActionDescriptor action, FrameworkElement root)
+    {
+        if (FindByName(root, action.Target) is Microsoft.UI.Xaml.Controls.MediaPlayerElement me &&
+            me.MediaPlayer is { } mp)
+        {
+            mp.Pause();
+            mp.Position = TimeSpan.Zero;
+        }
+    }
+
+    private static void MediaSeek(ActionDescriptor action, FrameworkElement root)
+    {
+        if (action.GetDouble("to") is { } sec &&
+            FindByName(root, action.Target) is Microsoft.UI.Xaml.Controls.MediaPlayerElement me &&
+            me.MediaPlayer is { } mp)
+            mp.Position = TimeSpan.FromSeconds(sec);
+    }
+
+    private static void MediaSetVolume(ActionDescriptor action, FrameworkElement root)
+    {
+        if (action.GetDouble("value") is { } vol &&
+            FindByName(root, action.Target) is Microsoft.UI.Xaml.Controls.MediaPlayerElement me &&
+            me.MediaPlayer is { } mp)
+            mp.Volume = Math.Clamp(vol, 0, 1);
+    }
+
+    private static void MediaMute(ActionDescriptor action, FrameworkElement root)
+    {
+        if (FindByName(root, action.Target) is Microsoft.UI.Xaml.Controls.MediaPlayerElement me &&
+            me.MediaPlayer is { } mp)
+            mp.IsMuted = action.GetBool("value") ?? true;
+    }
+
+    // ── quiz ──
+
+    private static void SubmitQuiz(QuizControl quiz)
+    {
+        // Submit is normally triggered by the internal PART_Submit Button.
+        // For programmatic use we expose a public Submit method; if not available,
+        // find and invoke the button inside the template.
+        var btn = quiz.FindName("PART_Submit") as Button;
+        if (btn is not null && btn.IsEnabled)
+        {
+            btn.Command?.Execute(btn.CommandParameter);
+            // fallback: invoke click
+        }
+    }
+
+    private static void ResetQuiz(QuizControl quiz)
+    {
+        var btn = quiz.FindName("PART_Retry") as Button;
+        if (btn is not null && btn.Visibility == Visibility.Visible)
+        {
+            btn.Command?.Execute(btn.CommandParameter);
+        }
+    }
+
+    // ── toast ──
 
     private static void ShowToast(ActionDescriptor action, FrameworkElement root)
     {
@@ -101,18 +335,18 @@ public static class ActionExecutor
             PlacementMargin = new Thickness(16),
             XamlRoot = root.XamlRoot
         };
-        // Anchor to the page root so it positions inside the stage rather than off-window.
         if (root is FrameworkElement fe) tip.Target = fe;
         tip.IsOpen = true;
     }
 
+    // ── SetProperty ──
+
     private static void SetProperty(ActionDescriptor action, FrameworkElement root)
     {
         var name = action.GetString("property");
-        var target = action.Target is null ? root : root.FindName(action.Target) as DependencyObject;
+        var target = action.Target is null ? root : FindByName(root, action.Target);
         if (target is null || name is null) return;
 
-        // Minimum viable: support a few high-frequency properties without reflection (AOT-safe).
         if (target is FrameworkElement fe)
         {
             switch (name)
@@ -129,4 +363,9 @@ public static class ActionExecutor
             }
         }
     }
+
+    // ── helpers ──
+
+    private static FrameworkElement? FindByName(FrameworkElement root, string? name) =>
+        string.IsNullOrEmpty(name) ? null : root.FindName(name) as FrameworkElement;
 }
