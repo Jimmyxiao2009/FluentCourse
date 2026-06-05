@@ -1,0 +1,93 @@
+{
+  "$schema": "https://fluentcourse.dev/schemas/manifest.v1.json",
+  "formatVersion": 1,
+  "id": "9f1b9c0a-0001-4c5a-9b3a-1e6f3a2c0bca",
+  "title": "FluentCourse 入门课",
+  "author": "Ouyang Quan",
+  "createdAt": "2026-06-04T00:00:00Z",
+  "updatedAt": "2026-06-04T00:00:00Z",
+  "language": "zh-CN",
+  "stage": {
+    "designWidth": 1920,
+    "designHeight": 1080,
+    "scaleMode": "Uniform",
+    "background": "#FF1F1F1F",
+    "theme": "Dark"
+  },
+  "pages": [
+    {
+      "id": "cover",
+      "file": "pages/01-cover.xaml",
+      "title": "封面",
+      "notes": "欢迎页 — 等观众落座后按空格继续。",
+      "transition": "Fade"
+    },
+    {
+      "id": "intro",
+      "file": "pages/02-intro.xaml",
+      "title": "什么是 FluentCourse",
+      "notes": "强调三个关键点：原生、互动、可扩展。逐步显示要点。",
+      "transition": "SlidePush"
+    },
+    {
+      "id": "quiz",
+      "file": "pages/03-quiz.xaml",
+      "title": "小测一下",
+      "notes": "正确答案是 B。给出反馈后继续到下一页。",
+      "transition": "Zoom"
+    }
+  ],
+  "triggers": [
+    {
+      "id": "t-cover-load",
+      "page": "cover",
+      "on": { "type": "PageLoaded" },
+      "do": [
+        { "type": "PlayAnimation", "target": "TitleText", "animation": "FadeInUp" },
+        { "type": "PlayAnimation", "target": "SubtitleText", "animation": "FadeInUp" }
+      ]
+    },
+    {
+      "id": "t-cover-cta",
+      "page": "cover",
+      "on": { "type": "Click", "target": "StartButton" },
+      "do": [ { "type": "GoToPage", "page": "intro" } ]
+    },
+    {
+      "id": "t-intro-next",
+      "page": "intro",
+      "on": { "type": "Click", "target": "NextButton" },
+      "stopAfterLastStep": true,
+      "steps": [
+        [
+          { "type": "SetProperty", "target": "Point2", "property": "Opacity", "value": 1 },
+          { "type": "PlayAnimation", "target": "Point2", "animation": "FadeIn" }
+        ],
+        [
+          { "type": "SetProperty", "target": "Point3", "property": "Opacity", "value": 1 },
+          { "type": "PlayAnimation", "target": "Point3", "animation": "FadeIn" }
+        ],
+        [
+          { "type": "GoToPage", "page": "quiz" }
+        ]
+      ]
+    },
+    {
+      "id": "t-quiz-pulse",
+      "page": "quiz",
+      "on": { "type": "ValueChanged", "target": "MainQuiz" },
+      "do": [ { "type": "PlayAnimation", "target": "MainQuiz", "animation": "Pulse" } ]
+    }
+  ],
+  "animations": {
+    "EntranceTitle": {
+      "duration": 600,
+      "easing": "EaseOutCubic",
+      "tracks": [
+        { "property": "Opacity", "from": 0, "to": 1 },
+        { "property": "TranslateY", "from": 24, "to": 0 }
+      ]
+    }
+  },
+  "assets": []
+}

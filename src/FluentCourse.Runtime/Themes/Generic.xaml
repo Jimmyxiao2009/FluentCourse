@@ -1,0 +1,85 @@
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="using:FluentCourse.Runtime.Controls">
+
+    <Style TargetType="controls:QuizControl">
+        <Setter Property="Padding" Value="20"/>
+        <Setter Property="CornerRadius" Value="12"/>
+        <Setter Property="Background" Value="{ThemeResource LayerFillColorDefaultBrush}"/>
+        <Setter Property="BorderBrush" Value="{ThemeResource ControlStrokeColorDefaultBrush}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="controls:QuizControl">
+                    <Border x:Name="RootBorder"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="{TemplateBinding CornerRadius}"
+                            Padding="{TemplateBinding Padding}">
+
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="ResultStates">
+                                <VisualState x:Name="Pending"/>
+                                <VisualState x:Name="Correct">
+                                    <VisualState.Setters>
+                                        <Setter Target="PART_FeedbackHost.Visibility" Value="Visible"/>
+                                        <Setter Target="PART_FeedbackHost.Background"
+                                                Value="{ThemeResource SystemFillColorSuccessBackgroundBrush}"/>
+                                    </VisualState.Setters>
+                                </VisualState>
+                                <VisualState x:Name="Incorrect">
+                                    <VisualState.Setters>
+                                        <Setter Target="PART_FeedbackHost.Visibility" Value="Visible"/>
+                                        <Setter Target="PART_FeedbackHost.Background"
+                                                Value="{ThemeResource SystemFillColorCriticalBackgroundBrush}"/>
+                                    </VisualState.Setters>
+                                </VisualState>
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
+
+                        <StackPanel Spacing="14">
+                            <TextBlock Text="{TemplateBinding Question}"
+                                       Style="{ThemeResource SubtitleTextBlockStyle}"
+                                       TextWrapping="Wrap"/>
+
+                            <ItemsControl x:Name="PART_Choices"
+                                          ItemsSource="{TemplateBinding Choices}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <StackPanel Spacing="8"/>
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <CheckBox Content="{Binding Text}"
+                                                  IsChecked="{Binding IsSelected, Mode=TwoWay}"
+                                                  HorizontalAlignment="Stretch"/>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <Button x:Name="PART_Submit" Content="提交"
+                                        Background="{ThemeResource AccentFillColorDefaultBrush}"
+                                        Foreground="White"/>
+                                <Button x:Name="PART_Retry" Content="重做"
+                                        Visibility="Collapsed"/>
+                            </StackPanel>
+
+                            <Border x:Name="PART_FeedbackHost"
+                                    Padding="12"
+                                    CornerRadius="6"
+                                    Background="{ThemeResource SubtleFillColorSecondaryBrush}"
+                                    Visibility="Collapsed">
+                                <TextBlock x:Name="PART_Feedback" TextWrapping="Wrap"/>
+                            </Border>
+                        </StackPanel>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+</ResourceDictionary>
