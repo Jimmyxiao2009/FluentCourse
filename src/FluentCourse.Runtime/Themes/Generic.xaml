@@ -75,6 +75,23 @@
                                     Visibility="Collapsed">
                                 <TextBlock x:Name="PART_Feedback" TextWrapping="Wrap"/>
                             </Border>
+
+                            <Border x:Name="PART_AnalysisHost"
+                                    Padding="12"
+                                    CornerRadius="6"
+                                    Background="{ThemeResource SubtleFillColorTertiaryBrush}"
+                                    BorderBrush="{ThemeResource ControlStrokeColorDefaultBrush}"
+                                    BorderThickness="1"
+                                    Visibility="Collapsed">
+                                <StackPanel Spacing="6">
+                                    <TextBlock Text="解析"
+                                               FontWeight="SemiBold"
+                                               Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}"/>
+                                    <TextBlock x:Name="PART_Analysis"
+                                               TextWrapping="Wrap"
+                                               LineHeight="22"/>
+                                </StackPanel>
+                            </Border>
                         </StackPanel>
                     </Border>
                 </ControlTemplate>

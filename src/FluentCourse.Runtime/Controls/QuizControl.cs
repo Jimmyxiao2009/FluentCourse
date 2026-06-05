@@ -20,11 +20,14 @@ public sealed partial class QuizChoice : DependencyObject
         DependencyProperty.Register(nameof(IsSelected), typeof(bool), typeof(QuizChoice), new PropertyMetadata(false));
     public static readonly DependencyProperty FeedbackProperty =
         DependencyProperty.Register(nameof(Feedback), typeof(string), typeof(QuizChoice), new PropertyMetadata(""));
+    public static readonly DependencyProperty ExplanationProperty =
+        DependencyProperty.Register(nameof(Explanation), typeof(string), typeof(QuizChoice), new PropertyMetadata(""));
 
     public string Text { get => (string)GetValue(TextProperty); set => SetValue(TextProperty, value); }
     public bool IsAnswer { get => (bool)GetValue(IsAnswerProperty); set => SetValue(IsAnswerProperty, value); }
     public bool IsSelected { get => (bool)GetValue(IsSelectedProperty); set => SetValue(IsSelectedProperty, value); }
     public string Feedback { get => (string)GetValue(FeedbackProperty); set => SetValue(FeedbackProperty, value); }
+    public string Explanation { get => (string)GetValue(ExplanationProperty); set => SetValue(ExplanationProperty, value); }
 }
 
 [ContentProperty(Name = nameof(Choices))]
@@ -62,6 +65,7 @@ public sealed partial class QuizControl : Control
     private Button? _submitButton;
     private Button? _retryButton;
     private TextBlock? _feedbackBlock;
+    private TextBlock? _analysisBlock;
 
     public QuizControl()
     {
@@ -79,6 +83,7 @@ public sealed partial class QuizControl : Control
         _submitButton = GetTemplateChild("PART_Submit") as Button;
         _retryButton = GetTemplateChild("PART_Retry") as Button;
         _feedbackBlock = GetTemplateChild("PART_Feedback") as TextBlock;
+        _analysisBlock = GetTemplateChild("PART_Analysis") as TextBlock;
 
         if (_submitButton is not null) _submitButton.Click += OnSubmit;
         if (_retryButton is not null) _retryButton.Click += OnRetry;
@@ -103,6 +108,19 @@ public sealed partial class QuizControl : Control
                 : "再想想 — 答案不完全正确。";
         }
 
+        // 解析：始终展示正确答案的解析（不论对错），与反馈区分离
+        if (_analysisBlock is not null && ShowFeedback)
+        {
+            var explanations = correctSet
+                .Where(c => !string.IsNullOrEmpty(c.Explanation))
+                .Select(c => c.Explanation)
+                .ToList();
+            _analysisBlock.Text = explanations.Count > 0
+                ? string.Join("\n\n", explanations)
+                : "（本题暂无解析）";
+            _analysisBlock.Visibility = Visibility.Visible;
+        }
+
         if (_retryButton is not null && AllowRetry)
             _retryButton.Visibility = Visibility.Visible;
         if (_submitButton is not null)
@@ -117,6 +135,11 @@ public sealed partial class QuizControl : Control
         Result = QuizResult.Pending;
         Score = 0;
         if (_feedbackBlock is not null) _feedbackBlock.Text = "";
+        if (_analysisBlock is not null)
+        {
+            _analysisBlock.Text = "";
+            _analysisBlock.Visibility = Visibility.Collapsed;
+        }
         if (_retryButton is not null) _retryButton.Visibility = Visibility.Collapsed;
         if (_submitButton is not null) _submitButton.IsEnabled = true;
     }

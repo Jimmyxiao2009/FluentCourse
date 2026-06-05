@@ -22,7 +22,9 @@
                     AllowRetry="True">
         <fc:QuizControl.Choices>
             <fc:QuizChoice Text="A. .NET MAUI"/>
-            <fc:QuizChoice Text="B. Windows App SDK" IsAnswer="True" Feedback="正确 — WinUI 3 是 Windows App SDK 的核心 UI 框架。"/>
+            <fc:QuizChoice Text="B. Windows App SDK" IsAnswer="True"
+                           Feedback="正确 — WinUI 3 是 Windows App SDK 的核心 UI 框架。"
+                           Explanation="Windows App SDK（代号 Project Reunion）统一了 Win32 / UWP 的现代 UI 能力，WinUI 3 是其原生的 XAML UI 层。.NET MAUI 跨移动/桌面但用自绘渲染；UWP 是上一代微软 UI 平台，已不在主动迭代；WinForms 是更老的 Win32 包装。"/>
             <fc:QuizChoice Text="C. UWP"/>
             <fc:QuizChoice Text="D. Windows Forms"/>
         </fc:QuizControl.Choices>
