@@ -37,7 +37,7 @@
                     <fc:QuizBlank Pattern="(?i)皂化" CaseSensitive="false"
                                   Explanation="碱性水解 = 皂化反应。酸性水解不称皂化，这是考试中的常见区别点。"/>
                     <fc:QuizBlank Pattern="(?i)高级脂肪酸钠|脂肪酸钠|肥皂" CaseSensitive="false"
-                                  Explanation="高级脂肪酸钠是肥皂的主要成分。若填"脂肪酸盐"也给分。"/>
+                                  Explanation="高级脂肪酸钠是肥皂的主要成分。若填「脂肪酸盐」也给分。"/>
                     <fc:QuizBlank Pattern="(?i)氢化" CaseSensitive="false"
                                   Explanation="油脂的氢化（硬化）是将液态油变为固态人造奶油/起酥油的重要工业过程。"/>
                 </fc:QuizControl.Blanks>
