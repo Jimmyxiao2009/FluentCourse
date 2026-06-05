@@ -16,7 +16,7 @@
     <StackPanel Grid.Row="0" Grid.ColumnSpan="2" Margin="0,0,0,30">
         <TextBlock Text="一、蛋白质的组成"
                    FontSize="48" FontWeight="SemiBold" Foreground="White"/>
-        <TextBlock Text="proteios（希腊语"首要的"）—— 蛋白质是生命的物质基础"
+        <TextBlock Text="proteios（希腊语「首要的」）—— 蛋白质是生命的物质基础"
                    FontSize="20" Foreground="#FF8888AA" Margin="0,8,0,0"/>
     </StackPanel>
 

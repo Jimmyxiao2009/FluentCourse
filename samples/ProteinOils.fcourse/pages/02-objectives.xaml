@@ -21,7 +21,7 @@
             <TextBlock TextWrapping="Wrap" FontSize="26" Foreground="#FFE0E0E0">
                 <Run Text="了解蛋白质、油脂的组成，掌握蛋白质、油脂的主要性质。" FontWeight="SemiBold" Foreground="White"/>
                 <LineBreak/>
-                <Run Text="培养"宏观辨识与微观探析"素养。"/>
+                <Run Text="培养「宏观辨识与微观探析」素养。"/>
             </TextBlock>
         </Border>
 
