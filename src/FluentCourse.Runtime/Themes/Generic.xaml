@@ -116,4 +116,14 @@
         </Setter>
     </Style>
 
+    <Style TargetType="controls:StepRevealControl">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="controls:StepRevealControl">
+                    <ItemsPresenter/>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
 </ResourceDictionary>
