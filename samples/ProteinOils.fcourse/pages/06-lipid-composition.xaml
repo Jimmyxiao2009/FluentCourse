@@ -21,16 +21,22 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <!-- 左列：概念 -->
         <StackPanel Spacing="16" Margin="0,0,30,0">
             <Border BorderThickness="1" CornerRadius="8"
                     BorderBrush="#FF2A2A4A" Padding="24,20"
                     Background="#FF16162E">
                 <StackPanel Spacing="8">
                     <TextBlock Text="▎ 分类" FontSize="26" FontWeight="SemiBold" Foreground="#FFE94560"/>
-                    <TextBlock TextWrapping="Wrap" FontSize="20" Foreground="#FFCCCCCC" LineHeight="30">
-                        <Run Text="油" FontWeight="Bold" Foreground="#FF00D2FF"/>：常温下<Run Text="液态" Foreground="#FF00D2FF"/>，含较多不饱和脂肪酸（植物油）&#x0a;
-                        <Run Text="脂肪" FontWeight="Bold" Foreground="#FFE94560"/>：常温下<Run Text="固态" Foreground="#FFE94560"/>，含较多饱和脂肪酸（动物脂肪）
+                    <TextBlock TextWrapping="Wrap" FontSize="20" Foreground="#FFCCCCCC" LineHeight="32">
+                        <Run Text="油" FontWeight="Bold" Foreground="#FF00D2FF"/>
+                        <Run Text="：常温下"/>
+                        <Run Text="液态" Foreground="#FF00D2FF"/>
+                        <Run Text="，含较多不饱和脂肪酸（植物油）"/>
+                        <LineBreak/>
+                        <Run Text="脂肪" FontWeight="Bold" Foreground="#FFE94560"/>
+                        <Run Text="：常温下"/>
+                        <Run Text="固态" Foreground="#FFE94560"/>
+                        <Run Text="，含较多饱和脂肪酸（动物脂肪）"/>
                     </TextBlock>
                 </StackPanel>
             </Border>
@@ -40,10 +46,18 @@
                     Background="#FF16162E">
                 <StackPanel Spacing="8">
                     <TextBlock Text="▎ 物理性质" FontSize="26" FontWeight="SemiBold" Foreground="#FF0F3460"/>
-                    <TextBlock TextWrapping="Wrap" FontSize="20" Foreground="#FFCCCCCC" LineHeight="30">
-                        · 密度比水<Run Text="小" Foreground="#FF00D2FF"/>，浮于水面&#x0a;
-                        · 黏度较大&#x0a;
-                        · <Run Text="不" Foreground="#FFE94560"/>溶于水，但<Run Text="易" Foreground="#FF00D2FF"/>溶于有机溶剂
+                    <TextBlock TextWrapping="Wrap" FontSize="20" Foreground="#FFCCCCCC" LineHeight="32">
+                        <Run Text="· 密度比水"/>
+                        <Run Text="小" Foreground="#FF00D2FF"/>
+                        <Run Text="，浮于水面"/>
+                        <LineBreak/>
+                        <Run Text="· 黏度较大"/>
+                        <LineBreak/>
+                        <Run Text="· "/>
+                        <Run Text="不" Foreground="#FFE94560"/>
+                        <Run Text="溶于水，但"/>
+                        <Run Text="易" Foreground="#FF00D2FF"/>
+                        <Run Text="溶于有机溶剂"/>
                     </TextBlock>
                 </StackPanel>
             </Border>
@@ -60,32 +74,34 @@
             </Border>
         </StackPanel>
 
-        <!-- 右列：高级脂肪酸表 -->
         <Border BorderThickness="1" CornerRadius="8"
                 BorderBrush="#FF2A2A4A" Padding="24,20"
                 Background="#FF16162E">
             <StackPanel Spacing="12">
                 <TextBlock Text="▎ 常见高级脂肪酸" FontSize="26" FontWeight="SemiBold" Foreground="White"/>
                 <TextBlock Text="饱和脂肪酸" FontSize="18" Foreground="#FF8888AA"/>
-                <TextBlock FontSize="20" Foreground="#FFCCCCCC" FontFamily="Consolas">
-                    <Run Text="软脂酸（棕榈酸）"/>   C₁₅H₃₁COOH
-                </TextBlock>
-                <TextBlock FontSize="20" Foreground="#FFCCCCCC" FontFamily="Consolas">
-                    <Run Text="硬脂酸"/>             C₁₇H₃₅COOH
-                </TextBlock>
-
+                <TextBlock FontSize="20" Foreground="#FFCCCCCC" FontFamily="Consolas"
+                           Text="软脂酸（棕榈酸）   C₁₅H₃₁COOH"/>
+                <TextBlock FontSize="20" Foreground="#FFCCCCCC" FontFamily="Consolas"
+                           Text="硬脂酸             C₁₇H₃₅COOH"/>
                 <TextBlock Text="不饱和脂肪酸" FontSize="18" Foreground="#FF8888AA" Margin="0,8,0,0"/>
-                <TextBlock FontSize="20" Foreground="#FFCCCCCC" FontFamily="Consolas">
-                    <Run Text="油酸"/>               C₁₇H₃₃COOH
-                </TextBlock>
-                <TextBlock FontSize="20" Foreground="#FFCCCCCC" FontFamily="Consolas">
-                    <Run Text="亚油酸"/>             C₁₇H₃₁COOH
-                </TextBlock>
-
+                <TextBlock FontSize="20" Foreground="#FFCCCCCC" FontFamily="Consolas"
+                           Text="油酸               C₁₇H₃₃COOH"/>
+                <TextBlock FontSize="20" Foreground="#FFCCCCCC" FontFamily="Consolas"
+                           Text="亚油酸             C₁₇H₃₁COOH"/>
                 <Border Background="#1A0F3460" Padding="16,12" CornerRadius="6" Margin="0,8,0,0">
-                    <TextBlock TextWrapping="Wrap" FontSize="16" Foreground="#FF9090AA" LineHeight="24">
-                        含<Run Text="较多" Foreground="#FF00D2FF"/>不饱和脂肪酸 → 熔点<Run Text="低" Foreground="#FFE94560"/>（液态）&#x0a;
-                        含<Run Text="较多" Foreground="#FF00D2FF"/>饱和脂肪酸   → 熔点<Run Text="高" Foreground="#FF00D2FF"/>（固态）
+                    <TextBlock TextWrapping="Wrap" FontSize="16" Foreground="#FF9090AA" LineHeight="26">
+                        <Run Text="含"/>
+                        <Run Text="较多" Foreground="#FF00D2FF"/>
+                        <Run Text="不饱和脂肪酸 → 熔点"/>
+                        <Run Text="低" Foreground="#FFE94560"/>
+                        <Run Text="（液态）"/>
+                        <LineBreak/>
+                        <Run Text="含"/>
+                        <Run Text="较多" Foreground="#FF00D2FF"/>
+                        <Run Text="饱和脂肪酸   → 熔点"/>
+                        <Run Text="高" Foreground="#FF00D2FF"/>
+                        <Run Text="（固态）"/>
                     </TextBlock>
                 </Border>
             </StackPanel>

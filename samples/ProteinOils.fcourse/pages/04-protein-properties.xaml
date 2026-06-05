@@ -16,7 +16,6 @@
                Margin="0,0,0,30"/>
 
     <fc:StepRevealControl x:Name="PropReveal" Grid.Row="1">
-        <!-- 性质 1: 水解 -->
         <Border BorderThickness="1" CornerRadius="10"
                 BorderBrush="#FF2A2A4A" Padding="28,24" Margin="0,0,0,16"
                 Background="#FF16162E">
@@ -27,16 +26,12 @@
                     </Border>
                     <TextBlock Text="水解反应" FontSize="32" FontWeight="SemiBold" Foreground="White"/>
                 </StackPanel>
-                <TextBlock TextWrapping="Wrap" FontSize="22" Foreground="#FFCCCCCC" LineHeight="34" Margin="0,8,0,0">
-                    蛋白质  →  多肽  →  氨基酸
-                </TextBlock>
-                <TextBlock FontSize="18" Foreground="#FF8888AA">
-                    酸、碱或酶的催化下水解逐步进行，最终产物为多种氨基酸。
-                </TextBlock>
+                <TextBlock TextWrapping="Wrap" FontSize="22" Foreground="#FFCCCCCC" LineHeight="34" Margin="0,8,0,0"
+                           Text="蛋白质 → 多肽 → 氨基酸"/>
+                <TextBlock FontSize="18" Foreground="#FF8888AA" Text="酸、碱或酶的催化下水解逐步进行，最终产物为多种氨基酸。"/>
             </StackPanel>
         </Border>
 
-        <!-- 性质 2: 变性 -->
         <Border BorderThickness="1" CornerRadius="10"
                 BorderBrush="#FF2A2A4A" Padding="28,24" Margin="0,0,0,16"
                 Background="#FF16162E">
@@ -48,18 +43,21 @@
                     <TextBlock Text="变性（不可逆）" FontSize="32" FontWeight="SemiBold" Foreground="White"/>
                 </StackPanel>
                 <TextBlock TextWrapping="Wrap" FontSize="22" Foreground="#FFCCCCCC" LineHeight="34" Margin="0,8,0,0">
-                    蛋白质在<Run Text="加热" Foreground="#FFE94560" FontWeight="SemiBold"/>、<Run Text="紫外线" Foreground="#FFE94560" FontWeight="SemiBold"/>、<Run Text="重金属盐" Foreground="#FFE94560" FontWeight="SemiBold"/>、
-                    <Run Text="强酸/强碱" Foreground="#FFE94560" FontWeight="SemiBold"/>、<Run Text="乙醇" Foreground="#FFE94560" FontWeight="SemiBold"/>等条件下，构象被破坏，溶解度下降，失去生理活性。
+                    蛋白质在
+                    <Run Text="加热" Foreground="#FFE94560" FontWeight="SemiBold"/>、
+                    <Run Text="紫外线" Foreground="#FFE94560" FontWeight="SemiBold"/>、
+                    <Run Text="重金属盐" Foreground="#FFE94560" FontWeight="SemiBold"/>、
+                    <Run Text="强酸/强碱" Foreground="#FFE94560" FontWeight="SemiBold"/>、
+                    <Run Text="乙醇" Foreground="#FFE94560" FontWeight="SemiBold"/>
+                    等条件下，构象被破坏，溶解度下降，失去生理活性。
                 </TextBlock>
                 <Border Background="#1A0F3460" Padding="16,12" CornerRadius="6" Margin="0,8,0,0">
-                    <TextBlock FontSize="18" Foreground="#FF9090AA" TextWrapping="Wrap">
-                        ⚠ 盐析（加Na₂SO₄等轻金属盐）是可逆的；变性是不可逆的。医院用酒精消毒、重金属中毒急救都是利用变性原理。
-                    </TextBlock>
+                    <TextBlock FontSize="18" Foreground="#FF9090AA" TextWrapping="Wrap"
+                               Text="盐析（加Na₂SO₄等轻金属盐）是可逆的；变性是不可逆的。医院用酒精消毒、重金属中毒急救都是利用变性原理。"/>
                 </Border>
             </StackPanel>
         </Border>
 
-        <!-- 性质 3: 显色反应 + 燃烧 -->
         <Border BorderThickness="1" CornerRadius="10"
                 BorderBrush="#FF2A2A4A" Padding="28,24" Margin="0,0,0,16"
                 Background="#FF16162E">

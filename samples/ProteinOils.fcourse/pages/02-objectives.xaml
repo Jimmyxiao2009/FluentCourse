@@ -15,21 +15,22 @@
                Foreground="White" Margin="0,0,0,40"/>
 
     <StackPanel Grid.Row="1" Spacing="20" VerticalAlignment="Center">
-        <!-- 目标 1 -->
         <Border BorderBrush="#FFE94560" BorderThickness="2,0,0,0"
                 Padding="24,16" CornerRadius="6"
                 Background="#1AE94560">
             <TextBlock TextWrapping="Wrap" FontSize="26" Foreground="#FFE0E0E0">
-                <Run Text="了解蛋白质、油脂的组成，掌握蛋白质、油脂的主要性质。" FontWeight="SemiBold" Foreground="White"/>&#x0a;<Run Text="培养"宏观辨识与微观探析"素养。"/>
+                <Run Text="了解蛋白质、油脂的组成，掌握蛋白质、油脂的主要性质。" FontWeight="SemiBold" Foreground="White"/>
+                <LineBreak/>
+                <Run Text="培养"宏观辨识与微观探析"素养。"/>
             </TextBlock>
         </Border>
 
-        <!-- 目标 2 -->
         <Border BorderBrush="#FF0F3460" BorderThickness="2,0,0,0"
                 Padding="24,16" CornerRadius="6"
                 Background="#1A0F3460">
             <TextBlock TextWrapping="Wrap" FontSize="26" Foreground="#FFE0E0E0">
-                <Run Text="了解蛋白质、油脂在日常生活中的应用，" FontWeight="SemiBold" Foreground="White"/><Run>提高科学探究与创新能力，培养社会责任感。</Run>
+                <Run Text="了解蛋白质、油脂在日常生活中的应用，" FontWeight="SemiBold" Foreground="White"/>
+                <Run Text="提高科学探究与创新能力，培养社会责任感。"/>
             </TextBlock>
         </Border>
     </StackPanel>

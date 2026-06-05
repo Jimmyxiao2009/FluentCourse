@@ -20,42 +20,47 @@
                    FontSize="20" Foreground="#FF8888AA" Margin="0,8,0,0"/>
     </StackPanel>
 
-    <StackPanel Grid.Row="1" Spacing="20">
+    <StackPanel Grid.Row="1" Spacing="16">
 
-        <!-- 要点 1 -->
         <Border BorderThickness="1" CornerRadius="8"
                 BorderBrush="#FF2A2A4A" Padding="24,20"
                 Background="#FF16162E">
             <StackPanel Spacing="8">
                 <TextBlock Text="▎ 存在与组成" FontSize="28" FontWeight="SemiBold" Foreground="#FFE94560"/>
                 <TextBlock TextWrapping="Wrap" FontSize="22" Foreground="#FFCCCCCC" LineHeight="32">
-                    <Run Text="蛋白质广泛存在于各种生物组织细胞中，是"/> <Run Text="天然有机高分子" Foreground="#FFE94560" FontWeight="SemiBold"/><Run Text="化合物。"/>
+                    <Run Text="蛋白质广泛存在于各种生物组织细胞中，是"/>
+                    <Run Text="天然有机高分子" Foreground="#FFE94560" FontWeight="SemiBold"/>
+                    <Run Text="化合物。"/>
                 </TextBlock>
-                <TextBlock TextWrapping="Wrap" FontSize="22" Foreground="#FFCCCCCC"
-                           Margin="0,6,0,0">
-                    <Run Text="组成元素："/> <Run Text="C、H、O、N" Foreground="#FF00D2FF" FontWeight="Bold"/><Run Text="，多数还含"/> <Run Text="S" Foreground="#FF00D2FF" FontWeight="Bold"/><Run Text="，少量含 P、Fe 等。"/>
+                <TextBlock TextWrapping="Wrap" FontSize="22" Foreground="#FFCCCCCC" Margin="0,4,0,0">
+                    <Run Text="组成元素："/>
+                    <Run Text="C、H、O、N" Foreground="#FF00D2FF" FontWeight="Bold"/>
+                    <Run Text="，多数还含"/>
+                    <Run Text="S" Foreground="#FF00D2FF" FontWeight="Bold"/>
+                    <Run Text="，少量含 P、Fe 等。"/>
                 </TextBlock>
             </StackPanel>
         </Border>
 
-        <!-- 要点 2 -->
         <Border BorderThickness="1" CornerRadius="8"
                 BorderBrush="#FF2A2A4A" Padding="24,20"
                 Background="#FF16162E">
             <StackPanel Spacing="8">
                 <TextBlock Text="▎ 基本单元 — 氨基酸" FontSize="28" FontWeight="SemiBold" Foreground="#FF0F3460"/>
                 <TextBlock TextWrapping="Wrap" FontSize="22" Foreground="#FFCCCCCC" LineHeight="32">
-                    蛋白质在酸、碱或<Run Text="酶" Foreground="#FFE94560"/>的作用下水解，最终生成<Run Text="氨基酸" Foreground="#FF00D2FF" FontWeight="Bold"/>。
+                    蛋白质在酸、碱或<Run Text="酶" Foreground="#FFE94560"/>的作用下发生水解，最终生成<Run Text="氨基酸" Foreground="#FF00D2FF" FontWeight="Bold"/>。
                 </TextBlock>
                 <Border Background="#1A0F3460" Padding="20,16" CornerRadius="6" Margin="0,8,0,0">
-                    <TextBlock Text="H₂N—CH—COOH&#x0a;         │&#x0a;         R"
-                               FontSize="24" Foreground="#FFE0E0E0"
-                               FontFamily="Consolas" LineHeight="30"/>
+                    <StackPanel Spacing="2">
+                        <TextBlock Text="H₂N—CH—COOH" FontSize="24" Foreground="#FFE0E0E0" FontFamily="Consolas"/>
+                        <TextBlock Text="         │" FontSize="24" Foreground="#FFE0E0E0" FontFamily="Consolas"/>
+                        <TextBlock Text="         R" FontSize="24" Foreground="#FFE0E0E0" FontFamily="Consolas"/>
+                    </StackPanel>
                 </Border>
                 <TextBlock FontSize="18" Foreground="#FF8888AA" Margin="0,4,0,0">
                     共同结构：氨基(—NH₂)、羧基(—COOH)连接在同一个碳原子上（α-氨基酸）
                 </TextBlock>
-                <StackPanel Orientation="Horizontal" Spacing="24" Margin="0,8,0,0">
+                <StackPanel Orientation="Horizontal" Spacing="24" Margin="0,6,0,0">
                     <TextBlock FontSize="20" Foreground="#FF9090AA">
                         <Run Text="甘氨酸："/> <Run Text="H₂N—CH₂—COOH" Foreground="#FFCCCCCC"/>
                     </TextBlock>
@@ -66,7 +71,6 @@
             </StackPanel>
         </Border>
 
-        <!-- 要点 3 -->
         <Border BorderThickness="1" CornerRadius="8"
                 BorderBrush="#FF2A2A4A" Padding="24,20"
                 Background="#FF16162E">
