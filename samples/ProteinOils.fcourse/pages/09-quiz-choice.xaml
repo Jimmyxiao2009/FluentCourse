@@ -1,0 +1,64 @@
+<Grid xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:fc="using:FluentCourse.Runtime.Controls"
+      Background="#FF1A1A2E"
+      Padding="90,50,90,50">
+
+    <Grid.RowDefinitions>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="*"/>
+    </Grid.RowDefinitions>
+
+    <TextBlock Grid.Row="0"
+               Text="随堂检测 — 蛋白质与油脂"
+               FontSize="42" FontWeight="SemiBold" Foreground="White"
+               Margin="0,0,0,20"/>
+
+    <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+        <StackPanel Spacing="20">
+
+            <!-- 题目 1 -->
+            <fc:QuizControl x:Name="Quiz1" Mode="Single" AllowRetry="True"
+                            ScoreStrategy="AllOrNothing"
+                            Question="1. 蛋白质完全水解的最终产物是：">
+                <fc:QuizControl.Choices>
+                    <fc:QuizChoice Text="A. 多肽"/>
+                    <fc:QuizChoice Text="B. 氨基酸" IsAnswer="True"
+                                   Feedback="正确！"
+                                   Explanation="蛋白质在酸、碱或酶催化下逐步水解：蛋白质 → 多肽 → 氨基酸。氨基酸是不可再水解的最小单元。"/>
+                    <fc:QuizChoice Text="C. 高级脂肪酸"/>
+                    <fc:QuizChoice Text="D. 葡萄糖"/>
+                </fc:QuizControl.Choices>
+            </fc:QuizControl>
+
+            <!-- 题目 2 -->
+            <fc:QuizControl x:Name="Quiz2" Mode="Single" AllowRetry="True"
+                            ScoreStrategy="AllOrNothing"
+                            Question="2. 关于油脂的说法，不正确的是：">
+                <fc:QuizControl.Choices>
+                    <fc:QuizChoice Text="A. 油脂的密度比水小"/>
+                    <fc:QuizChoice Text="B. 植物油可使溴水褪色"/>
+                    <fc:QuizChoice Text="C. 油脂在酸性条件下水解又称为皂化反应" IsAnswer="True"
+                                   Feedback="C 错误！"
+                                   Explanation="皂化反应是油脂在碱性条件下的水解反应，生成高级脂肪酸钠（肥皂）和甘油。酸性水解只生成高级脂肪酸和甘油，不称皂化。"/>
+                    <fc:QuizChoice Text="D. 氢化植物油稳定性好，便于运输"/>
+                </fc:QuizControl.Choices>
+            </fc:QuizControl>
+
+            <!-- 题目 3 -->
+            <fc:QuizControl x:Name="Quiz3" Mode="Single" AllowRetry="True"
+                            ScoreStrategy="AllOrNothing"
+                            Question="3. 以下哪种方法能使蛋白质发生不可逆的变性？">
+                <fc:QuizControl.Choices>
+                    <fc:QuizChoice Text="A. 加入硫酸钠溶液（盐析）"/>
+                    <fc:QuizChoice Text="B. 加热至沸腾" IsAnswer="True"
+                                   Feedback="正确！加热是常见变性手段。"
+                                   Explanation="盐析是可逆的物理变化，不改变蛋白质结构。加热、重金属盐、乙醇、紫外线等均能引起不可逆变性，蛋白质失去生理活性。"/>
+                    <fc:QuizChoice Text="C. 加水稀释"/>
+                    <fc:QuizChoice Text="D. 低温冷藏"/>
+                </fc:QuizControl.Choices>
+            </fc:QuizControl>
+
+        </StackPanel>
+    </ScrollViewer>
+</Grid>

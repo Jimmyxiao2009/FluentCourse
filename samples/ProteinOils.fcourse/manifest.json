@@ -1,0 +1,129 @@
+{
+  "formatVersion": 1,
+  "id": "protein-oils-001",
+  "title": "7.4.2 蛋白质 油脂",
+  "author": "FluentCourse",
+  "createdAt": "2026-06-05T00:00:00Z",
+  "updatedAt": "2026-06-05T00:00:00Z",
+  "language": "zh-CN",
+  "stage": {
+    "designWidth": 1920,
+    "designHeight": 1080,
+    "scaleMode": "Uniform",
+    "background": "#FF1A1A2E",
+    "theme": "Dark"
+  },
+  "pages": [
+    {
+      "id": "cover", "file": "pages/01-cover.xaml",
+      "title": "封面", "section": "开场",
+      "transition": "Fade", "transitionDurationMs": 600,
+      "notes": "人教版高中化学必修二 7.4.2 蛋白质 油脂"
+    },
+    {
+      "id": "objectives", "file": "pages/02-objectives.xaml",
+      "title": "学习目标", "section": "开场",
+      "transition": "SlideUp"
+    },
+    {
+      "id": "protein-comp", "file": "pages/03-protein-composition.xaml",
+      "title": "蛋白质的组成", "section": "蛋白质",
+      "transition": "SlidePush",
+      "notes": "重点：蛋白质是天然有机高分子，含C/H/O/N等元素，基本单元是氨基酸。"
+    },
+    {
+      "id": "protein-prop", "file": "pages/04-protein-properties.xaml",
+      "title": "蛋白质的化学性质", "section": "蛋白质",
+      "transition": "SlideRight", "transitionDurationMs": 400,
+      "notes": "逐步展示蛋白质的四个核心性质：水解、变性、显色反应、燃烧鉴别。"
+    },
+    {
+      "id": "protein-app", "file": "pages/05-protein-application.xaml",
+      "title": "蛋白质的应用", "section": "蛋白质",
+      "transition": "SlideUp", "background": "#FF1E1E36",
+      "notes": "蛋白质在食品、纺织、医药等领域的广泛应用。"
+    },
+    {
+      "id": "lipid-comp", "file": "pages/06-lipid-composition.xaml",
+      "title": "油脂的组成与结构", "section": "油脂",
+      "transition": "SlideDown",
+      "notes": "油脂是高级脂肪酸甘油酯。油(液态，不饱和)和脂肪(固态，饱和)的区别。"
+    },
+    {
+      "id": "lipid-prop", "file": "pages/07-lipid-properties.xaml",
+      "title": "油脂的化学性质", "section": "油脂",
+      "transition": "SlideRight",
+      "notes": "逐步展示加成反应(氢化)和水解反应(皂化)。"
+    },
+    {
+      "id": "lipid-app", "file": "pages/08-lipid-application.xaml",
+      "title": "油脂的应用", "section": "油脂",
+      "transition": "SlideLeft",
+      "notes": "油脂在食品、化工、日化等领域的广泛应用。"
+    },
+    {
+      "id": "quiz-choice", "file": "pages/09-quiz-choice.xaml",
+      "title": "随堂检测", "section": "练习",
+      "transition": "Zoom",
+      "notes": "3道选择题，检测蛋白质和油脂的核心概念。"
+    },
+    {
+      "id": "quiz-fill", "file": "pages/10-quiz-fill.xaml",
+      "title": "填空题", "section": "练习",
+      "transition": "SlideUp",
+      "notes": "检测氨基酸和油脂的关键术语。"
+    }
+  ],
+  "triggers": [
+    {
+      "id": "t-cover-load",
+      "page": "cover",
+      "on": { "type": "PageLoaded" },
+      "do": [
+        { "type": "PlayAnimation", "target": "TitleLine1", "animation": "FadeInUp" },
+        { "type": "PlayAnimation", "target": "TitleLine2", "animation": "FadeInDown" },
+        { "type": "PlayAnimation", "target": "SubtitleBlock", "animation": "FadeIn", "delay": 300 }
+      ]
+    },
+    {
+      "id": "t-cover-cta",
+      "page": "cover",
+      "on": { "type": "Click", "target": "StartButton" },
+      "do": [ { "type": "GoToPage", "page": "objectives" } ]
+    },
+    {
+      "id": "t-cover-hover",
+      "page": "cover",
+      "on": { "type": "PointerEnter", "target": "StartButton", "once": true },
+      "do": [ { "type": "PlayAnimation", "target": "StartButton", "animation": "Pulse" } ]
+    },
+    {
+      "id": "t-obj-next",
+      "page": "objectives",
+      "on": { "type": "Click", "target": "GoProteinBtn" },
+      "do": [ { "type": "GoToPage", "page": "protein-comp" } ]
+    },
+    {
+      "id": "t-protein-prop-step",
+      "page": "protein-prop",
+      "on": { "type": "Click", "target": "NextPoint" },
+      "stopAfterLastStep": true,
+      "steps": [
+        [ { "type": "NextStep", "target": "PropReveal" } ],
+        [ { "type": "NextStep", "target": "PropReveal" } ],
+        [ { "type": "NextStep", "target": "PropReveal" } ]
+      ]
+    },
+    {
+      "id": "t-lipid-prop-step",
+      "page": "lipid-prop",
+      "on": { "type": "Click", "target": "LipidNext" },
+      "stopAfterLastStep": true,
+      "steps": [
+        [ { "type": "NextStep", "target": "LipidReveal" } ],
+        [ { "type": "NextStep", "target": "LipidReveal" } ]
+      ]
+    }
+  ],
+  "assets": []
+}
