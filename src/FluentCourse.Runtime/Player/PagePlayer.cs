@@ -25,6 +25,7 @@ public sealed class PagePlayer
     private readonly TriggerEngine _triggers;
     private readonly ContentPresenter _host;
     private readonly Grid _stage;
+    private readonly ScaleTransform _scaleTransform;
 
     private FrameworkElement? _current;
     private string? _currentPageId;
@@ -46,8 +47,69 @@ public sealed class PagePlayer
         _storyboards = new StoryboardFactory(package.Manifest.Animations);
         _triggers = new TriggerEngine(this, _storyboards, package.Manifest.Triggers);
 
-        _stage = new Grid { Background = ParseBrush(package.Manifest.Stage.Background) };
+        _stage = new Grid
+        {
+            Width = package.Manifest.Stage.DesignWidth,
+            Height = package.Manifest.Stage.DesignHeight,
+            Background = ParseBrush(package.Manifest.Stage.Background),
+            HorizontalAlignment = HorizontalAlignment.Center,
+            VerticalAlignment = VerticalAlignment.Center
+        };
+
+        _scaleTransform = new ScaleTransform();
+        _stage.RenderTransformOrigin = new Windows.Foundation.Point(0.5, 0.5);
+        _stage.RenderTransform = _scaleTransform;
+
         _host.Content = _stage;
+        _host.SizeChanged += OnHostSizeChanged;
+
+        // Apply initial scale; SizeChanged may not fire until after layout pass.
+        _host.Loaded += (_, _) => ApplyScale();
+    }
+
+    private void OnHostSizeChanged(object sender, SizeChangedEventArgs e) => ApplyScale();
+
+    private void ApplyScale()
+    {
+        var w = _host.ActualWidth;
+        var h = _host.ActualHeight;
+        if (w <= 0 || h <= 0)
+        {
+            _scaleTransform.ScaleX = 1;
+            _scaleTransform.ScaleY = 1;
+            return;
+        }
+
+        var designW = Manifest.Stage.DesignWidth;
+        var designH = Manifest.Stage.DesignHeight;
+        var sx = w / designW;
+        var sy = h / designH;
+
+        switch (Manifest.Stage.ScaleMode)
+        {
+            case "UniformToFill":
+                {
+                    var s = Math.Max(sx, sy);
+                    _scaleTransform.ScaleX = s;
+                    _scaleTransform.ScaleY = s;
+                }
+                break;
+            case "Stretch":
+                _scaleTransform.ScaleX = sx;
+                _scaleTransform.ScaleY = sy;
+                break;
+            case "None":
+                _scaleTransform.ScaleX = 1;
+                _scaleTransform.ScaleY = 1;
+                break;
+            default: // "Uniform"
+                {
+                    var s = Math.Min(sx, sy);
+                    _scaleTransform.ScaleX = s;
+                    _scaleTransform.ScaleY = s;
+                }
+                break;
+        }
     }
 
     public CoursePackage Package => _package;
