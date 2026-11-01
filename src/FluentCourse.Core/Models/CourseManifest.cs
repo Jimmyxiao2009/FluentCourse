@@ -18,6 +18,20 @@ public sealed class CourseManifest
     [JsonPropertyName("triggers")] public List<TriggerDescriptor> Triggers { get; set; } = new();
     [JsonPropertyName("animations")] public Dictionary<string, AnimationDescriptor> Animations { get; set; } = new();
     [JsonPropertyName("assets")] public List<AssetDescriptor> Assets { get; set; } = new();
+
+    [JsonIgnore] public DiagnosticCollection Diagnostics { get; set; } = new();
+
+    public void AddWarning(string code, string message, string? location = null)
+    {
+        Diagnostics ??= new();
+        Diagnostics.Warnings.Add(new DiagnosticEntry { Code = code, Message = message, Location = location });
+    }
+
+    public void AddError(string code, string message, string? location = null)
+    {
+        Diagnostics ??= new();
+        Diagnostics.Errors.Add(new DiagnosticEntry { Code = code, Message = message, Location = location });
+    }
 }
 
 public sealed class StageDescriptor
@@ -53,4 +67,17 @@ public sealed class AssetDescriptor
     [JsonPropertyName("placeholderColor")] public string? PlaceholderColor { get; set; }
     [JsonPropertyName("preload")] public string Preload { get; set; } = "eager";
     [JsonPropertyName("sha256")] public string? Sha256 { get; set; }
+}
+
+public sealed class DiagnosticEntry
+{
+    [JsonPropertyName("code")] public string Code { get; set; } = "";
+    [JsonPropertyName("message")] public string Message { get; set; } = "";
+    [JsonPropertyName("location")] public string? Location { get; set; }
+}
+
+public sealed class DiagnosticCollection
+{
+    [JsonPropertyName("warnings")] public List<DiagnosticEntry> Warnings { get; set; } = new();
+    [JsonPropertyName("errors")] public List<DiagnosticEntry> Errors { get; set; } = new();
 }

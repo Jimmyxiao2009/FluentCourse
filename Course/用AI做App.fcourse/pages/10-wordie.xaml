@@ -1,0 +1,120 @@
+<Grid xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      Background="#FF0E1424">
+
+    <Grid.RowDefinitions>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="*"/>
+    </Grid.RowDefinitions>
+
+    <!-- =================== HeaderStrip =================== -->
+    <Grid Grid.Row="0" Margin="100,72,100,0">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+        <Border Grid.Column="0" Background="#3300B4D8" BorderBrush="#FF00B4D8"
+                BorderThickness="1" CornerRadius="4" Padding="14,6">
+            <TextBlock Text="实战" FontSize="16" FontWeight="SemiBold" Foreground="#FF00B4D8"/>
+        </Border>
+        <TextBlock Grid.Column="1" Text="Wordie 是怎么做出来的" FontSize="40" FontWeight="SemiBold"
+                   Foreground="#FFF5F7FB" VerticalAlignment="Center" Margin="20,0,0,0"/>
+        <TextBlock Grid.Column="2" Text="10 / 13" FontSize="16"
+                   Foreground="#FF8893AC" VerticalAlignment="Center"/>
+    </Grid>
+    <Rectangle Grid.Row="0" Height="1" Margin="100,16,100,0"
+               VerticalAlignment="Bottom" Fill="#FF252D48"/>
+
+    <!-- =================== Body =================== -->
+    <ScrollViewer Grid.Row="1" Margin="100,32,100,48" VerticalScrollBarVisibility="Auto">
+        <StackPanel Spacing="14" MaxWidth="1500" HorizontalAlignment="Center">
+
+            <Border BorderThickness="1" CornerRadius="10" BorderBrush="#FF252D48" Background="#FF161D33" Padding="24,20">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="240"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Border Grid.Column="0" Background="#338B5CF6" CornerRadius="8" Padding="16,10" VerticalAlignment="Center" HorizontalAlignment="Left">
+                        <TextBlock Text="① 需求" FontSize="20" FontWeight="SemiBold" Foreground="#FF8B5CF6"/>
+                    </Border>
+                    <TextBlock Grid.Column="1" TextWrapping="Wrap" FontSize="21" Foreground="#FFC7CEDD" LineHeight="33" VerticalAlignment="Center">
+                        <Run Text="prompt.md 里写清了：三种玩法、词库内置不用联网、连「从文件直接打开也要能跑」都列了 —— 这就是" />
+                        <Run Text="用户故事 + 可验证小目标" Foreground="#FF00B4D8" FontWeight="SemiBold"/>
+                        <Run Text="。"/>
+                    </TextBlock>
+                </Grid>
+            </Border>
+
+            <Border BorderThickness="1" CornerRadius="10" BorderBrush="#FF252D48" Background="#FF161D33" Padding="24,20">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="240"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Border Grid.Column="0" Background="#338B5CF6" CornerRadius="8" Padding="16,10" VerticalAlignment="Center" HorizontalAlignment="Left">
+                        <TextBlock Text="② 选型" FontSize="20" FontWeight="SemiBold" Foreground="#FF8B5CF6"/>
+                    </Border>
+                    <TextBlock Grid.Column="1" TextWrapping="Wrap" FontSize="21" Foreground="#FFC7CEDD" LineHeight="33" VerticalAlignment="Center">
+                        <Run Text="界面用网页技术写，Tauri 打包 —— " />
+                        <Run Text="一套代码出 Windows / 安卓 / 苹果" Foreground="#FF00B4D8" FontWeight="SemiBold"/>
+                        <Run Text="，选的就是 AI 最擅长的主流栈。"/>
+                    </TextBlock>
+                </Grid>
+            </Border>
+
+            <Border BorderThickness="3,1,1,1" CornerRadius="10" BorderBrush="#FF00B4D8" Background="#FF1E2747" Padding="24,20">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="240"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Border Grid.Column="0" Background="#3300B4D8" CornerRadius="8" Padding="16,10" VerticalAlignment="Center" HorizontalAlignment="Left">
+                        <TextBlock Text="③ 提示词" FontSize="20" FontWeight="SemiBold" Foreground="#FF00B4D8"/>
+                    </Border>
+                    <TextBlock Grid.Column="1" TextWrapping="Wrap" FontSize="21" Foreground="#FFF5F7FB" LineHeight="33" VerticalAlignment="Center">
+                        <Run Text="那份几千字的 " />
+                        <Run Text="prompt.md 就是「项目说明书」" Foreground="#FF00B4D8" FontWeight="SemiBold"/>
+                        <Run Text="：技术、外观、玩法、数据格式、坑全写齐。现场翻给同学看，最有说服力。"/>
+                    </TextBlock>
+                </Grid>
+            </Border>
+
+            <Border BorderThickness="1" CornerRadius="10" BorderBrush="#FF252D48" Background="#FF161D33" Padding="24,20">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="240"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Border Grid.Column="0" Background="#338B5CF6" CornerRadius="8" Padding="16,10" VerticalAlignment="Center" HorizontalAlignment="Left">
+                        <TextBlock Text="⑤ 调试" FontSize="20" FontWeight="SemiBold" Foreground="#FF8B5CF6"/>
+                    </Border>
+                    <TextBlock Grid.Column="1" TextWrapping="Wrap" FontSize="21" Foreground="#FFC7CEDD" LineHeight="33" VerticalAlignment="Center">
+                        <Run Text="「从 file:// 打开也要能跑」「断网降级到本地图」—— 这些规则不是一开始就想到的，是" />
+                        <Run Text="自己跑、自己验证、踩了坑" Foreground="#FF00B4D8" FontWeight="SemiBold"/>
+                        <Run Text="才补进说明书的。"/>
+                    </TextBlock>
+                </Grid>
+            </Border>
+
+            <Border BorderThickness="1" CornerRadius="10" BorderBrush="#FF252D48" Background="#FF161D33" Padding="24,20">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="240"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Border Grid.Column="0" Background="#338B5CF6" CornerRadius="8" Padding="16,10" VerticalAlignment="Center" HorizontalAlignment="Left">
+                        <TextBlock Text="⑦ 发布" FontSize="20" FontWeight="SemiBold" Foreground="#FF8B5CF6"/>
+                    </Border>
+                    <TextBlock Grid.Column="1" TextWrapping="Wrap" FontSize="21" Foreground="#FFC7CEDD" LineHeight="33" VerticalAlignment="Center">
+                        <Run Text="一句 " />
+                        <Run Text="tauri build" FontFamily="Consolas, Cambria Math" Foreground="#FFF5F7FB"/>
+                        <Run Text="，这套网页就打包成能装的桌面程序、安卓 apk、苹果 App，发给同学就能用。"/>
+                    </TextBlock>
+                </Grid>
+            </Border>
+
+        </StackPanel>
+    </ScrollViewer>
+</Grid>

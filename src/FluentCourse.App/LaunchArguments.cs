@@ -6,11 +6,7 @@ internal static class LaunchArguments
 {
     public static string? GetCoursePath(string? launchArguments)
     {
-        var args = new List<string>();
-        args.AddRange(Environment.GetCommandLineArgs().Skip(1));
-
-        if (!string.IsNullOrWhiteSpace(launchArguments))
-            args.AddRange(Split(launchArguments));
+        var args = GetArguments(launchArguments);
 
         for (var i = 0; i < args.Count; i++)
         {
@@ -23,6 +19,24 @@ internal static class LaunchArguments
         }
 
         return args.Select(CleanPath).FirstOrDefault(IsLikelyCoursePath);
+    }
+
+    public static bool HasSwitch(string? launchArguments, string name)
+    {
+        var switchName = name.StartsWith("--", StringComparison.Ordinal) ? name : $"--{name}";
+        return GetArguments(launchArguments)
+            .Any(arg => string.Equals(arg, switchName, StringComparison.OrdinalIgnoreCase));
+    }
+
+    private static List<string> GetArguments(string? launchArguments)
+    {
+        var args = new List<string>();
+        args.AddRange(Environment.GetCommandLineArgs().Skip(1));
+
+        if (!string.IsNullOrWhiteSpace(launchArguments))
+            args.AddRange(Split(launchArguments));
+
+        return args;
     }
 
     private static IEnumerable<string> Split(string arguments)

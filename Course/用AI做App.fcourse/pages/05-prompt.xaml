@@ -1,0 +1,123 @@
+<Grid xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:fc="using:FluentCourse.Runtime.Controls"
+      Background="#FF0E1424">
+
+    <Grid.RowDefinitions>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="*"/>
+        <RowDefinition Height="Auto"/>
+    </Grid.RowDefinitions>
+
+    <!-- =================== HeaderStrip =================== -->
+    <Grid Grid.Row="0" Margin="100,72,100,0">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+        <Border Grid.Column="0" Background="#338B5CF6" BorderBrush="#FF8B5CF6"
+                BorderThickness="1" CornerRadius="4" Padding="14,6">
+            <TextBlock Text="方法 · 重点" FontSize="16" FontWeight="SemiBold" Foreground="#FF8B5CF6"/>
+        </Border>
+        <TextBlock Grid.Column="1" Text="三、和 AI 协作（提示词）" FontSize="40" FontWeight="SemiBold"
+                   Foreground="#FFF5F7FB" VerticalAlignment="Center" Margin="20,0,0,0"/>
+        <TextBlock Grid.Column="2" Text="5 / 13" FontSize="16"
+                   Foreground="#FF8893AC" VerticalAlignment="Center"/>
+    </Grid>
+    <Rectangle Grid.Row="0" Height="1" Margin="100,16,100,0"
+               VerticalAlignment="Bottom" Fill="#FF252D48"/>
+
+    <!-- =================== Body =================== -->
+    <Grid Grid.Row="1" Margin="100,36,100,32">
+        <fc:StepRevealControl x:Name="PromptReveal">
+            <StackPanel Spacing="16">
+
+                <!-- Step 1 -->
+                <Border BorderThickness="3,1,1,1" CornerRadius="10" BorderBrush="#FF8B5CF6"
+                        Background="#FF161D33" Padding="28,22">
+                    <StackPanel Spacing="12">
+                        <StackPanel Orientation="Horizontal" Spacing="12">
+                            <Border Background="#FF8B5CF6" CornerRadius="4" Padding="10,4">
+                                <TextBlock Text="1" FontSize="16" FontWeight="SemiBold" Foreground="White"/>
+                            </Border>
+                            <TextBlock Text="给上下文，比措辞技巧更重要" FontSize="28" FontWeight="SemiBold"
+                                       Foreground="#FFF5F7FB" VerticalAlignment="Center"/>
+                        </StackPanel>
+                        <TextBlock TextWrapping="Wrap" FontSize="20" Foreground="#FFC7CEDD" LineHeight="32">
+                            <Run Text="不用纠结措辞漂不漂亮。把 " />
+                            <Run Text="完整报错、相关代码、运行环境" Foreground="#FF8B5CF6" FontWeight="SemiBold"/>
+                            <Run Text=" 一股脑贴给它，比任何咒语都管用。"/>
+                        </TextBlock>
+                        <Border BorderThickness="1" CornerRadius="6" BorderBrush="#FF3B4566"
+                                Background="#FF1E2747" Padding="20,14">
+                            <TextBlock TextWrapping="Wrap" FontSize="18" FontFamily="Consolas, Cambria Math"
+                                       Foreground="#FFF5F7FB" LineHeight="28"
+                                       Text="例：我的项目必须用 -p:Platform=x64 才能编译。不说，AI 就一直撞墙。"/>
+                        </Border>
+                    </StackPanel>
+                </Border>
+
+                <!-- Step 2 -->
+                <Border BorderThickness="3,1,1,1" CornerRadius="10" BorderBrush="#FF8B5CF6"
+                        Background="#FF161D33" Padding="28,22">
+                    <StackPanel Spacing="12">
+                        <StackPanel Orientation="Horizontal" Spacing="12">
+                            <Border Background="#FF8B5CF6" CornerRadius="4" Padding="10,4">
+                                <TextBlock Text="2" FontSize="16" FontWeight="SemiBold" Foreground="White"/>
+                            </Border>
+                            <TextBlock Text="写一份「项目说明书」" FontSize="28" FontWeight="SemiBold"
+                                       Foreground="#FFF5F7FB" VerticalAlignment="Center"/>
+                        </StackPanel>
+                        <TextBlock TextWrapping="Wrap" FontSize="20" Foreground="#FFC7CEDD" LineHeight="32">
+                            <Run Text="用一份固定的说明书，让 AI " />
+                            <Run Text="每次都守同样的规则" Foreground="#FF8B5CF6" FontWeight="SemiBold"/>
+                            <Run Text="。这是从「一问一答」升级到「协作」的关键。"/>
+                        </TextBlock>
+                        <Border BorderThickness="1" CornerRadius="6" BorderBrush="#3300B4D8"
+                                Background="#3300B4D8" Padding="20,14">
+                            <TextBlock TextWrapping="Wrap" FontSize="18" Foreground="#FFC7CEDD" LineHeight="28">
+                                <Run Text="活教材：" Foreground="#FF00B4D8" FontWeight="SemiBold"/>
+                                <Run Text="Wordie 整个游戏，就是一份几千字的 prompt.md 喂出来的 —— 待会现场翻给你们看。"/>
+                            </TextBlock>
+                        </Border>
+                    </StackPanel>
+                </Border>
+
+                <!-- Step 3 -->
+                <Border BorderThickness="3,1,1,1" CornerRadius="10" BorderBrush="#FF8B5CF6"
+                        Background="#FF161D33" Padding="28,22">
+                    <StackPanel Spacing="12">
+                        <StackPanel Orientation="Horizontal" Spacing="12">
+                            <Border Background="#FF8B5CF6" CornerRadius="4" Padding="10,4">
+                                <TextBlock Text="3" FontSize="16" FontWeight="SemiBold" Foreground="White"/>
+                            </Border>
+                            <TextBlock Text="一次只做一件事" FontSize="28" FontWeight="SemiBold"
+                                       Foreground="#FFF5F7FB" VerticalAlignment="Center"/>
+                        </StackPanel>
+                        <TextBlock TextWrapping="Wrap" FontSize="20" Foreground="#FFC7CEDD" LineHeight="32">
+                            <Run Text="做完一件、" />
+                            <Run Text="验证没问题，再做下一件" Foreground="#FF8B5CF6" FontWeight="SemiBold"/>
+                            <Run Text="。别一口气要十个功能 —— 错了你都不知道是哪一步崩的。"/>
+                        </TextBlock>
+                    </StackPanel>
+                </Border>
+
+            </StackPanel>
+        </fc:StepRevealControl>
+    </Grid>
+
+    <!-- =================== FooterStrip =================== -->
+    <Border Grid.Row="2" Margin="100,0,100,56"
+            BorderBrush="#FF252D48" BorderThickness="0,1,0,0" Padding="0,20,0,0">
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="12">
+            <TextBlock Text="点击按钮逐条展开"
+                       Foreground="#FF8893AC" FontSize="16"
+                       VerticalAlignment="Center" Margin="0,0,12,0"/>
+            <Button x:Name="PromptNext" Content="下一步  ▶"
+                    FontSize="20" Padding="32,12"
+                    Background="#FF8B5CF6" Foreground="White"
+                    CornerRadius="8" BorderThickness="0"/>
+        </StackPanel>
+    </Border>
+</Grid>

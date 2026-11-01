@@ -1,0 +1,58 @@
+<Grid xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:fc="using:FluentCourse.Runtime.Controls"
+      Background="#FF0E1424">
+
+    <Grid.RowDefinitions>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="*"/>
+    </Grid.RowDefinitions>
+
+    <!-- =================== HeaderStrip =================== -->
+    <Grid Grid.Row="0" Margin="100,72,100,0">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+        <Border Grid.Column="0" Background="#338B5CF6" BorderBrush="#FF8B5CF6"
+                BorderThickness="1" CornerRadius="4" Padding="14,6">
+            <TextBlock Text="练习" FontSize="16" FontWeight="SemiBold" Foreground="#FF8B5CF6"/>
+        </Border>
+        <TextBlock Grid.Column="1" Text="随堂检测  ·  填空题" FontSize="40" FontWeight="SemiBold"
+                   Foreground="#FFF5F7FB" VerticalAlignment="Center" Margin="20,0,0,0"/>
+        <TextBlock Grid.Column="2" Text="12 / 13" FontSize="16"
+                   Foreground="#FF8893AC" VerticalAlignment="Center"/>
+    </Grid>
+    <Rectangle Grid.Row="0" Height="1" Margin="100,16,100,0"
+               VerticalAlignment="Bottom" Fill="#FF252D48"/>
+
+    <!-- =================== Body =================== -->
+    <ScrollViewer Grid.Row="1" Margin="100,40,100,60" VerticalScrollBarVisibility="Auto">
+        <StackPanel Spacing="24" MaxWidth="1200" HorizontalAlignment="Center">
+
+            <fc:QuizControl x:Name="FillQuiz1" Mode="FillInBlank" AllowRetry="True"
+                            ScoreStrategy="PartialCredit"
+                            Question="1. 把模糊想法先做成「最小可用版本」，这种思路叫（ ① ）；动手前先写「（ ② ）」再写功能列表，能让 AI 更懂你要什么。">
+                <fc:QuizControl.Blanks>
+                    <fc:QuizBlank Pattern="(?i)MVP|最小可用|最小可行" CaseSensitive="false"
+                                  Explanation="MVP = 最小可用产品。先做能跑、能验证一个核心功能的版本，再一点点加。"/>
+                    <fc:QuizBlank Pattern="用户故事" CaseSensitive="false"
+                                  Explanation="用户故事说清「谁、能做什么、长什么样」，比一句模糊需求对 AI 的指导性强得多。"/>
+                </fc:QuizControl.Blanks>
+            </fc:QuizControl>
+
+            <fc:QuizControl x:Name="FillQuiz2" Mode="FillInBlank" AllowRetry="True"
+                            ScoreStrategy="PartialCredit"
+                            Question="2. AI 辅助开发的「后悔药」是（ ① ）：改前存档、改坏能回滚。和 AI 协作的节奏，是一次只做（ ② ）件事，做完验证再继续。">
+                <fc:QuizControl.Blanks>
+                    <fc:QuizBlank Pattern="(?i)git|版本管理|版本控制" CaseSensitive="false"
+                                  Explanation="git（版本管理）让你随时存档、回滚。AI 一次大改崩了，也能退回去。"/>
+                    <fc:QuizBlank Pattern="一|1" CaseSensitive="false"
+                                  Explanation="一次只做一件事，做完验证再下一件——错了才知道是哪一步崩的。"/>
+                </fc:QuizControl.Blanks>
+            </fc:QuizControl>
+
+        </StackPanel>
+    </ScrollViewer>
+</Grid>

@@ -1,62 +1,207 @@
 <Grid xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-      Background="#FF1A1A2E"
-      Padding="100,60,100,60">
+      Background="#FF0E1424">
 
     <Grid.RowDefinitions>
         <RowDefinition Height="Auto"/>
         <RowDefinition Height="*"/>
     </Grid.RowDefinitions>
 
-    <TextBlock Grid.Row="0"
-               Text="三、蛋白质的应用"
-               FontSize="48" FontWeight="SemiBold" Foreground="White"
-               Margin="0,0,0,40"/>
+    <!-- =================== HeaderStrip =================== -->
+    <Grid Grid.Row="0" Margin="100,72,100,0">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
 
-    <Grid Grid.Row="1">
+        <Border Grid.Column="0"
+                Background="#33E94560"
+                BorderBrush="#FFE94560" BorderThickness="1"
+                CornerRadius="4"
+                Padding="14,6">
+            <TextBlock Text="蛋白质"
+                       FontSize="16" FontWeight="SemiBold"
+                       Foreground="#FFE94560"/>
+        </Border>
+
+        <TextBlock Grid.Column="1"
+                   Text="三、蛋白质的应用"
+                   FontSize="40" FontWeight="SemiBold"
+                   Foreground="#FFF5F7FB"
+                   VerticalAlignment="Center"
+                   Margin="20,0,0,0"/>
+
+        <TextBlock Grid.Column="2"
+                   Text="5 / 11"
+                   FontSize="16"
+                   Foreground="#FF8893AC"
+                   VerticalAlignment="Center"/>
+    </Grid>
+
+    <Rectangle Grid.Row="0" Height="1" Margin="100,16,100,0"
+               VerticalAlignment="Bottom"
+               Fill="#FF252D48"/>
+
+    <!-- =================== Body =================== -->
+    <Grid Grid.Row="1" Margin="100,40,100,60">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <!-- 食品 -->
-        <Border BorderThickness="1" CornerRadius="10" Margin="0,0,20,0"
-                BorderBrush="#FF2A2A4A" Padding="28,24"
-                Background="#FF16162E">
-            <StackPanel Spacing="12">
-                <TextBlock Text="🍽" FontSize="36"/>
-                <TextBlock Text="食品工业" FontSize="26" FontWeight="SemiBold" Foreground="White"/>
-                <TextBlock TextWrapping="Wrap" FontSize="18" Foreground="#FFAAAAAA" LineHeight="26">
-                    牛奶、鸡蛋、大豆是优质蛋白来源。蛋白质可加工为食品添加剂、营养强化剂。
-                </TextBlock>
-            </StackPanel>
+        <!-- Card 1: 食品工业 -->
+        <Border Grid.Column="0"
+                BorderThickness="1" CornerRadius="10"
+                BorderBrush="#FF252D48"
+                Background="#FF161D33"
+                Margin="0,0,12,0">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="240"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <Border Grid.Row="0"
+                        Background="#FF1E2747"
+                        CornerRadius="10,10,0,0">
+                    <Image Source="ms-fcourse:///assets/image27.png"
+                           Stretch="UniformToFill"
+                           HorizontalAlignment="Stretch"
+                           VerticalAlignment="Center"/>
+                </Border>
+
+                <StackPanel Grid.Row="1" Spacing="12" Padding="28,24">
+                    <StackPanel Orientation="Horizontal" Spacing="12">
+                        <Border Background="#FFE94560" CornerRadius="4" Padding="10,4">
+                            <TextBlock Text="01" FontSize="14" FontWeight="SemiBold" Foreground="White"/>
+                        </Border>
+                        <TextBlock Text="食品工业"
+                                   FontSize="26" FontWeight="SemiBold"
+                                   Foreground="#FFF5F7FB"
+                                   VerticalAlignment="Center"/>
+                    </StackPanel>
+                    <TextBlock TextWrapping="Wrap" FontSize="18" Foreground="#FFC7CEDD" LineHeight="28">
+                        鸡蛋、牛奶、大豆是优质蛋白来源。
+                        蛋白质可加工为食品添加剂、营养强化剂，
+                        广泛应用于婴幼儿配方、运动营养等健康食品。
+                    </TextBlock>
+                </StackPanel>
+            </Grid>
         </Border>
 
-        <!-- 纺织 -->
-        <Border BorderThickness="1" CornerRadius="10" Margin="0,0,20,0"
-                BorderBrush="#FF2A2A4A" Padding="28,24"
-                Background="#FF16162E">
-            <StackPanel Spacing="12">
-                <TextBlock Text="🧵" FontSize="36"/>
-                <TextBlock Text="纺织材料" FontSize="26" FontWeight="SemiBold" Foreground="White"/>
-                <TextBlock TextWrapping="Wrap" FontSize="18" Foreground="#FFAAAAAA" LineHeight="26">
-                    蚕丝织成丝绸制高档服装；皮革（胶原蛋白鞣制）制成鞋包。羊毛是重要的天然蛋白纤维。
-                </TextBlock>
-            </StackPanel>
+        <!-- Card 2: 纺织材料 -->
+        <Border Grid.Column="1"
+                BorderThickness="1" CornerRadius="10"
+                BorderBrush="#FF252D48"
+                Background="#FF161D33"
+                Margin="6,0,6,0">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="240"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <Border Grid.Row="0"
+                        Background="#FF1E2747"
+                        CornerRadius="10,10,0,0">
+                    <Grid>
+                        <Rectangle Margin="0" Opacity="0.18">
+                            <Rectangle.Fill>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                    <GradientStop Color="#FFE94560" Offset="0.0"/>
+                                    <GradientStop Color="#FF8B5CF6" Offset="1.0"/>
+                                </LinearGradientBrush>
+                            </Rectangle.Fill>
+                        </Rectangle>
+                        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="6">
+                            <TextBlock Text="02"
+                                       FontSize="72" FontWeight="SemiBold"
+                                       Foreground="#33E94560"
+                                       TextAlignment="Center"/>
+                            <TextBlock Text="纺织 · 皮革"
+                                       FontSize="18"
+                                       Foreground="#33E94560"
+                                       TextAlignment="Center"/>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+
+                <StackPanel Grid.Row="1" Spacing="12" Padding="28,24">
+                    <StackPanel Orientation="Horizontal" Spacing="12">
+                        <Border Background="#FFE94560" CornerRadius="4" Padding="10,4">
+                            <TextBlock Text="02" FontSize="14" FontWeight="SemiBold" Foreground="White"/>
+                        </Border>
+                        <TextBlock Text="纺织材料"
+                                   FontSize="26" FontWeight="SemiBold"
+                                   Foreground="#FFF5F7FB"
+                                   VerticalAlignment="Center"/>
+                    </StackPanel>
+                    <TextBlock TextWrapping="Wrap" FontSize="18" Foreground="#FFC7CEDD" LineHeight="28">
+                        蚕丝织成丝绸制高档服装；
+                        羊毛是重要的天然蛋白纤维；
+                        皮革（胶原蛋白鞣制）制成鞋包。
+                    </TextBlock>
+                </StackPanel>
+            </Grid>
         </Border>
 
-        <!-- 医药 -->
-        <Border BorderThickness="1" CornerRadius="10"
-                BorderBrush="#FF2A2A4A" Padding="28,24"
-                Background="#FF16162E">
-            <StackPanel Spacing="12">
-                <TextBlock Text="💊" FontSize="36"/>
-                <TextBlock Text="医药领域" FontSize="26" FontWeight="SemiBold" Foreground="White"/>
-                <TextBlock TextWrapping="Wrap" FontSize="18" Foreground="#FFAAAAAA" LineHeight="26">
-                    阿胶（驴皮提取）是传统中药；医用胶囊、手术缝合线、酶感光胶片、胰岛素等均利用蛋白质。
-                </TextBlock>
-            </StackPanel>
+        <!-- Card 3: 医药领域 -->
+        <Border Grid.Column="2"
+                BorderThickness="1" CornerRadius="10"
+                BorderBrush="#FF252D48"
+                Background="#FF161D33"
+                Margin="12,0,0,0">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="240"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <Border Grid.Row="0"
+                        Background="#FF1E2747"
+                        CornerRadius="10,10,0,0">
+                    <Grid>
+                        <Rectangle Margin="0" Opacity="0.18">
+                            <Rectangle.Fill>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                    <GradientStop Color="#FF00B4D8" Offset="0.0"/>
+                                    <GradientStop Color="#FFE94560" Offset="1.0"/>
+                                </LinearGradientBrush>
+                            </Rectangle.Fill>
+                        </Rectangle>
+                        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="6">
+                            <TextBlock Text="03"
+                                       FontSize="72" FontWeight="SemiBold"
+                                       Foreground="#33E94560"
+                                       TextAlignment="Center"/>
+                            <TextBlock Text="医药 · 生物"
+                                       FontSize="18"
+                                       Foreground="#33E94560"
+                                       TextAlignment="Center"/>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+
+                <StackPanel Grid.Row="1" Spacing="12" Padding="28,24">
+                    <StackPanel Orientation="Horizontal" Spacing="12">
+                        <Border Background="#FFE94560" CornerRadius="4" Padding="10,4">
+                            <TextBlock Text="03" FontSize="14" FontWeight="SemiBold" Foreground="White"/>
+                        </Border>
+                        <TextBlock Text="医药领域"
+                                   FontSize="26" FontWeight="SemiBold"
+                                   Foreground="#FFF5F7FB"
+                                   VerticalAlignment="Center"/>
+                    </StackPanel>
+                    <TextBlock TextWrapping="Wrap" FontSize="18" Foreground="#FFC7CEDD" LineHeight="28">
+                        阿胶（驴皮提取）是传统中药；
+                        医用胶囊、手术缝合线、胰岛素、
+                        酶感光胶片等均利用蛋白质。
+                    </TextBlock>
+                </StackPanel>
+            </Grid>
         </Border>
+
     </Grid>
 </Grid>

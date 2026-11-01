@@ -100,12 +100,19 @@ public sealed partial class QuizControl : Control
     private TextBlock? _feedbackBlock;
     private TextBlock? _analysisBlock;
     private Border? _analysisHost;
+    private Border? _feedbackHost;
+
+    // 单选模式互斥用:每个 QuizChoice 的 IsSelected 属性变更回调令牌
+    private readonly Dictionary<QuizChoice, long> _selectionCallbacks = new();
+    private bool _syncingSelection;
 
     public QuizControl()
     {
         DefaultStyleKey = typeof(QuizControl);
-        SetValue(ChoicesProperty, new ObservableCollection<QuizChoice>());
+        var choices = new ObservableCollection<QuizChoice>();
+        SetValue(ChoicesProperty, choices);
         SetValue(BlanksProperty, new ObservableCollection<QuizBlank>());
+        choices.CollectionChanged += OnChoicesCollectionChanged;
     }
 
     protected override void OnApplyTemplate()
@@ -121,10 +128,80 @@ public sealed partial class QuizControl : Control
         _feedbackBlock = GetTemplateChild("PART_Feedback") as TextBlock;
         _analysisBlock = GetTemplateChild("PART_Analysis") as TextBlock;
         _analysisHost  = GetTemplateChild("PART_AnalysisHost") as Border;
+        _feedbackHost  = GetTemplateChild("PART_FeedbackHost") as Border;
 
         if (_submitButton is not null) _submitButton.Click += OnSubmit;
         if (_retryButton is not null) _retryButton.Click += OnRetry;
     }
+
+    // ── 单选约束(Single/TrueFalse 模式) ──
+
+    private void OnChoicesCollectionChanged(object? sender,
+        System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+    {
+        if (e.OldItems is not null)
+            foreach (var item in e.OldItems.OfType<QuizChoice>())
+                UnhookChoice(item);
+
+        if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Reset)
+        {
+            foreach (var (choice, token) in _selectionCallbacks.ToList())
+                choice.UnregisterPropertyChangedCallback(QuizChoice.IsSelectedProperty, token);
+            _selectionCallbacks.Clear();
+        }
+
+        if (e.NewItems is not null)
+            foreach (var item in e.NewItems.OfType<QuizChoice>())
+                HookChoice(item);
+    }
+
+    private void HookChoice(QuizChoice choice)
+    {
+        if (_selectionCallbacks.ContainsKey(choice)) return;
+        var token = choice.RegisterPropertyChangedCallback(QuizChoice.IsSelectedProperty, OnChoiceSelectedChanged);
+        _selectionCallbacks[choice] = token;
+    }
+
+    private void UnhookChoice(QuizChoice choice)
+    {
+        if (_selectionCallbacks.TryGetValue(choice, out var token))
+        {
+            choice.UnregisterPropertyChangedCallback(QuizChoice.IsSelectedProperty, token);
+            _selectionCallbacks.Remove(choice);
+        }
+    }
+
+    private void OnChoiceSelectedChanged(DependencyObject d, DependencyProperty dp)
+    {
+        // Single/TrueFalse 是单选题:勾选某项时取消其它项,避免 CheckBox 模板可多选
+        if (_syncingSelection) return;
+        if (Mode is not (QuizMode.Single or QuizMode.TrueFalse)) return;
+        if (d is not QuizChoice changed || !changed.IsSelected) return;
+
+        _syncingSelection = true;
+        try
+        {
+            foreach (var c in Choices)
+                if (!ReferenceEquals(c, changed) && c.IsSelected)
+                    c.IsSelected = false;
+        }
+        finally
+        {
+            _syncingSelection = false;
+        }
+    }
+
+    // ── 提交 / 重做(公开方法供 ActionExecutor 程序化调用) ──
+
+    /// <summary>程序化提交(等同点击「提交」按钮)。已提交未重做时为空操作。</summary>
+    public void Submit()
+    {
+        if (Result != QuizResult.Pending) return;
+        OnSubmit(this, new RoutedEventArgs());
+    }
+
+    /// <summary>程序化重做(等同点击「重做」按钮)。</summary>
+    public void Reset() => OnRetry(this, new RoutedEventArgs());
 
     private void OnSubmit(object sender, RoutedEventArgs e)
     {
@@ -138,7 +215,15 @@ public sealed partial class QuizControl : Control
         else
         {
             var picks = Choices.Where(c => c.IsSelected).ToList();
-            if (picks.Count == 0) return;
+            if (picks.Count == 0)
+            {
+                // 未选任何项:在反馈区显示中文提示而非静默返回
+                if (_feedbackBlock is not null) _feedbackBlock.Text = "请先选择答案";
+                if (_feedbackHost is not null) _feedbackHost.Visibility = Visibility.Visible;
+                return;
+            }
+            // 清掉可能残留的「请先选择答案」提示(本地值),交回 VSM 控制
+            if (_feedbackHost is not null) _feedbackHost.Visibility = Visibility.Collapsed;
             (allCorrect, score) = GradeChoice(picks);
         }
 
@@ -246,16 +331,19 @@ public sealed partial class QuizControl : Control
         }
         if (_retryButton is not null) _retryButton.Visibility = Visibility.Collapsed;
         if (_submitButton is not null) _submitButton.IsEnabled = true;
+        if (_feedbackHost is not null) _feedbackHost.Visibility = Visibility.Collapsed;
     }
 
     private static void OnResultChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
         if (d is QuizControl q)
         {
+            // ShowFeedback=false 时不显示反馈框(Correct/Incorrect 状态会把
+            // PART_FeedbackHost 设为可见,因此停留在 Pending 状态)
             var state = q.Result switch
             {
-                QuizResult.Correct => "Correct",
-                QuizResult.Incorrect => "Incorrect",
+                QuizResult.Correct when q.ShowFeedback => "Correct",
+                QuizResult.Incorrect when q.ShowFeedback => "Incorrect",
                 _ => "Pending"
             };
             VisualStateManager.GoToState(q, state, useTransitions: true);

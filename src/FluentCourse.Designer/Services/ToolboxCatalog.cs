@@ -9,81 +9,76 @@ namespace FluentCourse.Designer.Services;
 /// <summary>A toolbox entry: a human label plus a XAML snippet to insert.</summary>
 public sealed class ToolboxItem
 {
-    public ToolboxItem(string label, string category, string glyph, string snippet, string? description = null)
+    public ToolboxItem(string label, string category, string glyph, string snippet,
+                       string? description = null, double defaultWidth = 120, double defaultHeight = 40,
+                       string? displayLabel = null)
     {
         Label = label;
         Category = category;
         Glyph = glyph;
         Snippet = snippet;
         Description = description;
+        DefaultWidth = defaultWidth;
+        DefaultHeight = defaultHeight;
+        DisplayLabel = displayLabel ?? label;
     }
 
     public string Label { get; }
+    public string DisplayLabel { get; }
     public string Category { get; }
     public string Glyph { get; }
     public string Snippet { get; }
     public string? Description { get; }
+    public double DefaultWidth { get; }
+    public double DefaultHeight { get; }
 }
 
 /// <summary>
-/// Catalogue of every element the editor can drop onto a page. The snippet is what gets
-/// inserted into the page XAML; the editor never constructs UI elements in code so that
-/// the source XAML stays the source of truth.
+/// The (deliberately small) set of things a teacher can drop onto a page. Aimed at non-technical
+/// users: a few core elements plus four one-click question types. The actual element built for each
+/// entry lives in ShellViewModel.CreateElementFromToolbox, keyed by <see cref="ToolboxItem.Label"/>.
 /// </summary>
 public static class ToolboxCatalog
 {
     public static readonly IReadOnlyList<ToolboxItem> All = Build();
 
+    // Categories stay in this declared order (BuildInsertStrip no longer alphabetises) and items
+    // appear in the order listed. `label` is the internal key; `DisplayLabel` is the short Chinese
+    // name shown on the insert strip.
     private static List<ToolboxItem> Build() => new()
     {
-        // Layout
-        new("Grid",      "布局", "\uE80F", "<Grid/>", "多行多列容器"),
-        new("StackPanel","布局", "\uE8C8", "<StackPanel Orientation=\"Vertical\" Spacing=\"8\"/>", "垂直/水平堆叠"),
-        new("Canvas",    "布局", "\uE8B7", "<Canvas/>", "绝对定位容器"),
-        new("Border",    "布局", "\uE71D", "<Border CornerRadius=\"8\" Background=\"#FF333333\"/>", "带背景/边框的容器"),
-        new("ScrollViewer","布局","\uE8C9","<ScrollViewer/>", "可滚动容器"),
+        // 文本
+        new("Heading", "文本", "", "", "大号标题文字", 560, 72, "大标题"),
+        new("Body",    "文本", "", "", "正文段落文字", 560, 44, "正文"),
 
-        // Text
-        new("TextBlock", "文本", "\uE8D2", "<TextBlock Text=\"Hello\" FontSize=\"24\"/>", "单行/多行文本"),
-        new("RichTextBlock","文本","\uE8D3","<RichTextBlock/>", "富文本 (Run/Hyperlink)"),
-        new("TextBox",   "文本", "\uE8A1", "<TextBox Text=\"\"/>", "可编辑文本"),
-        new("AutoSuggestBox","文本","\uE82E","<AutoSuggestBox/>", "带建议的输入"),
+        // 题目（一键生成一道完整的题，老师只改文字）
+        new("QuizSingle",    "题目", "", "", "单选题：一道题 + 几个选项，选一个正确答案", 880, 380, "单选题"),
+        new("QuizMultiple",  "题目", "", "", "多选题：可多选，全对才得分",                 880, 380, "多选题"),
+        new("QuizFill",      "题目", "", "", "填空题：句子挖空，学生输入作答",             880, 300, "填空题"),
+        new("QuizTrueFalse", "题目", "", "", "判断题：对 / 错 两个选项",                   880, 260, "判断题"),
 
-        // Buttons
-        new("Button",    "交互", "\uE8A0", "<Button Content=\"Click me\"/>", "按钮"),
-        new("HyperlinkButton","交互","\uE71B","<HyperlinkButton Content=\"Link\"/>", "链接按钮"),
-        new("ToggleButton","交互","\uE8FF","<ToggleButton Content=\"Toggle\"/>", "开关按钮"),
-        new("CheckBox",  "交互", "\uE73A", "<CheckBox Content=\"Option\"/>", "复选框"),
-        new("RadioButton","交互","\uE915","<RadioButton Content=\"Option\" GroupName=\"g1\"/>", "单选"),
-        new("Slider",    "交互", "\uE9C9", "<Slider Minimum=\"0\" Maximum=\"100\" Value=\"50\"/>", "滑块"),
-        new("ToggleSwitch","交互","\uE7E8","<ToggleSwitch/>", "开关"),
+        // 媒体
+        new("Image", "媒体", "", "", "插入图片", 360, 240, "图片"),
+        new("Video", "媒体", "", "", "插入视频", 480, 270, "视频"),
+        new("Audio", "媒体", "", "", "插入音频 / 录音", 420, 64, "音频"),
 
-        // Display
-        new("Image",     "显示", "\uE8B9", "<Image Source=\"ms-appx:///placeholder.png\" Stretch=\"Uniform\"/>", "图片"),
-        new("Rectangle", "形状", "\uE8C5", "<Rectangle Fill=\"#FF0078D4\" Width=\"120\" Height=\"80\"/>", "矩形"),
-        new("Ellipse",   "形状", "\uE7E0", "<Ellipse Fill=\"#FF0078D4\" Width=\"80\" Height=\"80\"/>", "椭圆"),
-        new("Line",      "形状", "\uE83A", "<Line X1=\"0\" Y1=\"0\" X2=\"100\" Y2=\"0\" Stroke=\"White\" StrokeThickness=\"2\"/>", "直线"),
-        new("ProgressRing","显示","\uE9F5","<ProgressRing IsActive=\"True\"/>", "加载环"),
-        new("PersonPicture","显示","\uE77B","<PersonPicture/>", "头像占位"),
+        // 形状
+        new("Rectangle",     "形状", "", "", "矩形 / 圆角框", 180, 110, "矩形"),
+        new("Ellipse",       "形状", "", "", "圆形 / 椭圆",   120, 120, "圆形"),
+        new("Line",          "形状", "", "", "直线 / 分隔线", 220,   2, "线条"),
+        new("Triangle",      "形状", "", "", "三角形",       140, 120, "三角形"),
+        new("Parallelogram", "形状", "", "", "平行四边形",   190, 110, "平行四边形"),
+        new("Arrow",         "形状", "", "", "箭头",         190,  90, "箭头"),
 
-        // Media
-        new("MediaPlayerElement","媒体","\uE714","<MediaPlayerElement Source=\"ms-appx:///video.mp4\"/>", "视频播放器"),
+        // 交互
+        new("Button", "交互", "", "", "可点击的按钮", 150, 50, "按钮"),
+        new("HyperlinkButton", "交互", "", "", "点击打开网页 / 链接", 160, 44, "链接按钮"),
 
-        // FluentCourse 自定义
-        new("QuizControl","互动","\uE82D",
-            "<fc:QuizControl xmlns:fc=\"using:FluentCourse.Runtime.Controls\"\r\n" +
-            "                Question=\"题目？\" Mode=\"Single\">\r\n" +
-            "    <fc:QuizControl.Choices>\r\n" +
-            "        <fc:QuizChoice Text=\"A. 选项 1\"/>\r\n" +
-            "        <fc:QuizChoice Text=\"B. 选项 2\" IsAnswer=\"True\"/>\r\n" +
-            "    </fc:QuizControl.Choices>\r\n" +
-            "</fc:QuizControl>",
-            "选择题/判断题/填空题"),
-        new("StepRevealControl","互动","\uE8B1",
-            "<fc:StepRevealControl xmlns:fc=\"using:FluentCourse.Runtime.Controls\">\r\n" +
-            "    <TextBlock Text=\"步骤 1\"/>\r\n" +
-            "    <TextBlock Text=\"步骤 2\"/>\r\n" +
-            "</fc:StepRevealControl>",
-            "逐步展开内容"),
+        // 其它
+        new("Table",     "其它", "", "", "表格（行列单元格）", 600, 280, "表格"),
+        new("BarChart",  "其它", "", "", "静态柱状图模板",       640, 360, "柱状图"),
+        new("FlowSmart", "其它", "", "", "流程图 / SmartArt 模板", 680, 220, "流程图"),
+        new("Countdown", "其它", "", "", "倒计时 / 计时器",     240, 96,  "倒计时"),
+        new("Formula",   "其它", "", "", "数学公式（点按钮即可，无需手写代码）", 360, 120, "公式"),
     };
 }

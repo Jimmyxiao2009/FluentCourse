@@ -1,0 +1,110 @@
+<Grid xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      Background="#FF0E1424">
+
+    <Grid.RowDefinitions>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="*"/>
+    </Grid.RowDefinitions>
+
+    <!-- =================== HeaderStrip =================== -->
+    <Grid Grid.Row="0" Margin="100,72,100,0">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+        <Border Grid.Column="0" Background="#338B5CF6" BorderBrush="#FF8B5CF6"
+                BorderThickness="1" CornerRadius="4" Padding="14,6">
+            <TextBlock Text="方法" FontSize="16" FontWeight="SemiBold" Foreground="#FF8B5CF6"/>
+        </Border>
+        <TextBlock Grid.Column="1" Text="一、需求构思" FontSize="40" FontWeight="SemiBold"
+                   Foreground="#FFF5F7FB" VerticalAlignment="Center" Margin="20,0,0,0"/>
+        <TextBlock Grid.Column="2" Text="3 / 13" FontSize="16"
+                   Foreground="#FF8893AC" VerticalAlignment="Center"/>
+    </Grid>
+    <Rectangle Grid.Row="0" Height="1" Margin="100,16,100,0"
+               VerticalAlignment="Bottom" Fill="#FF252D48"/>
+
+    <!-- =================== Body =================== -->
+    <Grid Grid.Row="1" Margin="100,36,100,56">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- 核心观念 -->
+        <Border Grid.Row="0" BorderThickness="3,1,1,1" CornerRadius="10"
+                BorderBrush="#FF8B5CF6" Background="#FF1E2747" Padding="28,22" Margin="0,0,0,22">
+            <TextBlock TextWrapping="Wrap" FontSize="24" Foreground="#FFF5F7FB" LineHeight="36">
+                <Run Text="AI 对模糊需求会自己脑补，" Foreground="#FF8B5CF6" FontWeight="SemiBold"/>
+                <Run Text="结果往往不是你想要的。所以第一步不是写代码，而是把「我想要个 XX」拆成一个个"/>
+                <Run Text="能验证的小目标" Foreground="#FF8B5CF6" FontWeight="SemiBold"/>
+                <Run Text="。"/>
+            </TextBlock>
+        </Border>
+
+        <!-- 反例 / 正例 -->
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Border Grid.Column="0" BorderThickness="1" CornerRadius="10"
+                    BorderBrush="#FFF59E0B" Background="#FF161D33" Padding="26,22" Margin="0,0,11,0">
+                <StackPanel Spacing="14">
+                    <StackPanel Orientation="Horizontal" Spacing="12">
+                        <Border Background="#33F59E0B" CornerRadius="6" Width="40" Height="40">
+                            <TextBlock Text="✗" FontSize="22" FontWeight="SemiBold" Foreground="#FFF59E0B"
+                                       HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <TextBlock Text="模糊需求" FontSize="24" FontWeight="SemiBold"
+                                   Foreground="#FFF59E0B" VerticalAlignment="Center"/>
+                    </StackPanel>
+                    <Border BorderThickness="1" CornerRadius="6" BorderBrush="#FF3B4566"
+                            Background="#FF1E2747" Padding="20,16">
+                        <TextBlock Text="「做个好用的背单词软件」"
+                                   FontSize="22" FontFamily="Consolas, Cambria Math" Foreground="#FFC7CEDD"/>
+                    </Border>
+                    <TextBlock TextWrapping="Wrap" FontSize="19" Foreground="#FF8893AC" LineHeight="29"
+                               Text="AI 只能瞎猜：什么叫好用？给谁用？长什么样？十个人做出十个样。"/>
+                </StackPanel>
+            </Border>
+
+            <Border Grid.Column="1" BorderThickness="1" CornerRadius="10"
+                    BorderBrush="#FF22C55E" Background="#FF161D33" Padding="26,22" Margin="11,0,0,0">
+                <StackPanel Spacing="14">
+                    <StackPanel Orientation="Horizontal" Spacing="12">
+                        <Border Background="#3322C55E" CornerRadius="6" Width="40" Height="40">
+                            <TextBlock Text="✓" FontSize="22" FontWeight="SemiBold" Foreground="#FF22C55E"
+                                       HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <TextBlock Text="先写「用户故事」" FontSize="24" FontWeight="SemiBold"
+                                   Foreground="#FF22C55E" VerticalAlignment="Center"/>
+                    </StackPanel>
+                    <Border BorderThickness="1" CornerRadius="6" BorderBrush="#FF3B4566"
+                            Background="#FF1E2747" Padding="20,16">
+                        <TextBlock TextWrapping="Wrap" FontSize="20" FontFamily="Consolas, Cambria Math"
+                                   Foreground="#FFF5F7FB" LineHeight="30"
+                                   Text="「一个背单词游戏，三种玩法：填字 / 找词 / 翻字母，词库内置、不用联网」"/>
+                    </Border>
+                    <TextBlock TextWrapping="Wrap" FontSize="19" Foreground="#FFC7CEDD" LineHeight="29"
+                               Text="说清谁用、能做什么、长什么样 —— AI 才知道往哪做。"/>
+                </StackPanel>
+            </Border>
+        </Grid>
+
+        <!-- MVP -->
+        <Border Grid.Row="2" BorderThickness="1" CornerRadius="10" BorderBrush="#FF252D48"
+                Background="#FF161D33" Padding="26,18" Margin="0,22,0,0">
+            <TextBlock TextWrapping="Wrap" FontSize="20" Foreground="#FFC7CEDD" LineHeight="30">
+                <Run Text="MVP 思维：" Foreground="#FF8B5CF6" FontWeight="SemiBold"/>
+                <Run Text="先做"/>
+                <Run Text="最小可用版本" Foreground="#FFF5F7FB" FontWeight="SemiBold"/>
+                <Run Text="（能跑起来、能验证一个核心功能），再一点点加。别一上来就要十个功能。"/>
+            </TextBlock>
+        </Border>
+    </Grid>
+</Grid>

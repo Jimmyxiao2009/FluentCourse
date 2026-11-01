@@ -1,0 +1,208 @@
+<Grid xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:fc="using:FluentCourse.Runtime.Controls"
+      Background="#FF0E1424">
+
+    <Grid.RowDefinitions>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="*"/>
+        <RowDefinition Height="Auto"/>
+    </Grid.RowDefinitions>
+
+    <!-- =================== HeaderStrip =================== -->
+    <Grid Grid.Row="0" Margin="100,72,100,0">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+
+        <Border Grid.Column="0"
+                Background="#3300B4D8"
+                BorderBrush="#FF00B4D8" BorderThickness="1"
+                CornerRadius="4"
+                Padding="14,6">
+            <TextBlock Text="油脂"
+                       FontSize="16" FontWeight="SemiBold"
+                       Foreground="#FF00B4D8"/>
+        </Border>
+
+        <TextBlock Grid.Column="1"
+                   Text="二、油脂的化学性质"
+                   FontSize="40" FontWeight="SemiBold"
+                   Foreground="#FFF5F7FB"
+                   VerticalAlignment="Center"
+                   Margin="20,0,0,0"/>
+
+        <TextBlock Grid.Column="2"
+                   Text="8 / 11"
+                   FontSize="16"
+                   Foreground="#FF8893AC"
+                   VerticalAlignment="Center"/>
+    </Grid>
+
+    <Rectangle Grid.Row="0" Height="1" Margin="100,16,100,0"
+               VerticalAlignment="Bottom"
+               Fill="#FF252D48"/>
+
+    <!-- =================== Body =================== -->
+    <Grid Grid.Row="1" Margin="100,40,100,40">
+        <fc:StepRevealControl x:Name="LipidReveal">
+            <StackPanel Spacing="16">
+
+                <!-- Step 1: 加成 — 氢化 -->
+                <Border BorderThickness="1" CornerRadius="10"
+                        BorderBrush="#FF252D48"
+                        Background="#FF161D33"
+                        Padding="28,24">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel Grid.Column="0" Spacing="12">
+                            <StackPanel Orientation="Horizontal" Spacing="12">
+                                <Border Background="#FF00B4D8" CornerRadius="4" Padding="10,4">
+                                    <TextBlock Text="1" FontSize="16" FontWeight="SemiBold" Foreground="White"/>
+                                </Border>
+                                <TextBlock Text="加成反应  —  油脂的氢化"
+                                           FontSize="28" FontWeight="SemiBold"
+                                           Foreground="#FFF5F7FB"
+                                           VerticalAlignment="Center"/>
+                            </StackPanel>
+
+                            <TextBlock TextWrapping="Wrap" FontSize="20" Foreground="#FFC7CEDD" LineHeight="32">
+                                不饱和脂肪酸中的碳碳双键与 <Run Text="H₂" Foreground="#FF00B4D8" FontWeight="SemiBold"/>
+                                发生加成反应，<Run Text="液态油" Foreground="#FF00B4D8" FontWeight="SemiBold"/>
+                                转变为 <Run Text="固态脂肪" Foreground="#FF00B4D8" FontWeight="SemiBold"/>。
+                            </TextBlock>
+
+                            <Border BorderThickness="1" CornerRadius="6"
+                                    BorderBrush="#FF3B4566"
+                                    Background="#FF1E2747"
+                                    Padding="16,12"
+                                    HorizontalAlignment="Left">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <Border Grid.Column="0" Padding="0" Margin="0,0,16,0">
+                                        <Image Source="ms-fcourse:///assets/image24.jpeg"
+                                               Stretch="Uniform" Height="120"
+                                               HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                    <Image Grid.Column="1"
+                                           Source="ms-fcourse:///assets/image15.jpeg"
+                                           Stretch="Uniform" Height="60" Width="80"
+                                           HorizontalAlignment="Center" VerticalAlignment="Center"
+                                           Margin="0,0,16,0"/>
+                                    <Border Grid.Column="2" Padding="0">
+                                        <Image Source="ms-fcourse:///assets/image25.jpeg"
+                                               Stretch="Uniform" Height="120"
+                                               HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                </Grid>
+                            </Border>
+
+                            <TextBlock TextWrapping="Wrap" FontSize="18" Foreground="#FF8893AC" LineHeight="28">
+                                氢化植物油稳定性好、便于运输和储存，是人造奶油、起酥油的生产原理。
+                            </TextBlock>
+                        </StackPanel>
+
+                    </Grid>
+                </Border>
+
+                <!-- Step 2: 水解 — 皂化 -->
+                <Border BorderThickness="1" CornerRadius="10"
+                        BorderBrush="#FF252D48"
+                        Background="#FF161D33"
+                        Padding="28,24">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel Grid.Column="0" Spacing="12">
+                            <StackPanel Orientation="Horizontal" Spacing="12">
+                                <Border Background="#FF00B4D8" CornerRadius="4" Padding="10,4">
+                                    <TextBlock Text="2" FontSize="16" FontWeight="SemiBold" Foreground="White"/>
+                                </Border>
+                                <TextBlock Text="水解反应  —  皂化反应"
+                                           FontSize="28" FontWeight="SemiBold"
+                                           Foreground="#FFF5F7FB"
+                                           VerticalAlignment="Center"/>
+                            </StackPanel>
+
+                            <Border BorderThickness="1" CornerRadius="6"
+                                    BorderBrush="#FF3B4566"
+                                    Background="#FF1E2747"
+                                    Padding="20,14">
+                                <StackPanel Spacing="8">
+                                    <TextBlock FontSize="20" Foreground="#FFC7CEDD" FontFamily="Consolas, Cambria Math"
+                                               Text="酸性：油脂 + H₂O  ——酸/酶→  高级脂肪酸 + 甘油"/>
+                                    <TextBlock FontSize="20" Foreground="#FF00B4D8" FontFamily="Consolas, Cambria Math" FontWeight="SemiBold"
+                                               Text="碱性：油脂 + NaOH  ——Δ→  高级脂肪酸钠(肥皂) + 甘油"/>
+                                </StackPanel>
+                            </Border>
+
+                            <Border BorderThickness="1" CornerRadius="6"
+                                    BorderBrush="#3300B4D8"
+                                    Background="#3300B4D8"
+                                    Padding="16,12">
+                                <TextBlock TextWrapping="Wrap" FontSize="18" Foreground="#FFC7CEDD" LineHeight="28">
+                                    碱性条件下的水解称为 <Run Text="皂化反应" Foreground="#FF00B4D8" FontWeight="SemiBold"/>。
+                                    产物中的 <Run Text="高级脂肪酸钠" Foreground="#FF00B4D8" FontWeight="SemiBold"/>
+                                    是肥皂的主要成分。
+                                </TextBlock>
+                            </Border>
+                        </StackPanel>
+
+                        <Border Grid.Column="1"
+                                Width="240"
+                                BorderBrush="#FF3B4566" BorderThickness="1"
+                                CornerRadius="6"
+                                Background="#FF1E2747"
+                                Padding="16"
+                                VerticalAlignment="Center"
+                                Margin="24,0,0,0">
+                            <StackPanel Spacing="6">
+                                <Image Source="ms-fcourse:///assets/image17.jpeg"
+                                       Stretch="Uniform" Height="160"
+                                       HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                <TextBlock Text="甘油 (CH₂OH-CHOH-CH₂OH)"
+                                           FontSize="14"
+                                           Foreground="#FF8893AC"
+                                           TextAlignment="Center"/>
+                            </StackPanel>
+                        </Border>
+
+                    </Grid>
+                </Border>
+
+            </StackPanel>
+        </fc:StepRevealControl>
+    </Grid>
+
+    <!-- =================== FooterStrip =================== -->
+    <Border Grid.Row="2" Margin="100,0,100,72"
+            BorderBrush="#FF252D48" BorderThickness="0,1,0,0"
+            Padding="0,24,0,0">
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="12">
+            <TextBlock Text="点击逐步显示反应"
+                       Foreground="#FF8893AC" FontSize="16"
+                       VerticalAlignment="Center" Margin="0,0,12,0"/>
+            <Button x:Name="LipidNext"
+                    Content="下一步  ▶"
+                    FontSize="20" Padding="32,12"
+                    Background="#FF00B4D8"
+                    Foreground="White"
+                    CornerRadius="8"
+                    BorderThickness="0"/>
+        </StackPanel>
+    </Border>
+</Grid>

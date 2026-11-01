@@ -1,6 +1,7 @@
 using System.IO.Compression;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using FluentCourse.Core.Json;
 using FluentCourse.Core.Models;
 
@@ -56,9 +57,29 @@ public sealed class CoursePackage : IDisposable
 
         if (File.Exists(path))
         {
-            var archive = ZipFile.Open(path, ZipArchiveMode.Read);
-            var manifest = ReadManifestFromZip(archive);
-            return new CoursePackage(archive, manifest, path);
+            // A stray .json file (not manifest.json) would otherwise fall through to the ZIP
+            // reader and surface an opaque "End of Central Directory" error.
+            if (Path.GetExtension(path).Equals(".json", StringComparison.OrdinalIgnoreCase))
+                throw new InvalidDataException(
+                    $"Not a course package: {path}. Select a .fcourse file, or the manifest.json inside an unpacked course.");
+
+            ZipArchive? archive = null;
+            try
+            {
+                archive = ZipFile.Open(path, ZipArchiveMode.Read);
+                var manifest = ReadManifestFromZip(archive);
+                return new CoursePackage(archive, manifest, path);
+            }
+            catch (InvalidDataException ex) when (archive is null)
+            {
+                throw new InvalidDataException(
+                    $"Not a valid .fcourse package (could not be read as a ZIP archive): {path}", ex);
+            }
+            catch
+            {
+                archive?.Dispose();
+                throw;
+            }
         }
 
         throw new FileNotFoundException($"Path not found: {path}");
@@ -67,19 +88,29 @@ public sealed class CoursePackage : IDisposable
     public static CoursePackage Open(Stream stream, bool leaveOpen = false)
     {
         var archive = new ZipArchive(stream, ZipArchiveMode.Read, leaveOpen);
-        var manifest = ReadManifestFromZip(archive);
-        return new CoursePackage(archive, manifest, null);
+        try
+        {
+            var manifest = ReadManifestFromZip(archive);
+            return new CoursePackage(archive, manifest, null);
+        }
+        catch
+        {
+            archive.Dispose();
+            throw;
+        }
     }
 
     public byte[] ReadAllBytes(string entryPath)
     {
         if (_directory is not null)
-            return File.ReadAllBytes(Path.Combine(_directory, NormalizeToLocal(entryPath)));
+            return File.ReadAllBytes(ResolveLocal(entryPath));
 
         var entry = _archive!.GetEntry(NormalizePath(entryPath))
             ?? throw new FileNotFoundException($"Entry not found in package: {entryPath}");
         using var s = entry.Open();
-        using var ms = new MemoryStream(checked((int)entry.Length));
+        // entry.Length comes from the ZIP central directory and can lie in a corrupt
+        // archive — use it only as a capped initial capacity, never trust it outright.
+        using var ms = new MemoryStream((int)Math.Clamp(entry.Length, 0, 1 << 20));
         s.CopyTo(ms);
         return ms.ToArray();
     }
@@ -87,7 +118,7 @@ public sealed class CoursePackage : IDisposable
     public Stream OpenRead(string entryPath)
     {
         if (_directory is not null)
-            return File.OpenRead(Path.Combine(_directory, NormalizeToLocal(entryPath)));
+            return File.OpenRead(ResolveLocal(entryPath));
 
         var entry = _archive!.GetEntry(NormalizePath(entryPath))
             ?? throw new FileNotFoundException($"Entry not found in package: {entryPath}");
@@ -97,7 +128,7 @@ public sealed class CoursePackage : IDisposable
     public Stream OpenSeekable(string entryPath)
     {
         if (_directory is not null)
-            return File.OpenRead(Path.Combine(_directory, NormalizeToLocal(entryPath)));
+            return File.OpenRead(ResolveLocal(entryPath));
 
         var bytes = ReadAllBytes(entryPath);
         return new MemoryStream(bytes, writable: false);
@@ -106,8 +137,27 @@ public sealed class CoursePackage : IDisposable
     public bool Exists(string entryPath)
     {
         if (_directory is not null)
-            return File.Exists(Path.Combine(_directory, NormalizeToLocal(entryPath)));
+        {
+            string full;
+            try { full = ResolveLocal(entryPath); }
+            catch (InvalidDataException) { return false; }
+            return File.Exists(full);
+        }
         return _archive!.GetEntry(NormalizePath(entryPath)) is not null;
+    }
+
+    /// <summary>
+    /// Maps an entry path to a file inside the course directory, rejecting any path
+    /// (e.g. via "..") that would escape it.
+    /// </summary>
+    private string ResolveLocal(string entryPath)
+    {
+        var root = Path.GetFullPath(_directory!);
+        var full = Path.GetFullPath(Path.Combine(root, NormalizeToLocal(entryPath)));
+        if (!full.StartsWith(root.TrimEnd(Path.DirectorySeparatorChar) + Path.DirectorySeparatorChar,
+                StringComparison.OrdinalIgnoreCase))
+            throw new InvalidDataException($"Entry path escapes the course directory: {entryPath}");
+        return full;
     }
 
     public string ReadText(string entryPath)
@@ -133,11 +183,100 @@ public sealed class CoursePackage : IDisposable
 
     private static CourseManifest DeserializeManifest(Stream s)
     {
-        var manifest = JsonSerializer.Deserialize(s, FluentCourseJsonContext.Default.CourseManifest)
-            ?? throw new InvalidDataException("manifest.json could not be deserialized.");
+        byte[] bytes;
+        if (s is MemoryStream ms)
+        {
+            bytes = ms.ToArray();
+        }
+        else
+        {
+            using var tempMs = new MemoryStream();
+            s.CopyTo(tempMs);
+            bytes = tempMs.ToArray();
+        }
+
+        CourseManifest? manifest = null;
+        var warnings = new List<DiagnosticEntry>();
+        var errors = new List<DiagnosticEntry>();
+
+        try
+        {
+            manifest = JsonSerializer.Deserialize(bytes, FluentCourseJsonContext.Default.CourseManifest);
+        }
+        catch (JsonException ex)
+        {
+            errors.Add(new DiagnosticEntry
+            {
+                Code = "JSON_STRICT_FAILED",
+                Message = $"严格解析失败: {ex.Message}",
+                Location = $"行: {ex.LineNumber}, 位置: {ex.BytePositionInLine}"
+            });
+
+            try
+            {
+                var laxOptions = new JsonSerializerOptions
+                {
+                    AllowTrailingCommas = true,
+                    ReadCommentHandling = JsonCommentHandling.Skip,
+                    NumberHandling = JsonNumberHandling.AllowReadingFromString | JsonNumberHandling.WriteAsString,
+                    PropertyNameCaseInsensitive = true,
+                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+                };
+                var laxContext = new FluentCourseJsonContext(laxOptions);
+                manifest = (CourseManifest?)JsonSerializer.Deserialize(bytes, typeof(CourseManifest), laxContext);
+                
+                warnings.Add(new DiagnosticEntry
+                {
+                    Code = "JSON_LAX_FALLBACK",
+                    Message = "检测到不规范的 JSON 格式或属性，已回退到宽松解析模式。"
+                });
+            }
+            catch (JsonException laxEx)
+            {
+                errors.Add(new DiagnosticEntry
+                {
+                    Code = "JSON_LAX_FAILED",
+                    Message = $"宽松解析也失败: {laxEx.Message}",
+                    Location = $"行: {laxEx.LineNumber}, 位置: {laxEx.BytePositionInLine}"
+                });
+
+                var diagCol = new DiagnosticCollection();
+                diagCol.Errors.AddRange(errors);
+                diagCol.Warnings.AddRange(warnings);
+
+                var wrapperEx = new InvalidDataException("manifest.json 反序列化失败（严格与宽松两轮均失败）。", laxEx);
+                wrapperEx.Data["Diagnostics"] = diagCol;
+                throw wrapperEx;
+            }
+        }
+
+        if (manifest == null)
+        {
+            var diagCol = new DiagnosticCollection();
+            diagCol.Errors.Add(new DiagnosticEntry { Code = "JSON_NULL", Message = "反序列化结果为空" });
+            var wrapperEx = new InvalidDataException("manifest.json 反序列化结果为空。");
+            wrapperEx.Data["Diagnostics"] = diagCol;
+            throw wrapperEx;
+        }
+
         if (manifest.FormatVersion > 1)
-            throw new NotSupportedException(
-                $".fcourse formatVersion {manifest.FormatVersion} is newer than this runtime supports (1).");
+        {
+            var msg = $".fcourse formatVersion {manifest.FormatVersion} is newer than this runtime supports (1).";
+            errors.Add(new DiagnosticEntry { Code = "VERSION_UNSUPPORTED", Message = msg });
+            
+            var diagCol = new DiagnosticCollection();
+            diagCol.Errors.AddRange(errors);
+            diagCol.Warnings.AddRange(warnings);
+
+            var wrapperEx = new NotSupportedException(msg);
+            wrapperEx.Data["Diagnostics"] = diagCol;
+            throw wrapperEx;
+        }
+
+        manifest.Diagnostics = new DiagnosticCollection();
+        manifest.Diagnostics.Errors.AddRange(errors);
+        manifest.Diagnostics.Warnings.AddRange(warnings);
+
         return manifest;
     }
 

@@ -136,7 +136,7 @@ public sealed partial class AnimationEditor : UserControl
 
     private sealed class TrackEditModel(AnimationTrack t)
     {
-        public AnimationTrack Track = t;
-        public string Property { get => t.Property; set => t.Property = value; }
+        public AnimationTrack Track { get; } = t;
+        public string Property { get => Track.Property; set => Track.Property = value; }
     }
 }

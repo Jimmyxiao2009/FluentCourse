@@ -107,10 +107,12 @@ public static class ActionExecutor
 
             // ── quiz ──
             case "SubmitQuiz":
-                if (FindByName(pageRoot, action.Target) is QuizControl qc) SubmitQuiz(qc);
+                // 直接调用控件公开方法;模板部件(PART_Submit)在控件命名作用域里
+                // FindName 找不到,且按钮只挂了 Click 没有 Command。
+                if (FindByName(pageRoot, action.Target) is QuizControl qc) qc.Submit();
                 break;
             case "ResetQuiz":
-                if (FindByName(pageRoot, action.Target) is QuizControl qc2) ResetQuiz(qc2);
+                if (FindByName(pageRoot, action.Target) is QuizControl qc2) qc2.Reset();
                 break;
             case "ShowFeedback":
                 if (FindByName(pageRoot, action.Target) is QuizControl qc3) qc3.ShowFeedback = true;
@@ -180,6 +182,7 @@ public static class ActionExecutor
                 break;
 
             default:
+                player.Manifest.AddWarning("UNKNOWN_ACTION_TYPE", $"未知动作类型: {action.Type}", $"Action Target: {action.Target}");
                 System.Diagnostics.Debug.WriteLine($"[ActionExecutor] Unknown type: {action.Type}");
                 break;
         }
@@ -294,30 +297,6 @@ public static class ActionExecutor
         if (FindByName(root, action.Target) is Microsoft.UI.Xaml.Controls.MediaPlayerElement me &&
             me.MediaPlayer is { } mp)
             mp.IsMuted = action.GetBool("value") ?? true;
-    }
-
-    // ── quiz ──
-
-    private static void SubmitQuiz(QuizControl quiz)
-    {
-        // Submit is normally triggered by the internal PART_Submit Button.
-        // For programmatic use we expose a public Submit method; if not available,
-        // find and invoke the button inside the template.
-        var btn = quiz.FindName("PART_Submit") as Button;
-        if (btn is not null && btn.IsEnabled)
-        {
-            btn.Command?.Execute(btn.CommandParameter);
-            // fallback: invoke click
-        }
-    }
-
-    private static void ResetQuiz(QuizControl quiz)
-    {
-        var btn = quiz.FindName("PART_Retry") as Button;
-        if (btn is not null && btn.Visibility == Visibility.Visible)
-        {
-            btn.Command?.Execute(btn.CommandParameter);
-        }
     }
 
     // ── toast ──

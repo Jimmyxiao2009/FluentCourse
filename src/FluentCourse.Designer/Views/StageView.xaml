@@ -3,32 +3,98 @@
     x:Class="FluentCourse.Designer.Views.StageView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    Background="#FF1E1E1E">
+    AllowDrop="True"
+    Background="Transparent">
 
-    <Border x:Name="StageContainer" HorizontalAlignment="Center" VerticalAlignment="Center"
-            Background="#FF2A2A2A" BorderBrush="#44FFFFFF" BorderThickness="1"
-            Margin="16">
-        <Grid>
-            <Viewbox x:Name="StageScaler" Stretch="Uniform">
-                <Grid x:Name="StageRoot" Width="1920" Height="1080">
-                    <Canvas x:Name="AdornerCanvas" Width="1920" Height="1080" IsHitTestVisible="False">
-                        <!-- Selection overlay: border + handles -->
-                        <Border x:Name="SelectionBorder" Style="{StaticResource SelectionAdornerBorder}"
-                                Visibility="Collapsed"/>
-                        <Rectangle x:Name="HandleTL" Style="{StaticResource SelectionHandle}" Visibility="Collapsed"/>
-                        <Rectangle x:Name="HandleTR" Style="{StaticResource SelectionHandle}" Visibility="Collapsed"/>
-                        <Rectangle x:Name="HandleBL" Style="{StaticResource SelectionHandle}" Visibility="Collapsed"/>
-                        <Rectangle x:Name="HandleBR" Style="{StaticResource SelectionHandle}" Visibility="Collapsed"/>
-                    </Canvas>
-                </Grid>
-            </Viewbox>
-            <Border x:Name="ErrorOverlay" Background="#CC000000" Visibility="Collapsed"
-                    HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                <TextBlock x:Name="ErrorText" Foreground="#FFFF6B6B" FontSize="16"
-                           TextWrapping="Wrap" HorizontalAlignment="Center"
-                           VerticalAlignment="Center" Margin="40"
-                           FontFamily="Cascadia Mono, Consolas, monospace"/>
-            </Border>
-        </Grid>
-    </Border>
+    <!-- Drag/drop handlers live on RootGrid only (it fills the control); duplicating them on the
+         UserControl too made Drop bubble and fire twice. -->
+    <Grid x:Name="RootGrid" AllowDrop="True" DragOver="OnDragOver" Drop="OnDrop" DragLeave="OnDragLeave">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="20"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="20"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- 顶部标尺 -->
+        <Border x:Name="TopRuler" Grid.Row="0" Grid.Column="1"
+                Background="{StaticResource SurfaceSunkenBrush}"
+                BorderBrush="{StaticResource StrokeSubtleBrush}" BorderThickness="0,0,0,1">
+            <Canvas x:Name="TopRulerCanvas" Height="20"/>
+        </Border>
+        <!-- 左侧标尺 -->
+        <Border x:Name="LeftRuler" Grid.Row="1" Grid.Column="0"
+                Background="{StaticResource SurfaceSunkenBrush}"
+                BorderBrush="{StaticResource StrokeSubtleBrush}" BorderThickness="0,0,1,0">
+            <Canvas x:Name="LeftRulerCanvas" Width="20"/>
+        </Border>
+
+        <!-- 画布容器 -->
+        <ScrollViewer x:Name="CanvasScroll" Grid.Row="1" Grid.Column="1"
+                      HorizontalScrollBarVisibility="Auto"
+                      VerticalScrollBarVisibility="Auto"
+                      SizeChanged="OnCanvasScrollSizeChanged"
+                      Background="{StaticResource SurfaceBaseBrush}">
+            <Grid>
+                <Border x:Name="StageContainer" HorizontalAlignment="Center" VerticalAlignment="Center"
+                        Background="#FF2A2A30" BorderBrush="{StaticResource StrokeDefaultBrush}"
+                        BorderThickness="1" Margin="32">
+                    <Grid>
+                        <Viewbox x:Name="StageScaler" Stretch="Uniform">
+                            <!-- Background=Transparent makes the WHOLE stage hit-testable, so clicks
+                                 and right-taps register on empty canvas areas (deselect / 空白右键菜单),
+                                 not just on elements. Transparent doesn't block child element hits. -->
+                            <Grid x:Name="StageRoot" Width="1920" Height="1080" Background="Transparent">
+                                <!-- 网格层 -->
+                                <Canvas x:Name="GridLayer" IsHitTestVisible="False"/>
+                                <!-- 装饰层：本层可命中（手柄要能拖），但不设 Background，空白处穿透到下层元素 -->
+                                <Canvas x:Name="AdornerLayer" IsHitTestVisible="True">
+                                    <Border x:Name="SelectionBorder" Style="{StaticResource SelectionAdornerBorder}"
+                                            IsHitTestVisible="False" Visibility="Collapsed"/>
+                                    <Rectangle x:Name="HandleTL" Style="{StaticResource SelectionHandle}" Visibility="Collapsed"/>
+                                    <Rectangle x:Name="HandleTR" Style="{StaticResource SelectionHandle}" Visibility="Collapsed"/>
+                                    <Rectangle x:Name="HandleBL" Style="{StaticResource SelectionHandle}" Visibility="Collapsed"/>
+                                    <Rectangle x:Name="HandleBR" Style="{StaticResource SelectionHandle}" Visibility="Collapsed"/>
+                                    <Rectangle x:Name="HandleML" Style="{StaticResource SelectionHandle}" Visibility="Collapsed"/>
+                                    <Rectangle x:Name="HandleMR" Style="{StaticResource SelectionHandle}" Visibility="Collapsed"/>
+                                    <Rectangle x:Name="HandleTM" Style="{StaticResource SelectionHandle}" Visibility="Collapsed"/>
+                                    <Rectangle x:Name="HandleBM" Style="{StaticResource SelectionHandle}" Visibility="Collapsed"/>
+                                    <Line x:Name="AlignLineH" Stroke="#FF4CC2FF" StrokeThickness="1"
+                                          StrokeDashArray="4,4" Visibility="Collapsed"/>
+                                    <Line x:Name="AlignLineV" Stroke="#FF4CC2FF" StrokeThickness="1"
+                                          StrokeDashArray="4,4" Visibility="Collapsed"/>
+                                </Canvas>
+                            </Grid>
+                        </Viewbox>
+                        <Border x:Name="ErrorOverlay" Background="#CC000000" Visibility="Collapsed"
+                                HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                            <TextBlock x:Name="ErrorText" Foreground="{StaticResource DangerBrush}" FontSize="16"
+                                       TextWrapping="Wrap" HorizontalAlignment="Center"
+                                       VerticalAlignment="Center" Margin="40"
+                                       FontFamily="Cascadia Mono, Consolas, monospace"/>
+                        </Border>
+
+                        <!-- 占位示意：播放/预览时左下角会有“上一步/下一步”控件（不可删，不参与导出） -->
+                        <Border HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="14"
+                                CornerRadius="16" Padding="10,5" IsHitTestVisible="False" Opacity="0.5"
+                                Background="{StaticResource SurfaceRaisedBrush}"
+                                BorderBrush="{StaticResource StrokeSubtleBrush}" BorderThickness="1">
+                            <TextBlock Text="◀  播放控件  ▶" FontSize="11"
+                                       Foreground="{StaticResource TextTertiaryBrush}"/>
+                        </Border>
+                    </Grid>
+                </Border>
+            </Grid>
+        </ScrollViewer>
+
+        <!-- 拖放指示器 -->
+        <Border x:Name="DropIndicator" Grid.Row="1" Grid.Column="1"
+                BorderBrush="{StaticResource AccentBrush}" BorderThickness="2"
+                Background="#224CC2FF" CornerRadius="4"
+                HorizontalAlignment="Left" VerticalAlignment="Top"
+                IsHitTestVisible="False" Visibility="Collapsed"
+                MinWidth="120" MinHeight="60"/>
+    </Grid>
 </UserControl>

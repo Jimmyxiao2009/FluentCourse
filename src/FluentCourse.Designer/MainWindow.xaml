@@ -5,106 +5,430 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:FluentCourse.Designer.Views">
 
-    <Grid>
+    <Grid x:Name="RootGrid" Background="{StaticResource SurfaceBaseBrush}">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/><!-- 命令栏 -->
+            <RowDefinition Height="Auto"/><!-- 插入条 -->
+            <RowDefinition Height="*"/>  <!-- 工作区 -->
+            <RowDefinition Height="Auto"/><!-- 状态栏 -->
         </Grid.RowDefinitions>
 
-        <!-- Command Bar -->
-        <CommandBar Grid.Row="0" DefaultLabelPosition="Right" IsDynamicOverflowEnabled="False">
-            <AppBarButton x:Name="NewButton" Icon="NewWindow" Label="新建" Click="OnNewClicked"/>
-            <AppBarButton x:Name="OpenButton" Icon="OpenFile" Label="打开" Click="OnOpenClicked"/>
-            <AppBarButton x:Name="SaveButton" Icon="Save" Label="保存" Click="OnSaveClicked"/>
-            <AppBarButton x:Name="SaveAsButton" Icon="SaveLocal" Label="另存为" Click="OnSaveAsClicked"/>
-            <AppBarButton x:Name="ExportButton" Icon="Upload" Label="导出.fcourse" Click="OnExportClicked"/>
-            <AppBarSeparator/>
-            <AppBarButton x:Name="UndoButton" Icon="Undo" Label="撤销" Click="OnUndoClicked"/>
-            <AppBarButton x:Name="RedoButton" Icon="Redo" Label="重做" Click="OnRedoClicked"/>
-            <AppBarSeparator/>
-            <AppBarButton x:Name="PreviewButton" Icon="Play" Label="预览" Click="OnPreviewClicked"/>
-        </CommandBar>
-
-        <Grid Grid.Row="1" ColumnSpacing="0">
+        <!-- ═══════════════════════════ 命令栏 ═══════════════════════════ -->
+        <Grid Grid.Row="0" Height="48"
+              Background="{StaticResource SurfaceRaisedBrush}"
+              BorderBrush="{StaticResource StrokeSubtleBrush}"
+              BorderThickness="0,0,0,1">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="260"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="320"/>
+                <ColumnDefinition Width="Auto"/><!-- Logo -->
+                <ColumnDefinition Width="Auto"/><!-- 分隔 -->
+                <ColumnDefinition Width="Auto"/><!-- 文件操作 -->
+                <ColumnDefinition Width="Auto"/><!-- 分隔 -->
+                <ColumnDefinition Width="Auto"/><!-- 编辑操作 -->
+                <ColumnDefinition Width="*"/>  <!-- 文档名 -->
+                <ColumnDefinition Width="Auto"/><!-- 导出/预览 -->
             </Grid.ColumnDefinitions>
 
-            <!-- Left pane -->
-            <NavigationView x:Name="LeftNav" Grid.Column="0"
-                            IsPaneOpen="True" IsSettingsVisible="False"
-                            CompactModeThresholdWidth="0" ExpandedModeThresholdWidth="260"
-                            PaneDisplayMode="Top" SelectionChanged="OnLeftNavSelectionChanged"
-                            IsBackEnabled="False" OpenPaneLength="260">
-                <NavigationView.MenuItems>
-                    <NavigationViewItem Content="页面" Tag="Pages" Icon="List"/>
-                    <NavigationViewItem Content="设置" Tag="Settings" Icon="Setting"/>
-                    <NavigationViewItem Content="资源" Tag="Assets" Icon="Library"/>
-                </NavigationView.MenuItems>
-                <Frame x:Name="LeftFrame"/>
-            </NavigationView>
+            <!-- Logo + 应用名 -->
+            <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="8"
+                        Margin="14,0,10,0" VerticalAlignment="Center">
+                <FontIcon Glyph="&#xE945;" FontSize="18" Foreground="{StaticResource AccentBrush}"/>
+                <TextBlock Text="FluentCourse" FontSize="13" FontWeight="SemiBold"
+                           Foreground="{StaticResource TextPrimaryBrush}" VerticalAlignment="Center"/>
+            </StackPanel>
 
-            <!-- Center -->
-            <Grid Grid.Column="1">
+            <Border Grid.Column="1" Width="1" Height="24"
+                    Background="{StaticResource StrokeSubtleBrush}" Margin="2,0"/>
+
+            <!-- 文件操作：新建 / 打开 / 保存 / 另存 -->
+            <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="2"
+                        Margin="6,0" VerticalAlignment="Center">
+                <Button Style="{StaticResource CmdBarButton}" Click="OnNewClicked"
+                        ToolTipService.ToolTip="新建课件 (Ctrl+N)">
+                    <StackPanel HorizontalAlignment="Center">
+                        <FontIcon Glyph="&#xE78C;" FontSize="16" HorizontalAlignment="Center"/>
+                        <TextBlock Text="新建" FontSize="10" HorizontalAlignment="Center" Margin="0,1,0,0"/>
+                    </StackPanel>
+                </Button>
+                <Button Style="{StaticResource CmdBarButton}" Click="OnOpenClicked"
+                        ToolTipService.ToolTip="打开课件 (Ctrl+O)">
+                    <StackPanel HorizontalAlignment="Center">
+                        <FontIcon Glyph="&#xE8E5;" FontSize="16" HorizontalAlignment="Center"/>
+                        <TextBlock Text="打开" FontSize="10" HorizontalAlignment="Center" Margin="0,1,0,0"/>
+                    </StackPanel>
+                </Button>
+                <Button Style="{StaticResource CmdBarButton}" Click="OnSaveClicked"
+                        ToolTipService.ToolTip="保存 (Ctrl+S)">
+                    <StackPanel HorizontalAlignment="Center">
+                        <FontIcon Glyph="&#xE74E;" FontSize="16" HorizontalAlignment="Center"/>
+                        <TextBlock Text="保存" FontSize="10" HorizontalAlignment="Center" Margin="0,1,0,0"/>
+                    </StackPanel>
+                </Button>
+                <Button Style="{StaticResource CmdBarButton}" Click="OnSaveAsClicked"
+                        ToolTipService.ToolTip="另存为">
+                    <StackPanel HorizontalAlignment="Center">
+                        <FontIcon Glyph="&#xEA35;" FontSize="16" HorizontalAlignment="Center"/>
+                        <TextBlock Text="另存" FontSize="10" HorizontalAlignment="Center" Margin="0,1,0,0"/>
+                    </StackPanel>
+                </Button>
+                <Button Style="{StaticResource CmdBarButton}" Click="OnCourseSettingsClicked"
+                        ToolTipService.ToolTip="课程与主题设置">
+                    <StackPanel HorizontalAlignment="Center">
+                        <FontIcon Glyph="&#xE713;" FontSize="16" HorizontalAlignment="Center"/>
+                        <TextBlock Text="设置" FontSize="10" HorizontalAlignment="Center" Margin="0,1,0,0"/>
+                    </StackPanel>
+                </Button>
+            </StackPanel>
+
+            <Border Grid.Column="3" Width="1" Height="24"
+                    Background="{StaticResource StrokeSubtleBrush}" Margin="2,0"/>
+
+            <!-- 编辑操作：撤销 / 重做 -->
+            <StackPanel Grid.Column="4" Orientation="Horizontal" Spacing="2"
+                        Margin="6,0" VerticalAlignment="Center">
+                <Button Style="{StaticResource CmdBarButton}" Click="OnUndoClicked"
+                        ToolTipService.ToolTip="撤销 (Ctrl+Z)">
+                    <StackPanel HorizontalAlignment="Center">
+                        <FontIcon Glyph="&#xE7A7;" FontSize="16" HorizontalAlignment="Center"/>
+                        <TextBlock Text="撤销" FontSize="10" HorizontalAlignment="Center" Margin="0,1,0,0"/>
+                    </StackPanel>
+                </Button>
+                <Button Style="{StaticResource CmdBarButton}" Click="OnRedoClicked"
+                        ToolTipService.ToolTip="重做 (Ctrl+Y)">
+                    <StackPanel HorizontalAlignment="Center">
+                        <FontIcon Glyph="&#xE7A6;" FontSize="16" HorizontalAlignment="Center"/>
+                        <TextBlock Text="重做" FontSize="10" HorizontalAlignment="Center" Margin="0,1,0,0"/>
+                    </StackPanel>
+                </Button>
+                <Button Style="{StaticResource CmdBarButton}"
+                        ToolTipService.ToolTip="对象对齐">
+                    <Button.Flyout>
+                        <MenuFlyout>
+                            <MenuFlyoutItem Text="左对齐到幻灯片" Click="OnAlignLeftClicked"/>
+                            <MenuFlyoutItem Text="水平居中到幻灯片" Click="OnAlignHorizontalCenterClicked"/>
+                            <MenuFlyoutItem Text="右对齐到幻灯片" Click="OnAlignRightClicked"/>
+                            <MenuFlyoutSeparator/>
+                            <MenuFlyoutItem Text="顶端对齐到幻灯片" Click="OnAlignTopClicked"/>
+                            <MenuFlyoutItem Text="垂直居中到幻灯片" Click="OnAlignVerticalCenterClicked"/>
+                            <MenuFlyoutItem Text="底端对齐到幻灯片" Click="OnAlignBottomClicked"/>
+                            <MenuFlyoutSeparator/>
+                            <MenuFlyoutItem Text="水平分布" Click="OnDistributeHorizontalClicked"/>
+                            <MenuFlyoutItem Text="垂直分布" Click="OnDistributeVerticalClicked"/>
+                        </MenuFlyout>
+                    </Button.Flyout>
+                    <StackPanel HorizontalAlignment="Center">
+                        <FontIcon Glyph="&#xE8E4;" FontSize="16" HorizontalAlignment="Center"/>
+                        <TextBlock Text="对齐" FontSize="10" HorizontalAlignment="Center" Margin="0,1,0,0"/>
+                    </StackPanel>
+                </Button>
+                <Button Style="{StaticResource CmdBarButton}"
+                        ToolTipService.ToolTip="应用页面版式">
+                    <Button.Flyout>
+                        <MenuFlyout>
+                            <MenuFlyoutItem Text="空白页" Click="OnApplyBlankLayoutClicked"/>
+                            <MenuFlyoutItem Text="标题页" Click="OnApplyTitleLayoutClicked"/>
+                            <MenuFlyoutItem Text="标题与内容" Click="OnApplyTitleContentLayoutClicked"/>
+                            <MenuFlyoutItem Text="双栏内容" Click="OnApplyTwoColumnLayoutClicked"/>
+                            <MenuFlyoutItem Text="章节页" Click="OnApplySectionLayoutClicked"/>
+                        </MenuFlyout>
+                    </Button.Flyout>
+                    <StackPanel HorizontalAlignment="Center">
+                        <FontIcon Glyph="&#xECA5;" FontSize="16" HorizontalAlignment="Center"/>
+                        <TextBlock Text="版式" FontSize="10" HorizontalAlignment="Center" Margin="0,1,0,0"/>
+                    </StackPanel>
+                </Button>
+                <Button Style="{StaticResource CmdBarButton}"
+                        ToolTipService.ToolTip="对象编辑">
+                    <Button.Flyout>
+                        <MenuFlyout>
+                            <MenuFlyoutItem Text="剪切" Click="OnCutElementClicked" KeyboardAcceleratorTextOverride="Ctrl+X"/>
+                            <MenuFlyoutItem Text="复制" Click="OnCopyElementClicked" KeyboardAcceleratorTextOverride="Ctrl+C"/>
+                            <MenuFlyoutItem Text="粘贴" Click="OnPasteElementClicked" KeyboardAcceleratorTextOverride="Ctrl+V"/>
+                            <MenuFlyoutItem Text="再制" Click="OnDuplicateElementClicked" KeyboardAcceleratorTextOverride="Ctrl+D"/>
+                            <MenuFlyoutSeparator/>
+                            <MenuFlyoutItem Text="组合" Click="OnGroupSelectedClicked"/>
+                            <MenuFlyoutItem Text="取消组合" Click="OnUngroupSelectedClicked"/>
+                            <MenuFlyoutSeparator/>
+                            <MenuFlyoutItem Text="删除" Click="OnDeleteElementClicked" KeyboardAcceleratorTextOverride="Delete"/>
+                        </MenuFlyout>
+                    </Button.Flyout>
+                    <StackPanel HorizontalAlignment="Center">
+                        <FontIcon Glyph="&#xE70F;" FontSize="16" HorizontalAlignment="Center"/>
+                        <TextBlock Text="编辑" FontSize="10" HorizontalAlignment="Center" Margin="0,1,0,0"/>
+                    </StackPanel>
+                </Button>
+                <Button Style="{StaticResource CmdBarButton}"
+                        ToolTipService.ToolTip="对象层级">
+                    <Button.Flyout>
+                        <MenuFlyout>
+                            <MenuFlyoutItem Text="置于顶层" Click="OnBringToFrontClicked"/>
+                            <MenuFlyoutItem Text="上移一层" Click="OnBringForwardClicked"/>
+                            <MenuFlyoutItem Text="下移一层" Click="OnSendBackwardClicked"/>
+                            <MenuFlyoutItem Text="置于底层" Click="OnSendToBackClicked"/>
+                        </MenuFlyout>
+                    </Button.Flyout>
+                    <StackPanel HorizontalAlignment="Center">
+                        <FontIcon Glyph="&#xE8A9;" FontSize="16" HorizontalAlignment="Center"/>
+                        <TextBlock Text="层级" FontSize="10" HorizontalAlignment="Center" Margin="0,1,0,0"/>
+                    </StackPanel>
+                </Button>
+            </StackPanel>
+
+            <!-- 文档名（居中） -->
+            <TextBlock Grid.Column="5" x:Name="DocNameText" Text=""
+                       FontSize="13" Foreground="{StaticResource TextTertiaryBrush}"
+                       VerticalAlignment="Center" HorizontalAlignment="Center"
+                       TextTrimming="CharacterEllipsis"/>
+
+            <!-- 导出 + 预览 -->
+            <StackPanel Grid.Column="6" Orientation="Horizontal" Spacing="8"
+                        Margin="8,0,14,0" VerticalAlignment="Center">
+                <Button Style="{StaticResource CmdBarButton}"
+                        ToolTipService.ToolTip="导出课件">
+                    <Button.Flyout>
+                        <MenuFlyout>
+                            <MenuFlyoutItem Text="课件包 (.fcourse)" Click="OnExportClicked"/>
+                            <MenuFlyoutItem Text="独立播放器 (.exe)" Click="OnExportStandaloneClicked"/>
+                        </MenuFlyout>
+                    </Button.Flyout>
+                    <StackPanel HorizontalAlignment="Center">
+                        <FontIcon Glyph="&#xE898;" FontSize="16" HorizontalAlignment="Center"/>
+                        <TextBlock Text="导出" FontSize="10" HorizontalAlignment="Center" Margin="0,1,0,0"/>
+                    </StackPanel>
+                </Button>
+                <Button Background="{StaticResource AccentBrush}"
+                        BorderThickness="0" CornerRadius="6"
+                        Padding="16,0" Height="34"
+                        ToolTipService.ToolTip="预览课件">
+                    <Button.Flyout>
+                        <MenuFlyout>
+                            <MenuFlyoutItem Text="普通预览" Click="OnPreviewClicked" KeyboardAcceleratorTextOverride="F5"/>
+                            <MenuFlyoutItem Text="演讲者视图预览" Click="OnPreviewPresenterClicked"/>
+                        </MenuFlyout>
+                    </Button.Flyout>
+                    <StackPanel Orientation="Horizontal" Spacing="6">
+                        <FontIcon Glyph="&#xE768;" FontSize="15" Foreground="White"/>
+                        <TextBlock Text="预览" FontSize="13" FontWeight="SemiBold"
+                                   Foreground="White" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Button>
+            </StackPanel>
+        </Grid>
+
+        <!-- ═══════════════════════════ 插入条 ═══════════════════════════ -->
+        <Border Grid.Row="1"
+                Background="{StaticResource SurfaceRaisedBrush}"
+                BorderBrush="{StaticResource StrokeSubtleBrush}"
+                BorderThickness="0,0,0,1">
+            <ScrollViewer HorizontalScrollMode="Auto"
+                          HorizontalScrollBarVisibility="Auto"
+                          VerticalScrollBarVisibility="Disabled"
+                          Height="52">
+                <StackPanel x:Name="InsertStrip" Orientation="Horizontal"
+                            Spacing="0" Padding="8,4" VerticalAlignment="Center"/>
+            </ScrollViewer>
+        </Border>
+
+        <!-- ═══════════════════════════ 工作区 ═══════════════════════════ -->
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition x:Name="LeftPaneColumn" Width="180" MinWidth="140"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*" MinWidth="400"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition x:Name="RightPaneColumn" Width="288" MinWidth="220"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- ──── 左：幻灯片面板 ──── -->
+            <Grid Grid.Column="0" Background="{StaticResource SurfaceRaisedBrush}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <Border Grid.Row="0" Padding="10,8"
+                        BorderBrush="{StaticResource StrokeSubtleBrush}"
+                        BorderThickness="0,0,0,1">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="幻灯片"
+                                   Style="{StaticResource H2Text}" VerticalAlignment="Center"/>
+                        <Button Grid.Column="1" Width="28" Height="28" Padding="0"
+                                Background="Transparent" BorderThickness="0"
+                                ToolTipService.ToolTip="添加新页面">
+                            <Button.Flyout>
+                                <MenuFlyout>
+                                    <MenuFlyoutItem Text="空白页" Click="OnAddBlankPageClicked"/>
+                                    <MenuFlyoutItem Text="标题页" Click="OnAddTitlePageClicked"/>
+                                    <MenuFlyoutItem Text="标题与内容" Click="OnAddTitleContentPageClicked"/>
+                                    <MenuFlyoutItem Text="双栏内容" Click="OnAddTwoColumnPageClicked"/>
+                                    <MenuFlyoutItem Text="章节页" Click="OnAddSectionPageClicked"/>
+                                </MenuFlyout>
+                            </Button.Flyout>
+                            <FontIcon Glyph="&#xE710;" FontSize="14"/>
+                        </Button>
+                    </Grid>
+                </Border>
+
+                <local:PagesView x:Name="PagesViewControl" Grid.Row="1"/>
+
+                <Border Grid.Row="2" Padding="10,5"
+                        BorderBrush="{StaticResource StrokeSubtleBrush}"
+                        BorderThickness="0,1,0,0">
+                    <TextBlock x:Name="SlideCountText" Text=""
+                               Style="{StaticResource CaptionText}"/>
+                </Border>
+            </Grid>
+
+            <!-- 左侧分隔条 -->
+            <local:GridSplitter Grid.Column="1" Orientation="Horizontal"
+                                ResizeTargetIndex="0"
+                                MinTargetSize="140" MaxTargetSize="400"/>
+
+            <!-- ──── 中：画布 / XAML 代码 ──── -->
+            <Grid Grid.Column="2" Background="{StaticResource SurfaceBaseBrush}">
+                <Grid x:Name="DesignSurfacePanel" Visibility="Visible">
+                    <local:StageView x:Name="StageViewControl"/>
+                </Grid>
+                <local:XamlCodeView x:Name="CodeView" Visibility="Collapsed"/>
+            </Grid>
+
+            <!-- 右侧分隔条 -->
+            <local:GridSplitter Grid.Column="3" Orientation="Horizontal"
+                                ResizeTargetIndex="4"
+                                MinTargetSize="220" MaxTargetSize="520"/>
+
+            <!-- ──── 右：属性面板 ──── -->
+            <Grid Grid.Column="4" Background="{StaticResource SurfaceRaisedBrush}">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
 
-                <CommandBar Grid.Row="0" DefaultLabelPosition="Right" IsDynamicOverflowEnabled="False"
-                            Background="{ThemeResource LayerFillColorDefaultBrush}">
-                    <AppBarButton x:Name="DesignTabButton" Icon="PreviewLink" Label="设计" Click="OnDesignTabClicked"/>
-                    <AppBarButton x:Name="XamlTabButton" Icon="Font" Label="XAML" Click="OnXamlTabClicked"/>
-                    <AppBarSeparator/>
-                    <AppBarButton x:Name="AddPageButton" Icon="Add" Label="加页" Click="OnAddPageClicked"/>
-                </CommandBar>
+                <!-- 属性面板头：动态标题 + 面板切换图标 -->
+                <Border Grid.Row="0" Padding="10,8"
+                        BorderBrush="{StaticResource StrokeSubtleBrush}"
+                        BorderThickness="0,0,0,1">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
 
-                <Grid Grid.Row="1">
-                    <Grid x:Name="DesignSurfacePanel" Visibility="Visible">
-                        <local:StageView x:Name="StageViewControl"/>
+                        <!-- 圆角图标徽章 -->
+                        <Border Grid.Column="0" Width="32" Height="32" CornerRadius="8"
+                                Background="{StaticResource SurfaceSunkenBrush}"
+                                Margin="0,0,8,0" VerticalAlignment="Center">
+                            <FontIcon x:Name="RightPanelIcon" Glyph="&#xE713;" FontSize="14"
+                                      Foreground="{StaticResource AccentBrush}"
+                                      HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+
+                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                            <TextBlock x:Name="RightPanelTitle" Text="属性"
+                                       Style="{StaticResource H2Text}"/>
+                            <TextBlock x:Name="RightPanelSub" Text="选择元素以编辑"
+                                       Style="{StaticResource CaptionText}"/>
+                        </StackPanel>
+
+                        <!-- 面板切换标签按钮 -->
+                        <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="2"
+                                    VerticalAlignment="Center">
+                            <Button x:Name="TabBtnProps" Style="{StaticResource PanelTabButton}"
+                                    Click="OnRightTabProps" ToolTipService.ToolTip="属性">
+                                <FontIcon Glyph="&#xE713;" FontSize="13"/>
+                            </Button>
+                            <Button x:Name="TabBtnTree" Style="{StaticResource PanelTabButton}"
+                                    Click="OnRightTabTree" ToolTipService.ToolTip="元素树">
+                                <FontIcon Glyph="&#xE8FD;" FontSize="13"/>
+                            </Button>
+                            <Button x:Name="TabBtnAnim" Style="{StaticResource PanelTabButton}"
+                                    Click="OnRightTabAnim" ToolTipService.ToolTip="动画（主体 + 按钮）">
+                                <FontIcon Glyph="&#xE890;" FontSize="13"/>
+                            </Button>
+                            <Button x:Name="TabBtnXaml" Style="{StaticResource PanelTabButton}"
+                                    Click="OnXamlToggleClicked" ToolTipService.ToolTip="XAML 源码">
+                                <FontIcon Glyph="&#xE8D2;" FontSize="13"/>
+                            </Button>
+                        </StackPanel>
                     </Grid>
-                    <local:XamlCodeView x:Name="CodeView" Visibility="Collapsed"/>
-                </Grid>
-            </Grid>
+                </Border>
 
-            <!-- Right pane -->
-            <Grid Grid.Column="2" BorderBrush="{ThemeResource ControlStrokeColorDefaultBrush}" BorderThickness="1,0,0,0">
-                <TabView Grid.Row="0" TabWidthMode="SizeToContent" SelectedIndex="0">
-                    <TabViewItem Header="属性">
-                        <ScrollViewer VerticalScrollBarVisibility="Auto">
-                            <local:PropertiesPane x:Name="PropertiesPaneView"/>
-                        </ScrollViewer>
-                    </TabViewItem>
-                    <TabViewItem Header="页面">
-                        <ScrollViewer VerticalScrollBarVisibility="Auto">
-                            <local:PagePropertiesView x:Name="PagePropsView"/>
-                        </ScrollViewer>
-                    </TabViewItem>
-                    <TabViewItem Header="工具箱">
-                        <ScrollViewer VerticalScrollBarVisibility="Auto">
-                            <local:ToolboxPane x:Name="ToolboxPaneView"/>
-                        </ScrollViewer>
-                    </TabViewItem>
-                    <TabViewItem Header="触发器">
-                        <local:TriggerEditor x:Name="TriggerEditorView"/>
-                    </TabViewItem>
-                    <TabViewItem Header="动画">
-                        <local:AnimationEditor x:Name="AnimationEditorView"/>
-                    </TabViewItem>
-                </TabView>
+                <!-- 属性面板内容区：多视图叠放，按标签切换 -->
+                <Grid Grid.Row="1">
+                    <local:PropertiesPane x:Name="PropertiesPaneView"/>
+                    <local:PagePropertiesView x:Name="PagePropsView" Visibility="Collapsed"/>
+                    <local:ElementTreeView x:Name="ElementTreeViewControl" Visibility="Collapsed"/>
+                    <local:AnimationPanel x:Name="AnimationPanelView" Visibility="Collapsed"/>
+                    <local:AnimationEditor x:Name="AnimationEditorView" Visibility="Collapsed"/>
+                    <local:TriggerEditor x:Name="TriggerEditorView" Visibility="Collapsed"/>
+                </Grid>
             </Grid>
         </Grid>
 
-        <!-- Diagnostics -->
-        <Border x:Name="DiagnosticsBar" Grid.Row="2" Style="{StaticResource DiagnosticBar}" Visibility="Collapsed">
-            <Grid>
-                <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
-                <TextBlock x:Name="DiagnosticsText" Foreground="#FFFF6B6B" FontSize="12" VerticalAlignment="Center" TextWrapping="Wrap"/>
-                <Button Grid.Column="1" Content="✕" Width="24" Height="24" FontSize="10" Click="OnDismissDiagnostics" Background="Transparent"/>
-            </Grid>
-        </Border>
+        <!-- ═══════════════════════════ 状态栏 ═══════════════════════════ -->
+        <Grid Grid.Row="3" Height="28"
+              Background="{StaticResource SurfaceSunkenBrush}"
+              BorderBrush="{StaticResource StrokeSubtleBrush}"
+              BorderThickness="0,1,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- 诊断信息（覆盖状态栏） -->
+            <Border x:Name="DiagnosticsBar" Grid.ColumnSpan="2"
+                    Style="{StaticResource DiagnosticBar}"
+                    Visibility="Collapsed">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock x:Name="DiagnosticsText"
+                               Foreground="{StaticResource DangerBrush}"
+                               FontSize="11" VerticalAlignment="Center"
+                               TextWrapping="Wrap" Margin="12,0"/>
+                    <Button Grid.Column="1" Content="✕" Width="28" Height="28"
+                            FontSize="10" Background="Transparent" BorderThickness="0"
+                            Click="OnDismissDiagnostics"/>
+                </Grid>
+            </Border>
+
+            <!-- 状态信息 -->
+            <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="0"
+                        VerticalAlignment="Center" Margin="10,0,0,0">
+                <TextBlock x:Name="StatusMessageText" Style="{StaticResource StatusBarItem}" Text="就绪"/>
+                <Border Width="1" Height="12" Background="{StaticResource StrokeSubtleBrush}" Margin="4,0"/>
+                <TextBlock x:Name="PageInfoText" Style="{StaticResource StatusBarItem}" Text=""/>
+                <Border Width="1" Height="12" Background="{StaticResource StrokeSubtleBrush}" Margin="4,0"/>
+                <TextBlock x:Name="ElementInfoText" Style="{StaticResource StatusBarItem}" Text=""/>
+            </StackPanel>
+
+            <!-- 缩放控件 -->
+            <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="2"
+                        VerticalAlignment="Center" Margin="0,0,8,0">
+                <Button Width="22" Height="22" Padding="0"
+                        Background="Transparent" BorderThickness="0"
+                        Click="OnZoomOutClicked" ToolTipService.ToolTip="缩小">
+                    <FontIcon Glyph="&#xE9FC;" FontSize="10"/>
+                </Button>
+                <Slider x:Name="ZoomSlider" Width="100" Minimum="25" Maximum="300"
+                        Value="100" StepFrequency="5" SmallChange="5" LargeChange="25"
+                        VerticalAlignment="Center"
+                        ValueChanged="OnZoomSliderChanged"/>
+                <Button Width="22" Height="22" Padding="0"
+                        Background="Transparent" BorderThickness="0"
+                        Click="OnZoomInClicked" ToolTipService.ToolTip="放大">
+                    <FontIcon Glyph="&#xE8A3;" FontSize="10"/>
+                </Button>
+                <TextBlock x:Name="ZoomText" Style="{StaticResource StatusBarItem}"
+                           Text="100%" MinWidth="38" TextAlignment="Right"/>
+            </StackPanel>
+        </Grid>
     </Grid>
 </Window>

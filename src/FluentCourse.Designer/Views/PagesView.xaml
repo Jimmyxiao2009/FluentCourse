@@ -2,30 +2,70 @@
 <UserControl
     x:Class="FluentCourse.Designer.Views.PagesView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:models="using:FluentCourse.Designer.Models">
 
-    <Grid RowSpacing="4" Margin="8">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
-
-        <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="8" Margin="0,4,0,8">
-            <TextBlock Text="页面列表" FontSize="15" FontWeight="SemiBold" VerticalAlignment="Center"/>
-            <Button x:Name="AddBtn" Content="+" Width="28" Height="28" FontSize="16"
-                    ToolTipService.ToolTip="添加页面" Click="OnAddPage"/>
-        </StackPanel>
-
-        <ListView x:Name="PageList" Grid.Row="1"
+    <Grid>
+        <ListView x:Name="PageList"
                   SelectionMode="Single"
                   SelectionChanged="OnPageSelected"
                   IsItemClickEnabled="True"
-                  ItemClick="OnPageItemClick">
+                  ItemClick="OnPageItemClick"
+                  CanReorderItems="True"
+                  CanDragItems="True"
+                  AllowDrop="True"
+                  DragItemsStarting="OnPagesDragStarting"
+                  DragItemsCompleted="OnPagesReordered"
+                  Background="Transparent"
+                  Padding="6,4">
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                    <Setter Property="Padding" Value="0"/>
+                    <Setter Property="Margin" Value="0,0,0,4"/>
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                    <Setter Property="CornerRadius" Value="6"/>
+                </Style>
+            </ListView.ItemContainerStyle>
             <ListView.ItemTemplate>
-                <DataTemplate>
-                    <StackPanel Orientation="Horizontal" Spacing="8" Padding="4,6">
-                        <TextBlock Text="{Binding DisplayLabel}" FontSize="13" VerticalAlignment="Center"/>
-                    </StackPanel>
+                <DataTemplate x:DataType="models:PageModel">
+                    <Grid>
+                        <Grid.ContextFlyout>
+                            <MenuFlyout>
+                                <MenuFlyoutItem Text="再制此页" Click="OnDuplicatePageClick" Tag="{Binding}"/>
+                                <MenuFlyoutItem Text="删除此页" Click="OnDeletePageMenuClick" Tag="{Binding}"/>
+                            </MenuFlyout>
+                        </Grid.ContextFlyout>
+                        <!-- 缩略图（16:9 比例，高度 90px） -->
+                        <Border Background="{StaticResource SurfaceSunkenBrush}"
+                                BorderBrush="{StaticResource StrokeSubtleBrush}"
+                                BorderThickness="1" CornerRadius="5"
+                                Height="90" HorizontalAlignment="Stretch">
+                            <Image Stretch="UniformToFill" Source="{x:Null}"/>
+                        </Border>
+
+                        <!-- 页面标题（左下角半透明徽章） -->
+                        <Border Background="{StaticResource SurfaceRaisedBrush}"
+                                CornerRadius="3" Opacity="0.88"
+                                HorizontalAlignment="Left" VerticalAlignment="Bottom"
+                                Margin="5,0,0,5" Padding="5,2">
+                            <TextBlock Text="{Binding DisplayLabel}"
+                                       FontSize="10" FontWeight="Medium"
+                                       Foreground="{StaticResource TextPrimaryBrush}"
+                                       TextTrimming="CharacterEllipsis"
+                                       MaxWidth="120"/>
+                        </Border>
+
+                        <!-- 删除按钮（右上角） -->
+                        <Button Content="✕" Width="20" Height="20" FontSize="9"
+                                Padding="0"
+                                Background="{StaticResource SurfaceRaisedBrush}"
+                                BorderBrush="{StaticResource StrokeSubtleBrush}"
+                                BorderThickness="1"
+                                HorizontalAlignment="Right" VerticalAlignment="Top"
+                                Margin="0,5,5,0" CornerRadius="10"
+                                Click="OnDeletePage" Tag="{Binding}"
+                                ToolTipService.ToolTip="删除此页"/>
+                    </Grid>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>

@@ -1,0 +1,158 @@
+{
+  "formatVersion": 1,
+  "id": "ai-app-course-001",
+  "title": "用 AI 做出你自己想要的 App",
+  "author": "Ouyang Quan",
+  "createdAt": "2026-06-12T00:00:00Z",
+  "updatedAt": "2026-06-12T00:00:00Z",
+  "language": "zh-CN",
+  "stage": {
+    "designWidth": 1920,
+    "designHeight": 1080,
+    "scaleMode": "Uniform",
+    "background": "#FF0E1424",
+    "theme": "Dark"
+  },
+  "pages": [
+    {
+      "id": "cover", "file": "pages/01-cover.xaml",
+      "title": "封面", "section": "开场",
+      "transition": "Fade", "transitionDurationMs": 600,
+      "notes": "别讲道理，先抛承诺：30 分钟，从一句想法到一个能跑、能装进手机的东西。如果用 Wordie 演示，这里可以先打开它玩一局。"
+    },
+    {
+      "id": "roadmap", "file": "pages/02-roadmap.xaml",
+      "title": "本课路线", "section": "开场",
+      "transition": "SlideUp", "transitionDurationMs": 500,
+      "notes": "七步主线。重点提醒同学：今天最值钱的是第三步（提示词）和第五步（调试），其余是配套。"
+    },
+    {
+      "id": "needs", "file": "pages/03-needs.xaml",
+      "title": "一、需求构思", "section": "方法",
+      "transition": "SlideRight", "transitionDurationMs": 500,
+      "notes": "核心：AI 对模糊需求会自己脑补。先写用户故事再写功能。互动：问一句『你们想做的小东西是啥』，接两个就走。"
+    },
+    {
+      "id": "stack", "file": "pages/04-stack.xaml",
+      "title": "二、技术选型", "section": "方法",
+      "transition": "SlideRight", "transitionDurationMs": 400,
+      "notes": "新手优先选 AI 语料最多的主流栈。正反案例：Wordie 用 Web+Tauri 又快又稳；FluentCourse 用 WinUI 小众栈 AI 老出错。"
+    },
+    {
+      "id": "prompt", "file": "pages/05-prompt.xaml",
+      "title": "三、和 AI 协作（提示词）", "section": "方法",
+      "transition": "SlideRight", "transitionDurationMs": 400,
+      "notes": "全场重头戏。点『下一步』逐条展开三条。最后可切到 Wordie 的 prompt.md 现场印证：几千字说明书喂出来的。"
+    },
+    {
+      "id": "read-code", "file": "pages/06-read-code.xaml",
+      "title": "四、看懂代码", "section": "方法",
+      "transition": "SlideRight", "transitionDurationMs": 400,
+      "notes": "压到一个点：不用会写，但要会读个大概。看不懂就让 AI 解释、画结构图。一句带过即可。"
+    },
+    {
+      "id": "debug", "file": "pages/07-debug.xaml",
+      "title": "五、调试与验证", "section": "方法",
+      "transition": "SlideRight", "transitionDurationMs": 400,
+      "notes": "第二支柱。点『下一步』展开三条。互动：『被 AI 改了又坏、坏了又改气死过的举手』，最容易共鸣。"
+    },
+    {
+      "id": "ship", "file": "pages/08-ship.xaml",
+      "title": "六、版本管理 & 七、发布迭代", "section": "方法",
+      "transition": "SlideUp", "transitionDurationMs": 500,
+      "notes": "git 三个动作：改前存档、改坏回滚、定期提交——AI 开发的后悔药。发布：打包给别人用 + 收反馈再改，形成循环。"
+    },
+    {
+      "id": "demo-divider", "file": "pages/09-demo-divider.xaml",
+      "title": "实战 · 拆解 Wordie", "section": "实战",
+      "transition": "Fade", "transitionDurationMs": 700,
+      "notes": "从方法论切到真成品。Wordie 是讲者用 AI 做的跨平台背单词游戏，下一页把它对应到前面每一步。"
+    },
+    {
+      "id": "wordie", "file": "pages/10-wordie.xaml",
+      "title": "Wordie 是怎么做出来的", "section": "实战",
+      "transition": "SlideRight", "transitionDurationMs": 500,
+      "notes": "亮成品→揭秘 prompt.md→选型 Web+Tauri 一套出四端→调试痕迹（file:// 也要能跑）→发布 tauri build。每块对应一个课程模块。"
+    },
+    {
+      "id": "quiz-choice", "file": "pages/11-quiz-choice.xaml",
+      "title": "随堂检测 · 选择题", "section": "练习",
+      "transition": "Zoom", "transitionDurationMs": 500,
+      "notes": "三道选择题，检验方法论。让同学先选再点提交，逐题看解析。"
+    },
+    {
+      "id": "quiz-fill", "file": "pages/12-quiz-fill.xaml",
+      "title": "随堂检测 · 填空题", "section": "练习",
+      "transition": "SlideUp", "transitionDurationMs": 500,
+      "notes": "两道填空题，巩固 MVP/用户故事/git/一次一件事等关键词。"
+    },
+    {
+      "id": "closing", "file": "pages/13-closing.xaml",
+      "title": "收尾", "section": "收尾",
+      "transition": "Fade", "transitionDurationMs": 700,
+      "notes": "金句：AI 不是替你做，是放大你。行动召唤：挑一个自己想要的小东西，回去试一遍这七步。"
+    }
+  ],
+  "triggers": [
+    {
+      "id": "t-cover-load",
+      "page": "cover",
+      "on": { "type": "PageLoaded" },
+      "do": [
+        { "type": "PlayAnimation", "target": "EyebrowText", "animation": "FadeIn" },
+        { "type": "PlayAnimation", "target": "TitleMain",   "animation": "FadeInUp", "delay": 200 },
+        { "type": "PlayAnimation", "target": "TitleAccent", "animation": "FadeInUp", "delay": 400 },
+        { "type": "PlayAnimation", "target": "Subtitle",    "animation": "FadeIn",   "delay": 700 },
+        { "type": "PlayAnimation", "target": "MetaBlock",   "animation": "FadeIn",   "delay": 900 },
+        { "type": "PlayAnimation", "target": "StartButton", "animation": "FadeIn",   "delay": 1100 }
+      ]
+    },
+    {
+      "id": "t-cover-cta",
+      "page": "cover",
+      "on": { "type": "Click", "target": "StartButton" },
+      "do": [ { "type": "GoToPage", "page": "roadmap" } ]
+    },
+    {
+      "id": "t-cover-hover",
+      "page": "cover",
+      "on": { "type": "PointerEnter", "target": "StartButton", "once": true },
+      "do": [ { "type": "PlayAnimation", "target": "StartButton", "animation": "Pulse" } ]
+    },
+    {
+      "id": "t-roadmap-next",
+      "page": "roadmap",
+      "on": { "type": "Click", "target": "RoadmapNext" },
+      "do": [ { "type": "GoToPage", "page": "needs" } ]
+    },
+    {
+      "id": "t-prompt-step",
+      "page": "prompt",
+      "on": { "type": "Click", "target": "PromptNext" },
+      "stopAfterLastStep": true,
+      "steps": [
+        [ { "type": "NextStep", "target": "PromptReveal" } ],
+        [ { "type": "NextStep", "target": "PromptReveal" } ],
+        [ { "type": "NextStep", "target": "PromptReveal" } ]
+      ]
+    },
+    {
+      "id": "t-debug-step",
+      "page": "debug",
+      "on": { "type": "Click", "target": "DebugNext" },
+      "stopAfterLastStep": true,
+      "steps": [
+        [ { "type": "NextStep", "target": "DebugReveal" } ],
+        [ { "type": "NextStep", "target": "DebugReveal" } ],
+        [ { "type": "NextStep", "target": "DebugReveal" } ]
+      ]
+    },
+    {
+      "id": "t-divider-next",
+      "page": "demo-divider",
+      "on": { "type": "Click", "target": "DemoNext" },
+      "do": [ { "type": "GoToPage", "page": "wordie" } ]
+    }
+  ],
+  "assets": []
+}

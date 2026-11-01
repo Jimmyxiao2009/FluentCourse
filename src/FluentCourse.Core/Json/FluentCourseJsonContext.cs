@@ -24,4 +24,6 @@ namespace FluentCourse.Core.Json;
 [JsonSerializable(typeof(List<TriggerDescriptor>))]
 [JsonSerializable(typeof(List<List<ActionDescriptor>>))]
 [JsonSerializable(typeof(Dictionary<string, AnimationDescriptor>))]
+[JsonSerializable(typeof(DiagnosticEntry))]
+[JsonSerializable(typeof(DiagnosticCollection))]
 public sealed partial class FluentCourseJsonContext : JsonSerializerContext;

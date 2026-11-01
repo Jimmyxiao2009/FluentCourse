@@ -6,14 +6,10 @@ using FluentCourse.Core.Packaging;
 
 namespace FluentCourse.Designer.Models;
 
-/// <summary>
-/// In-memory representation of a .fcourse file being edited. Wraps the JSON manifest with
-/// the page XAML strings loaded alongside it, plus dirty tracking. Owns no streams — the
-/// <see cref="DocumentService"/> handles I/O.
-/// </summary>
 public sealed class DesignerDocument : INotifyPropertyChanged
 {
     private string? _sourcePath;
+    private string? _workingDirectory;
     private bool _isDirty;
     private PageModel? _selectedPage;
 
@@ -21,7 +17,8 @@ public sealed class DesignerDocument : INotifyPropertyChanged
     {
         Manifest = manifest;
         Pages = new ObservableCollection<PageModel>(
-            manifest.Pages.Select(p => new PageModel(p, pageXaml.TryGetValue(p.File, out var x) ? x : string.Empty)));
+            manifest.Pages.Select(p => PageModel.FromXaml(p,
+                pageXaml.TryGetValue(p.File, out var x) ? x : string.Empty)));
         Animations = new ObservableCollection<AnimationEntry>(
             manifest.Animations.Select(kv => new AnimationEntry(kv.Key, kv.Value)));
         Triggers = new ObservableCollection<TriggerDescriptor>(manifest.Triggers);
@@ -34,14 +31,26 @@ public sealed class DesignerDocument : INotifyPropertyChanged
     public ObservableCollection<TriggerDescriptor> Triggers { get; }
     public ObservableCollection<AssetDescriptor> Assets { get; }
 
-    /// <summary>Path to the source .fcourse file or directory. Null for new (unsaved) docs.</summary>
+    /// <summary>
+    /// 用户可见的保存位置：目录课件 = 目录本身；单文件课件 = .fcourse 文件路径。
+    /// null 表示尚未保存过（Ctrl+S 走"另存为"）。
+    /// </summary>
     public string? SourcePath
     {
         get => _sourcePath;
         set { if (_sourcePath != value) { _sourcePath = value; OnPropertyChanged(); OnPropertyChanged(nameof(DisplayName)); } }
     }
 
-    /// <summary>True if any in-memory change hasn't been written back to disk.</summary>
+    /// <summary>
+    /// 磁盘上的工作目录（页面/资产实际读写位置）：目录课件 = 自身；.fcourse = 解压出的临时目录；
+    /// 新建文档 = 临时目录。所有资产导入与画布资源解析都以它为根。
+    /// </summary>
+    public string? WorkingDirectory
+    {
+        get => _workingDirectory;
+        set { if (_workingDirectory != value) { _workingDirectory = value; OnPropertyChanged(); } }
+    }
+
     public bool IsDirty
     {
         get => _isDirty;
@@ -59,14 +68,12 @@ public sealed class DesignerDocument : INotifyPropertyChanged
         }
     }
 
-    /// <summary>Currently active page in the design surface / code view.</summary>
     public PageModel? SelectedPage
     {
         get => _selectedPage;
         set { if (_selectedPage != value) { _selectedPage = value; OnPropertyChanged(); } }
     }
 
-    /// <summary>Re-apply the in-memory page list back to the manifest's <see cref="CourseManifest.Pages"/>.</summary>
     public void FlushPagesToManifest()
     {
         Manifest.Pages.Clear();
@@ -96,68 +103,6 @@ public sealed class DesignerDocument : INotifyPropertyChanged
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 }
 
-/// <summary>One page in the document. Wraps a <see cref="PageDescriptor"/> with its XAML string.</summary>
-public sealed class PageModel : INotifyPropertyChanged
-{
-    private string _xaml;
-    private string? _xamlError;
-
-    public PageModel(PageDescriptor descriptor, string xaml)
-    {
-        Descriptor = descriptor;
-        _xaml = xaml;
-    }
-
-    public PageDescriptor Descriptor { get; }
-
-    public string Xaml
-    {
-        get => _xaml;
-        set
-        {
-            if (_xaml != value)
-            {
-                _xaml = value;
-                OnPropertyChanged();
-                OnPropertyChanged(nameof(DisplayLabel));
-            }
-        }
-    }
-
-    /// <summary>Last parse error from <see cref="FluentCourse.Designer.Services.XamlRoundTrip.TryLoad"/>.</summary>
-    public string? XamlError
-    {
-        get => _xamlError;
-        set
-        {
-            if (_xamlError != value)
-            {
-                _xamlError = value;
-                OnPropertyChanged();
-                OnPropertyChanged(nameof(HasError));
-                OnPropertyChanged(nameof(DisplayLabel));
-            }
-        }
-    }
-
-    public bool HasError => !string.IsNullOrEmpty(_xamlError);
-
-    public string DisplayLabel
-    {
-        get
-        {
-            var prefix = HasError ? "⚠ " : "";
-            var title = Descriptor.Title ?? Descriptor.Id;
-            return $"{prefix}{title}";
-        }
-    }
-
-    public event PropertyChangedEventHandler? PropertyChanged;
-    private void OnPropertyChanged([CallerMemberName] string? name = null) =>
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-}
-
-/// <summary>One entry in the document's animations dictionary.</summary>
 public sealed class AnimationEntry : INotifyPropertyChanged
 {
     public AnimationEntry(string name, AnimationDescriptor descriptor)

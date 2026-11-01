@@ -1,7 +1,10 @@
+using System;
 using FluentCourse.Core.Models;
+using FluentCourse.Designer.Services;
 using FluentCourse.Designer.ViewModels;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Windows.ApplicationModel.DataTransfer;
 using Windows.Storage.Pickers;
 
 namespace FluentCourse.Designer.Views;
@@ -25,43 +28,38 @@ public sealed partial class AssetsPane : UserControl
     private async void OnImportAsset(object sender, RoutedEventArgs e)
     {
         if (_vm?.Document is null) return;
-        var picker = new FileOpenPicker { ViewMode = PickerViewMode.Thumbnail };
-        picker.FileTypeFilter.Add("*");
-
-        var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(App.MainWindowInstance!);
-        WinRT.Interop.InitializeWithWindow.Initialize(picker, hwnd);
-        var file = await picker.PickSingleFileAsync();
-        if (file is null) return;
-
-        var sourceDir = _vm.Document.SourcePath
-            ?? System.IO.Path.Combine(System.IO.Path.GetTempPath(),
-                $"FluentCourse_{Guid.NewGuid():N}");
-        var assetsDir = System.IO.Path.Combine(sourceDir, "assets");
-        System.IO.Directory.CreateDirectory(assetsDir);
-
-        var fileName = System.IO.Path.GetFileName(file.Path);
-        var destPath = System.IO.Path.Combine(assetsDir, fileName);
-        System.IO.File.Copy(file.Path, destPath, overwrite: true);
-
-        var ext = System.IO.Path.GetExtension(fileName).ToLowerInvariant();
-        var assetType = ext switch
+        try
         {
-            ".png" or ".jpg" or ".jpeg" or ".gif" or ".webp" or ".bmp" => "image",
-            ".mp4" or ".mov" or ".avi" or ".wmv" => "video",
-            ".mp3" or ".m4a" or ".wav" or ".ogg" or ".flac" => "audio",
-            ".ttf" or ".otf" => "font",
-            ".json" => "lottie",
-            _ => "binary"
-        };
+            var picker = new FileOpenPicker { ViewMode = PickerViewMode.Thumbnail };
+            picker.FileTypeFilter.Add("*");
 
-        var key = System.IO.Path.GetFileNameWithoutExtension(fileName);
-        _vm.Document.Assets.Add(new AssetDescriptor
+            var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(App.MainWindowInstance!);
+            WinRT.Interop.InitializeWithWindow.Initialize(picker, hwnd);
+            var file = await picker.PickSingleFileAsync();
+            if (file is null) return;
+
+            // 走 ShellViewModel.ImportAsset 的同一套逻辑（复制进工作目录 + 注册 + 标脏），
+            // 不再各自维护一份会把素材丢进孤儿临时目录的副本实现。
+            var rel = _vm.ImportAsset(file.Path);
+            if (rel is null)
+            {
+                _vm.ReportDiagnostic("导入素材失败：无法复制文件。");
+                return;
+            }
+            Refresh();
+        }
+        catch (Exception ex)
         {
-            Key = key,
-            Path = $"assets/{fileName}",
-            Type = assetType
-        });
-        _vm.MarkDirty();
-        Refresh();
+            _vm?.ReportDiagnostic($"导入素材失败: {ex.Message}");
+        }
+    }
+
+    private void OnAssetDragStarting(object sender, DragItemsStartingEventArgs e)
+    {
+        if (e.Items.Count > 0 && e.Items[0] is AssetDescriptor asset)
+        {
+            e.Data.SetText(asset.Path);
+            e.Data.RequestedOperation = DataPackageOperation.Copy;
+        }
     }
 }

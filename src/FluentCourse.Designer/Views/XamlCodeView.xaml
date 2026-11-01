@@ -10,7 +10,11 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <TextBlock x:Name="PageLabel" Grid.Row="0" FontSize="12" Margin="8,4" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+        <StackPanel Grid.Row="0">
+            <TextBlock x:Name="PageLabel" FontSize="12" Margin="8,4" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+            <TextBlock x:Name="ErrorLabel" FontSize="12" Margin="8,0,8,4" TextWrapping="Wrap"
+                       Foreground="{ThemeResource SystemFillColorCriticalBrush}" Visibility="Collapsed"/>
+        </StackPanel>
 
         <TextBox x:Name="Editor" Grid.Row="1"
                  AcceptsReturn="True"

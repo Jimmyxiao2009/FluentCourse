@@ -65,6 +65,17 @@ public sealed class PageLoader
 /// </summary>
 internal static class AssetUriRewriter
 {
+    // 仅替换 XML 属性值（="..."）内部出现的 ms-fcourse:///，避免把 TextBlock 文本内容
+    // 等元素正文里的字面 URI 一并改写。项目约定属性值内不允许出现 ASCII 双引号,
+    // 因此用 ="[^"]*" 匹配整个属性值是安全的。
+    private static readonly System.Text.RegularExpressions.Regex AttributeValue =
+        new("=\"[^\"]*\"", System.Text.RegularExpressions.RegexOptions.Compiled);
+
     public static string Rewrite(string xaml) =>
-        xaml.Replace("ms-fcourse:///", "https://fcourse.local/", StringComparison.OrdinalIgnoreCase);
+        AttributeValue.Replace(xaml, m =>
+            m.Value.Contains("ms-fcourse:///", StringComparison.OrdinalIgnoreCase)
+                ? System.Text.RegularExpressions.Regex.Replace(
+                    m.Value, "ms-fcourse:///", "https://fcourse.local/",
+                    System.Text.RegularExpressions.RegexOptions.IgnoreCase)
+                : m.Value);
 }

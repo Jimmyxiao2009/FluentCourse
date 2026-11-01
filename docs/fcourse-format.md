@@ -306,13 +306,13 @@ MyCourse.fcourse              (ZIP)
 | `ScaleX` | `(UIElement.RenderTransform).(CompositeTransform.ScaleX)` | v1 |
 | `ScaleY` | `(UIElement.RenderTransform).(CompositeTransform.ScaleY)` | v1 |
 | `Rotation` | `(UIElement.RenderTransform).(CompositeTransform.Rotation)` | v1 |
-| `Color` | `(Control.Foreground).(SolidColorBrush.Color)` | v1 |
+| `Color` | 按目标类型选择：`TextBlock.Foreground` / `Shape.Fill` / `Control.Foreground` `.(SolidColorBrush.Color)` | v1 |
 | `Width` | `(FrameworkElement.Width)` | v1.1 |
 | `Height` | `(FrameworkElement.Height)` | v1.1 |
 | `FontSize` | `(Control.FontSize)` | v1.1 |
-| `CornerRadius` | `(Microsoft.UI.Xaml.Controls.Border.CornerRadius)` | v1.1 |
-| `BackgroundColor` | `(Panel.Background).(SolidColorBrush.Color)` | v1.1 |
-| `BorderColor` | `(Border.BorderBrush).(SolidColorBrush.Color)` | v1.1 |
+| `CornerRadius` | **不支持**（CornerRadius 是结构体，WinUI 无对应动画类型；运行时跳过该轨道并输出 Debug 警告） | v1.1（已废弃） |
+| `BackgroundColor` | 按目标类型选择：`Panel.Background` / `Border.Background` / `Shape.Fill` / `Control.Background` `.(SolidColorBrush.Color)` | v1.1 |
+| `BorderColor` | 按目标类型选择：`Border.BorderBrush` / `Shape.Stroke` / `Control.BorderBrush` `.(SolidColorBrush.Color)` | v1.1 |
 
 #### 缓动函数（`easing`）— v1.1 扩展
 

@@ -3,6 +3,36 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:controls="using:FluentCourse.Runtime.Controls">
 
+    <Style TargetType="controls:FormulaControl">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="controls:FormulaControl">
+                    <Border Background="Transparent" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                        <Image x:Name="PART_Image" Stretch="Uniform"
+                               HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="controls:CountdownControl">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="controls:CountdownControl">
+                    <Border Background="#E6182238" CornerRadius="14" Padding="28,14"
+                            HorizontalAlignment="Center" VerticalAlignment="Center"
+                            BorderBrush="#FF3A4A6B" BorderThickness="1">
+                        <TextBlock x:Name="PART_Display" Text="00:00"
+                                   FontSize="52" FontWeight="SemiBold"
+                                   FontFamily="Consolas, monospace"
+                                   Foreground="#FFFFFFFF"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <Style TargetType="controls:QuizControl">
         <Setter Property="Padding" Value="20"/>
         <Setter Property="CornerRadius" Value="12"/>

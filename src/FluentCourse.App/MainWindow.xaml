@@ -35,6 +35,32 @@
                        Foreground="{ThemeResource TextFillColorTertiaryBrush}"
                        IsHitTestVisible="False"/>
 
+            <!-- 左下角：主体动画 上一步/下一步 悬浮控件 -->
+            <Border x:Name="StepControls"
+                    HorizontalAlignment="Left" VerticalAlignment="Bottom"
+                    Margin="20" CornerRadius="20"
+                    Background="{ThemeResource AcrylicInAppFillColorDefaultBrush}"
+                    BorderBrush="{ThemeResource ControlStrokeColorDefaultBrush}"
+                    BorderThickness="1" Padding="4">
+                <StackPanel Orientation="Horizontal" Spacing="2">
+                    <Button x:Name="StepPrevBtn" Click="OnStepPrev"
+                            Background="Transparent" BorderThickness="0"
+                            CornerRadius="16" Padding="10,6"
+                            ToolTipService.ToolTip="上一步">
+                        <FontIcon Glyph="&#xE76B;" FontSize="14"/>
+                    </Button>
+                    <TextBlock x:Name="StepLabel" Text="0/0" VerticalAlignment="Center"
+                               FontSize="12" MinWidth="34" TextAlignment="Center"
+                               Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                    <Button x:Name="StepNextBtn" Click="OnStepNext"
+                            Background="Transparent" BorderThickness="0"
+                            CornerRadius="16" Padding="10,6"
+                            ToolTipService.ToolTip="下一步">
+                        <FontIcon Glyph="&#xE76C;" FontSize="14"/>
+                    </Button>
+                </StackPanel>
+            </Border>
+
             <!-- Page overview panel -->
             <Border x:Name="OverviewPanel"
                     Width="280"

@@ -26,8 +26,25 @@
             <TextBlock Text="过渡时长 (ms)" Style="{StaticResource PropertyLabel}"/>
             <TextBox x:Name="DurationMsBox" TextChanged="OnChanged" InputScope="Number"/>
 
-            <TextBlock Text="页背景色 (#AARRGGBB)" Style="{StaticResource PropertyLabel}"/>
-            <TextBox x:Name="BgBox" PlaceholderText="#FF1F1F1F" TextChanged="OnChanged"/>
+            <TextBlock Text="页面背景" Style="{StaticResource PropertyLabel}"/>
+            <Grid ColumnSpacing="6">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBox x:Name="BgBox" PlaceholderText="#FF1F1F1F" TextChanged="OnChanged"/>
+                <Border x:Name="BgSwatch" Grid.Column="1" Width="36" Height="32" CornerRadius="4"
+                        BorderBrush="{ThemeResource ControlStrokeColorDefaultBrush}" BorderThickness="1"/>
+            </Grid>
+            <StackPanel x:Name="BgPresetRow" Orientation="Horizontal" Spacing="6"/>
+            <Grid ColumnSpacing="6">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <Button Content="选择背景图片…" FontSize="12" HorizontalAlignment="Stretch" Click="OnPickBgImage"/>
+                <Button Grid.Column="1" Content="清除图片" FontSize="12" Click="OnClearBgImage"/>
+            </Grid>
 
             <TextBlock Text="演讲者备注" Style="{StaticResource PropertyLabel}"/>
             <TextBox x:Name="NotesBox" AcceptsReturn="True" MinHeight="80"
@@ -35,8 +52,9 @@
 
             <CheckBox x:Name="HiddenBox" Content="隐藏 (演示中跳过)" Checked="OnChanged" Unchecked="OnChanged"/>
 
+            <!-- 文件名只读：直接改路径会导致旧文件残留/覆盖其他页 -->
             <TextBlock Text="文件名 (相对路径)" Style="{StaticResource PropertyLabel}"/>
-            <TextBox x:Name="FileBox" TextChanged="OnChanged"/>
+            <TextBox x:Name="FileBox" IsReadOnly="True"/>
         </StackPanel>
     </ScrollViewer>
 </UserControl>

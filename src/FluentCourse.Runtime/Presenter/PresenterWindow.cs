@@ -1,7 +1,11 @@
+using System.Linq;
+using System.Text;
+using System.Collections.Generic;
 using FluentCourse.Core.Models;
 using FluentCourse.Runtime.Player;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Imaging;
 
 namespace FluentCourse.Runtime.Presenter;
@@ -19,6 +23,7 @@ public sealed class PresenterWindow : Window
     private TextBlock? _notesBlock;
     private Image? _nextThumb;
     private ContentPresenter? _mirrorHost;
+    private EventHandler<VariableChangedEventArgs>? _varHandler;
 
     public PresenterWindow(PagePlayer audience)
     {
@@ -38,7 +43,21 @@ public sealed class PresenterWindow : Window
         };
 
         Activated += OnFirstActivated;
-        Closed += (_, _) => _ticker.Stop();
+        Closed += OnClosed;
+    }
+
+    private void OnClosed(object sender, WindowEventArgs args)
+    {
+        // 关窗时解除全部订阅,否则窗口关闭后仍跟随翻页、重开后出现双份同步
+        _ticker.Stop();
+        Activated -= OnFirstActivated;
+        _audience.PageChanged -= OnAudiencePageChanged;
+        if (_varHandler is not null)
+        {
+            _audience.VariableChanged -= _varHandler;
+        }
+        _mirror?.Dispose();
+        _mirror = null;
     }
 
     private UIElement BuildUI()
@@ -55,12 +74,122 @@ public sealed class PresenterWindow : Window
         root.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
         root.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
 
-        // Row 0: timer + page count
+        // Row 0: timer + page count + control panel button
         _timerBlock = new TextBlock { FontSize = 32, Foreground = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.White) };
         _pageCountBlock = new TextBlock { FontSize = 18, VerticalAlignment = VerticalAlignment.Center, Foreground = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.LightGray) };
+        
+        var panelBtn = new Button
+        {
+            Content = "控制面板",
+            FontSize = 14,
+            VerticalAlignment = VerticalAlignment.Center,
+            Foreground = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.LightGray),
+            Background = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.Transparent),
+            BorderBrush = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.DimGray),
+            BorderThickness = new Thickness(1),
+            CornerRadius = new CornerRadius(4),
+            Padding = new Thickness(8, 4, 8, 4)
+        };
+
+        var warningDot = new Microsoft.UI.Xaml.Shapes.Ellipse
+        {
+            Width = 8,
+            Height = 8,
+            Fill = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.Red),
+            VerticalAlignment = VerticalAlignment.Top,
+            HorizontalAlignment = HorizontalAlignment.Right,
+            Margin = new Thickness(0, -4, -4, 0),
+            Visibility = Visibility.Collapsed
+        };
+
+        if (_audience.Manifest.Diagnostics != null &&
+            (_audience.Manifest.Diagnostics.Warnings.Count > 0 || _audience.Manifest.Diagnostics.Errors.Count > 0))
+        {
+            warningDot.Visibility = Visibility.Visible;
+        }
+
+        var btnGrid = new Grid();
+        btnGrid.Children.Add(panelBtn);
+        btnGrid.Children.Add(warningDot);
+
+        var flyout = new Flyout();
+        var pivot = new Pivot { Width = 360, Height = 480 };
+
+        // 1. Pages Tab
+        var pagesList = new ListView { SelectionMode = ListViewSelectionMode.Single };
+        pagesList.ItemTemplate = GetPageTemplate();
+        var pagesPivotItem = new PivotItem { Header = "页面", Content = pagesList };
+        pivot.Items.Add(pagesPivotItem);
+
+        // 2. Variables Tab
+        var varsList = new ListView { SelectionMode = ListViewSelectionMode.None };
+        varsList.ItemTemplate = GetVariableTemplate();
+        var varsPivotItem = new PivotItem { Header = "数据", Content = varsList };
+        pivot.Items.Add(varsPivotItem);
+
+        // 3. Diagnostics Tab
+        var diagList = new ListView { SelectionMode = ListViewSelectionMode.None };
+        diagList.ItemTemplate = GetDiagTemplate();
+        var diagPivotItem = new PivotItem { Header = "诊断", Content = diagList };
+        pivot.Items.Add(diagPivotItem);
+
+        flyout.Content = pivot;
+        panelBtn.Flyout = flyout;
+
+        flyout.Opening += (s, e) =>
+        {
+            var visiblePages = _audience.Manifest.Pages.Where(p => !p.Hidden).ToList();
+            pagesList.ItemsSource = visiblePages;
+            var currentIdx = visiblePages.FindIndex(p => p.Id == _audience.CurrentPageId);
+            if (currentIdx >= 0)
+                pagesList.SelectedIndex = currentIdx;
+
+            var vars = _audience.Variables.Select(kvp => new VariableItem 
+            { 
+                Name = kvp.Key, 
+                Value = kvp.Value?.ToString() ?? "null" 
+            }).ToList();
+            varsList.ItemsSource = vars;
+
+            var allDiags = new List<DiagnosticEntry>();
+            if (_audience.Manifest.Diagnostics != null)
+            {
+                allDiags.AddRange(_audience.Manifest.Diagnostics.Errors);
+                allDiags.AddRange(_audience.Manifest.Diagnostics.Warnings);
+            }
+            diagList.ItemsSource = allDiags;
+        };
+
+        pagesList.SelectionChanged += async (s, e) =>
+        {
+            if (pagesList.SelectedItem is PageDescriptor pd)
+            {
+                if (pd.Id != _audience.CurrentPageId)
+                {
+                    flyout.Hide();
+                    await _audience.GoToAsync(pd.Id);
+                }
+            }
+        };
+
+        _varHandler = (s, e) =>
+        {
+            DispatcherQueue?.TryEnqueue(() =>
+            {
+                var vars = _audience.Variables.Select(kvp => new VariableItem 
+                { 
+                    Name = kvp.Key, 
+                    Value = kvp.Value?.ToString() ?? "null" 
+                }).ToList();
+                varsList.ItemsSource = vars;
+            });
+        };
+        _audience.VariableChanged += _varHandler;
+
         var topBar = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 24 };
         topBar.Children.Add(_timerBlock);
         topBar.Children.Add(_pageCountBlock);
+        topBar.Children.Add(btnGrid);
         Grid.SetRow(topBar, 0);
         Grid.SetColumnSpan(topBar, 2);
         root.Children.Add(topBar);
@@ -125,6 +254,8 @@ public sealed class PresenterWindow : Window
         Activated -= OnFirstActivated;
         _mirror = new PagePlayer(_audience.Package, _mirrorHost!);
         _ticker.Start();
+        // 先清理可能残留的旧订阅,保证只挂一份
+        _audience.PageChanged -= OnAudiencePageChanged;
         _audience.PageChanged += OnAudiencePageChanged;
 
         if (_audience.CurrentPageId is { } id)
@@ -145,16 +276,20 @@ public sealed class PresenterWindow : Window
             if (_notesBlock is not null) _notesBlock.Text = desc.Notes ?? "";
             if (_pageCountBlock is not null)
             {
-                var idx = _audience.Manifest.Pages.FindIndex(p => p.Id == desc.Id);
-                _pageCountBlock.Text = $"{idx + 1} / {_audience.Manifest.Pages.Count}";
+                // 页码统计跳过 hidden 页,与播放器实际可翻页数保持一致
+                var visiblePages = _audience.Manifest.Pages.Where(p => !p.Hidden).ToList();
+                var idx = visiblePages.FindIndex(p => p.Id == desc.Id);
+                _pageCountBlock.Text = $"{idx + 1} / {visiblePages.Count}";
             }
         });
 
         try { await _mirror.GoToAsync(desc.Id); } catch { }
 
+        // 下一页缩略图同样跳过 hidden 页
         var i = _audience.Manifest.Pages.FindIndex(p => p.Id == desc.Id);
-        if (i >= 0 && i < _audience.Manifest.Pages.Count - 1)
-            await UpdateThumbAsync(desc, _audience.Manifest.Pages[i + 1]);
+        var next = _audience.NextVisibleIndex(i);
+        if (next >= 0)
+            await UpdateThumbAsync(desc, _audience.Manifest.Pages[next]);
         else
             DispatcherQueue?.TryEnqueue(() => { if (_nextThumb is not null) _nextThumb.Source = null; });
     }
@@ -183,4 +318,47 @@ public sealed class PresenterWindow : Window
             }
         }
     }
+
+    private DataTemplate GetPageTemplate()
+    {
+        var xaml = "<DataTemplate xmlns=\"http://schemas.microsoft.com/winfx/2006/xaml/presentation\">" +
+                   "  <StackPanel Padding=\"4,6\" Spacing=\"2\">" +
+                   "    <TextBlock Text=\"{Binding Title}\" FontSize=\"14\" Foreground=\"White\"/>" +
+                   "    <TextBlock Text=\"{Binding Id}\" FontSize=\"11\" Foreground=\"Gray\"/>" +
+                   "  </StackPanel>" +
+                   "</DataTemplate>";
+        return (DataTemplate)Microsoft.UI.Xaml.Markup.XamlReader.Load(xaml);
+    }
+
+    private DataTemplate GetVariableTemplate()
+    {
+        var xaml = "<DataTemplate xmlns=\"http://schemas.microsoft.com/winfx/2006/xaml/presentation\">" +
+                   "  <Grid Padding=\"4,6\">" +
+                   "    <Grid.ColumnDefinitions>" +
+                   "      <ColumnDefinition Width=\"*\"/>" +
+                   "      <ColumnDefinition Width=\"Auto\"/>" +
+                   "    </Grid.ColumnDefinitions>" +
+                   "    <TextBlock Text=\"{Binding Name}\" FontSize=\"14\" Foreground=\"White\" FontWeight=\"SemiBold\"/>" +
+                   "    <TextBlock Grid.Column=\"1\" Text=\"{Binding Value}\" FontSize=\"14\" Foreground=\"#4CAF50\"/>" +
+                   "  </Grid>" +
+                   "</DataTemplate>";
+        return (DataTemplate)Microsoft.UI.Xaml.Markup.XamlReader.Load(xaml);
+    }
+
+    private DataTemplate GetDiagTemplate()
+    {
+        var xaml = "<DataTemplate xmlns=\"http://schemas.microsoft.com/winfx/2006/xaml/presentation\">" +
+                   "  <StackPanel Padding=\"4,6\" Spacing=\"2\">" +
+                   "    <TextBlock Text=\"{Binding Message}\" FontSize=\"13\" Foreground=\"#FF5252\" TextWrapping=\"Wrap\"/>" +
+                   "    <TextBlock Text=\"{Binding Location}\" FontSize=\"11\" Foreground=\"Gray\"/>" +
+                   "  </StackPanel>" +
+                   "</DataTemplate>";
+        return (DataTemplate)Microsoft.UI.Xaml.Markup.XamlReader.Load(xaml);
+    }
+}
+
+public class VariableItem
+{
+    public string Name { get; set; } = "";
+    public string Value { get; set; } = "";
 }

@@ -7,7 +7,13 @@
     <Authors>FluentCourse Project</Authors>
     <Product>FluentCourse</Product>
     <RootNamespace>FluentCourse</RootNamespace>
-    <AppxPackage>false</AppxPackage>
-    <EnablePriGen>false</EnablePriGen>
+    <!-- 默认关闭 Appx/PRI:本机 dotnet build 缺 PRI 任务,关掉才能编非打包构建。
+         打 MSIX 时传 -p:BuildForMsix=true(须用 VS 的 MSBuild,它带 PRI 任务),
+         此时不强制 EnablePriGen,交由 WinUI SDK 按项目类型决定默认值。 -->
+    <AppxPackage Condition="'$(BuildForMsix)' != 'true'">false</AppxPackage>
+    <EnablePriGen Condition="'$(BuildForMsix)' != 'true'">false</EnablePriGen>
+    <AppxGeneratePriEnabled Condition="'$(BuildForMsix)' != 'true'">false</AppxGeneratePriEnabled>
+    <EnablePriGenTooling Condition="'$(BuildForMsix)' != 'true'">false</EnablePriGenTooling>
+    <EnableCoreMrtTooling Condition="'$(BuildForMsix)' != 'true'">false</EnableCoreMrtTooling>
   </PropertyGroup>
 </Project>

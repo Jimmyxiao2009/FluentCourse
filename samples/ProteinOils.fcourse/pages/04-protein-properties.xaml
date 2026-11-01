@@ -1,8 +1,7 @@
 <Grid xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:fc="using:FluentCourse.Runtime.Controls"
-      Background="#FF1A1A2E"
-      Padding="100">
+      Background="#FF0E1424">
 
     <Grid.RowDefinitions>
         <RowDefinition Height="Auto"/>
@@ -10,83 +9,239 @@
         <RowDefinition Height="Auto"/>
     </Grid.RowDefinitions>
 
-    <TextBlock Grid.Row="0"
-               Text="二、蛋白质的化学性质"
-               FontSize="48" FontWeight="SemiBold" Foreground="White"
-               Margin="0,0,0,30"/>
+    <!-- =================== HeaderStrip =================== -->
+    <Grid Grid.Row="0" Margin="100,72,100,0">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
 
-    <fc:StepRevealControl x:Name="PropReveal" Grid.Row="1">
-        <Border BorderThickness="1" CornerRadius="10"
-                BorderBrush="#FF2A2A4A" Padding="28,24" Margin="0,0,0,16"
-                Background="#FF16162E">
-            <StackPanel Spacing="8">
-                <StackPanel Orientation="Horizontal" Spacing="12">
-                    <Border Background="#FFE94560" CornerRadius="4" Padding="6,2">
-                        <TextBlock Text="1" FontSize="16" Foreground="White" FontWeight="Bold"/>
-                    </Border>
-                    <TextBlock Text="水解反应" FontSize="32" FontWeight="SemiBold" Foreground="White"/>
-                </StackPanel>
-                <TextBlock TextWrapping="Wrap" FontSize="22" Foreground="#FFCCCCCC" LineHeight="34" Margin="0,8,0,0"
-                           Text="蛋白质 → 多肽 → 氨基酸"/>
-                <TextBlock FontSize="18" Foreground="#FF8888AA" Text="酸、碱或酶的催化下水解逐步进行，最终产物为多种氨基酸。"/>
-            </StackPanel>
+        <Border Grid.Column="0"
+                Background="#33E94560"
+                BorderBrush="#FFE94560" BorderThickness="1"
+                CornerRadius="4"
+                Padding="14,6">
+            <TextBlock Text="蛋白质"
+                       FontSize="16" FontWeight="SemiBold"
+                       Foreground="#FFE94560"/>
         </Border>
 
-        <Border BorderThickness="1" CornerRadius="10"
-                BorderBrush="#FF2A2A4A" Padding="28,24" Margin="0,0,0,16"
-                Background="#FF16162E">
-            <StackPanel Spacing="8">
-                <StackPanel Orientation="Horizontal" Spacing="12">
-                    <Border Background="#FF0F3460" CornerRadius="4" Padding="6,2">
-                        <TextBlock Text="2" FontSize="16" Foreground="White" FontWeight="Bold"/>
-                    </Border>
-                    <TextBlock Text="变性（不可逆）" FontSize="32" FontWeight="SemiBold" Foreground="White"/>
-                </StackPanel>
-                <TextBlock TextWrapping="Wrap" FontSize="22" Foreground="#FFCCCCCC" LineHeight="34" Margin="0,8,0,0">
-                    蛋白质在
-                    <Run Text="加热" Foreground="#FFE94560" FontWeight="SemiBold"/>、
-                    <Run Text="紫外线" Foreground="#FFE94560" FontWeight="SemiBold"/>、
-                    <Run Text="重金属盐" Foreground="#FFE94560" FontWeight="SemiBold"/>、
-                    <Run Text="强酸/强碱" Foreground="#FFE94560" FontWeight="SemiBold"/>、
-                    <Run Text="乙醇" Foreground="#FFE94560" FontWeight="SemiBold"/>
-                    等条件下，构象被破坏，溶解度下降，失去生理活性。
-                </TextBlock>
-                <Border Background="#1A0F3460" Padding="16,12" CornerRadius="6" Margin="0,8,0,0">
-                    <TextBlock FontSize="18" Foreground="#FF9090AA" TextWrapping="Wrap"
-                               Text="盐析（加Na₂SO₄等轻金属盐）是可逆的；变性是不可逆的。医院用酒精消毒、重金属中毒急救都是利用变性原理。"/>
+        <TextBlock Grid.Column="1"
+                   Text="二、蛋白质的化学性质"
+                   FontSize="40" FontWeight="SemiBold"
+                   Foreground="#FFF5F7FB"
+                   VerticalAlignment="Center"
+                   Margin="20,0,0,0"/>
+
+        <TextBlock Grid.Column="2"
+                   Text="4 / 11"
+                   FontSize="16"
+                   Foreground="#FF8893AC"
+                   VerticalAlignment="Center"/>
+    </Grid>
+
+    <Rectangle Grid.Row="0" Height="1" Margin="100,16,100,0"
+               VerticalAlignment="Bottom"
+               Fill="#FF252D48"/>
+
+    <!-- =================== Body =================== -->
+    <Grid Grid.Row="1" Margin="100,40,100,40">
+        <fc:StepRevealControl x:Name="PropReveal">
+            <StackPanel Spacing="16">
+
+                <!-- Step 1: 水解 -->
+                <Border BorderThickness="1" CornerRadius="10"
+                        BorderBrush="#FF252D48"
+                        Background="#FF161D33"
+                        Padding="28,24">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel Grid.Column="0" Spacing="12">
+                            <StackPanel Orientation="Horizontal" Spacing="12">
+                                <Border Background="#FFE94560" CornerRadius="4" Padding="10,4">
+                                    <TextBlock Text="1" FontSize="16" FontWeight="SemiBold" Foreground="White"/>
+                                </Border>
+                                <TextBlock Text="水解反应"
+                                           FontSize="28" FontWeight="SemiBold"
+                                           Foreground="#FFF5F7FB"
+                                           VerticalAlignment="Center"/>
+                            </StackPanel>
+
+                            <Border BorderThickness="1" CornerRadius="6"
+                                    BorderBrush="#FF3B4566"
+                                    Background="#FF1E2747"
+                                    Padding="20,14"
+                                    HorizontalAlignment="Left">
+                                <TextBlock Text="蛋白质   →   多肽   →   氨基酸"
+                                           FontSize="22"
+                                           FontFamily="Consolas, Cambria Math"
+                                           Foreground="#FFF5F7FB"/>
+                            </Border>
+
+                            <TextBlock TextWrapping="Wrap" FontSize="20" Foreground="#FFC7CEDD" LineHeight="32">
+                                在 <Run Text="酸、碱或酶" Foreground="#FFE94560" FontWeight="SemiBold"/>
+                                的催化下逐步水解，最终产物为多种 <Run Text="氨基酸" Foreground="#FFE94560" FontWeight="SemiBold"/>。
+                                水解是蛋白质的"分解"过程。
+                            </TextBlock>
+                        </StackPanel>
+
+                        <Border Grid.Column="1"
+                                Width="280"
+                                BorderBrush="#FF3B4566" BorderThickness="1"
+                                CornerRadius="6"
+                                Background="#FF1E2747"
+                                Padding="16"
+                                VerticalAlignment="Center"
+                                Margin="24,0,0,0">
+                            <Image Source="ms-fcourse:///assets/image2.jpeg"
+                                   Stretch="Uniform"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"/>
+                        </Border>
+
+                    </Grid>
                 </Border>
-            </StackPanel>
-        </Border>
 
-        <Border BorderThickness="1" CornerRadius="10"
-                BorderBrush="#FF2A2A4A" Padding="28,24" Margin="0,0,0,16"
-                Background="#FF16162E">
-            <StackPanel Spacing="8">
-                <StackPanel Orientation="Horizontal" Spacing="12">
-                    <Border Background="#FF533A83" CornerRadius="4" Padding="6,2">
-                        <TextBlock Text="3" FontSize="16" Foreground="White" FontWeight="Bold"/>
-                    </Border>
-                    <TextBlock Text="鉴别方法" FontSize="32" FontWeight="SemiBold" Foreground="White"/>
-                </StackPanel>
-                <TextBlock TextWrapping="Wrap" FontSize="22" Foreground="#FFCCCCCC" LineHeight="34" Margin="0,8,0,0">
-                    <Run Text="显色反应："/>含<Run Text="苯环" Foreground="#FF00D2FF"/>的蛋白质遇浓硝酸呈<Run Text="黄色" Foreground="#FFE94560"/>。
-                </TextBlock>
-                <TextBlock TextWrapping="Wrap" FontSize="22" Foreground="#FFCCCCCC" LineHeight="34">
-                    <Run Text="燃烧法："/>蛋白质灼烧时有<Run Text="烧焦羽毛的气味" Foreground="#FFE94560" FontWeight="SemiBold"/>。
-                    可用于鉴别<Run Text="丝" Foreground="#FF00D2FF"/>、<Run Text="毛" Foreground="#FF00D2FF"/>织品与化纤。
-                </TextBlock>
-            </StackPanel>
-        </Border>
-    </fc:StepRevealControl>
+                <!-- Step 2: 变性 -->
+                <Border BorderThickness="1" CornerRadius="10"
+                        BorderBrush="#FF252D48"
+                        Background="#FF161D33"
+                        Padding="28,24">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
 
-    <Border Grid.Row="2" BorderBrush="#FF2A2A4A" BorderThickness="0,1,0,0" Padding="0,16,0,0">
+                        <StackPanel Grid.Column="0" Spacing="12">
+                            <StackPanel Orientation="Horizontal" Spacing="12">
+                                <Border Background="#FFE94560" CornerRadius="4" Padding="10,4">
+                                    <TextBlock Text="2" FontSize="16" FontWeight="SemiBold" Foreground="White"/>
+                                </Border>
+                                <TextBlock Text="变性（不可逆）"
+                                           FontSize="28" FontWeight="SemiBold"
+                                           Foreground="#FFF5F7FB"
+                                           VerticalAlignment="Center"/>
+                            </StackPanel>
+
+                            <TextBlock TextWrapping="Wrap" FontSize="20" Foreground="#FFC7CEDD" LineHeight="32">
+                                在 <Run Text="加热" Foreground="#FFE94560" FontWeight="SemiBold"/>、
+                                <Run Text="紫外线" Foreground="#FFE94560" FontWeight="SemiBold"/>、
+                                <Run Text="重金属盐" Foreground="#FFE94560" FontWeight="SemiBold"/>、
+                                <Run Text="强酸/强碱" Foreground="#FFE94560" FontWeight="SemiBold"/>、
+                                <Run Text="乙醇" Foreground="#FFE94560" FontWeight="SemiBold"/>
+                                等条件下，蛋白质的构象被破坏，溶解度下降，
+                                <Run Text="失去生理活性" Foreground="#FFE94560" FontWeight="SemiBold"/>。
+                            </TextBlock>
+
+                            <Border BorderThickness="1" CornerRadius="6"
+                                    BorderBrush="#33E94560"
+                                    Background="#33E94560"
+                                    Padding="16,12">
+                                <TextBlock TextWrapping="Wrap" FontSize="18" Foreground="#FFC7CEDD" LineHeight="28">
+                                    <Run Text="盐析（加 Na₂SO₄ 等轻金属盐）是" />
+                                    <Run Text="可逆" Foreground="#FFE94560" FontWeight="SemiBold"/>
+                                    <Run Text="的；变性是" />
+                                    <Run Text="不可逆" Foreground="#FFE94560" FontWeight="SemiBold"/>
+                                    <Run Text="的。医院用酒精消毒、重金属中毒急救均利用变性原理。" />
+                                </TextBlock>
+                            </Border>
+                        </StackPanel>
+
+                        <Border Grid.Column="1"
+                                Width="280"
+                                BorderBrush="#FF3B4566" BorderThickness="1"
+                                CornerRadius="6"
+                                Background="#FF1E2747"
+                                Padding="16"
+                                VerticalAlignment="Center"
+                                Margin="24,0,0,0">
+                            <Image Source="ms-fcourse:///assets/image6.png"
+                                   Stretch="Uniform"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"/>
+                        </Border>
+
+                    </Grid>
+                </Border>
+
+                <!-- Step 3: 鉴别 -->
+                <Border BorderThickness="1" CornerRadius="10"
+                        BorderBrush="#FF252D48"
+                        Background="#FF161D33"
+                        Padding="28,24">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel Grid.Column="0" Spacing="12">
+                            <StackPanel Orientation="Horizontal" Spacing="12">
+                                <Border Background="#FFE94560" CornerRadius="4" Padding="10,4">
+                                    <TextBlock Text="3" FontSize="16" FontWeight="SemiBold" Foreground="White"/>
+                                </Border>
+                                <TextBlock Text="鉴别方法"
+                                           FontSize="28" FontWeight="SemiBold"
+                                           Foreground="#FFF5F7FB"
+                                           VerticalAlignment="Center"/>
+                            </StackPanel>
+
+                            <StackPanel Spacing="6">
+                                <TextBlock TextWrapping="Wrap" FontSize="20" Foreground="#FFC7CEDD" LineHeight="32">
+                                    <Run Text="① 显色反应：" Foreground="#FFE94560" FontWeight="SemiBold"/>
+                                    含 <Run Text="苯环" Foreground="#FFF5F7FB" FontWeight="SemiBold"/>
+                                    的蛋白质遇浓硝酸呈 <Run Text="黄色" Foreground="#FFE94560" FontWeight="SemiBold"/>。
+                                </TextBlock>
+                                <TextBlock TextWrapping="Wrap" FontSize="20" Foreground="#FFC7CEDD" LineHeight="32">
+                                    <Run Text="② 燃烧法：" Foreground="#FFE94560" FontWeight="SemiBold"/>
+                                    灼烧时有 <Run Text="烧焦羽毛的气味" Foreground="#FFE94560" FontWeight="SemiBold"/>，
+                                    可用于鉴别 <Run Text="丝、毛" Foreground="#FFF5F7FB" FontWeight="SemiBold"/> 织品与化纤。
+                                </TextBlock>
+                            </StackPanel>
+                        </StackPanel>
+
+                        <Border Grid.Column="1"
+                                Width="280"
+                                BorderBrush="#FF3B4566" BorderThickness="1"
+                                CornerRadius="6"
+                                Background="#FF1E2747"
+                                Padding="16"
+                                VerticalAlignment="Center"
+                                Margin="24,0,0,0">
+                            <Image Source="ms-fcourse:///assets/image7.png"
+                                   Stretch="Uniform"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"/>
+                        </Border>
+
+                    </Grid>
+                </Border>
+
+            </StackPanel>
+        </fc:StepRevealControl>
+    </Grid>
+
+    <!-- =================== FooterStrip =================== -->
+    <Border Grid.Row="2" Margin="100,0,100,72"
+            BorderBrush="#FF252D48" BorderThickness="0,1,0,0"
+            Padding="0,24,0,0">
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="12">
-            <TextBlock Text="点击按钮逐步显示" Foreground="#FF8888AA" FontSize="16" VerticalAlignment="Center"/>
+            <TextBlock Text="点击按钮逐步显示"
+                       Foreground="#FF8893AC" FontSize="16"
+                       VerticalAlignment="Center" Margin="0,0,12,0"/>
             <Button x:Name="NextPoint"
-                    Content="下一步 ▶"
-                    FontSize="18" Padding="24,10"
-                    Background="#FFE94560" Foreground="White"
-                    CornerRadius="6" BorderThickness="0"/>
+                    Content="下一步  ▶"
+                    FontSize="20" Padding="32,12"
+                    Background="#FFE94560"
+                    Foreground="White"
+                    CornerRadius="8"
+                    BorderThickness="0"/>
         </StackPanel>
     </Border>
 </Grid>

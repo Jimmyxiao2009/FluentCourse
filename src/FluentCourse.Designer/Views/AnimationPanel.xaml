@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UserControl
+    x:Class="FluentCourse.Designer.Views.AnimationPanel"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Spacing="8" Margin="8">
+
+            <TextBlock Text="本页动画" FontSize="15" FontWeight="SemiBold"/>
+
+            <!-- ＋ 给选中元素加主体动画 -->
+            <Expander x:Name="AddExpander" HorizontalAlignment="Stretch"
+                      HorizontalContentAlignment="Stretch" Header="＋ 给选中元素加动画">
+                <StackPanel Spacing="6">
+                    <TextBlock x:Name="NoElementHint" Text="先在画布上选中一个元素。"
+                               FontSize="11" TextWrapping="Wrap"
+                               Foreground="{StaticResource TextTertiaryBrush}"/>
+                    <StackPanel x:Name="AddArea" Spacing="6" Visibility="Collapsed">
+                        <Grid ColumnSpacing="4">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="48"/><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="进入" VerticalAlignment="Center" FontSize="11"/>
+                            <ComboBox x:Name="EnterEffect" Grid.Column="1" FontSize="12" PlaceholderText="选择" HorizontalAlignment="Stretch"/>
+                            <Button Grid.Column="2" Content="+" FontSize="12" Width="32" Click="OnAddEnter"/>
+                        </Grid>
+                        <Grid ColumnSpacing="4">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="48"/><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="退出" VerticalAlignment="Center" FontSize="11"/>
+                            <ComboBox x:Name="ExitEffect" Grid.Column="1" FontSize="12" PlaceholderText="选择" HorizontalAlignment="Stretch"/>
+                            <Button Grid.Column="2" Content="+" FontSize="12" Width="32" Click="OnAddExit"/>
+                        </Grid>
+                        <Grid ColumnSpacing="4">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="48"/><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="强调" VerticalAlignment="Center" FontSize="11"/>
+                            <ComboBox x:Name="EmphasisEffect" Grid.Column="1" FontSize="12" PlaceholderText="选择" HorizontalAlignment="Stretch"/>
+                            <Button Grid.Column="2" Content="+" FontSize="12" Width="32" Click="OnAddEmphasis"/>
+                        </Grid>
+                        <Grid ColumnSpacing="4">
+                            <Grid.ColumnDefinitions><ColumnDefinition Width="48"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                            <TextBlock Text="时长" VerticalAlignment="Center" FontSize="11"/>
+                            <NumberBox x:Name="DurationBox" Grid.Column="1" Value="600" Minimum="100" Maximum="10000"
+                                       SmallChange="100" FontSize="12"/>
+                        </Grid>
+                    </StackPanel>
+                </StackPanel>
+            </Expander>
+
+            <!-- 当页所有动画总览 -->
+            <ItemsControl x:Name="OverviewList">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Button Click="OnAnimItemClick" Tag="{Binding}"
+                                Background="Transparent" BorderThickness="0"
+                                HorizontalAlignment="Stretch" HorizontalContentAlignment="Left"
+                                Padding="6,5" Margin="0,0,0,2">
+                            <StackPanel Orientation="Horizontal" Spacing="6">
+                                <TextBlock Text="{Binding Icon}" FontSize="13" VerticalAlignment="Top"/>
+                                <TextBlock Text="{Binding Title}" FontSize="12" TextWrapping="Wrap"/>
+                            </StackPanel>
+                        </Button>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+            <TextBlock x:Name="OverviewEmpty"
+                       Text="本页还没有动画。选中元素加进入/退出/强调，或给按钮设“点击动作”。"
+                       FontSize="11" TextWrapping="Wrap"
+                       Foreground="{StaticResource TextTertiaryBrush}"/>
+
+            <!-- 选中项的细节面板 -->
+            <Border x:Name="DetailPanel" Visibility="Collapsed"
+                    Background="{StaticResource SurfaceRaisedBrush}"
+                    BorderBrush="{StaticResource StrokeSubtleBrush}"
+                    BorderThickness="1" CornerRadius="6" Padding="8">
+                <StackPanel x:Name="DetailContent" Spacing="6"/>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

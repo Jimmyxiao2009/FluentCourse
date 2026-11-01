@@ -1,0 +1,188 @@
+<Grid xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      Background="#FF0E1424">
+
+    <Grid.RowDefinitions>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="*"/>
+    </Grid.RowDefinitions>
+
+    <!-- =================== HeaderStrip =================== -->
+    <Grid Grid.Row="0" Margin="100,72,100,0">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+
+        <Border Grid.Column="0"
+                Background="#3300B4D8"
+                BorderBrush="#FF00B4D8" BorderThickness="1"
+                CornerRadius="4"
+                Padding="14,6">
+            <TextBlock Text="油脂"
+                       FontSize="16" FontWeight="SemiBold"
+                       Foreground="#FF00B4D8"/>
+        </Border>
+
+        <TextBlock Grid.Column="1"
+                   Text="三、油脂的应用"
+                   FontSize="40" FontWeight="SemiBold"
+                   Foreground="#FFF5F7FB"
+                   VerticalAlignment="Center"
+                   Margin="20,0,0,0"/>
+
+        <TextBlock Grid.Column="2"
+                   Text="9 / 11"
+                   FontSize="16"
+                   Foreground="#FF8893AC"
+                   VerticalAlignment="Center"/>
+    </Grid>
+
+    <Rectangle Grid.Row="0" Height="1" Margin="100,16,100,0"
+               VerticalAlignment="Bottom"
+               Fill="#FF252D48"/>
+
+    <!-- =================== Body =================== -->
+    <Grid Grid.Row="1" Margin="100,40,100,60">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- Card 1: 营养与烹饪 -->
+        <Border Grid.Column="0"
+                BorderThickness="1" CornerRadius="10"
+                BorderBrush="#FF252D48"
+                Background="#FF161D33"
+                Margin="0,0,12,0">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="240"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <Border Grid.Row="0"
+                        Background="#FF1E2747"
+                        CornerRadius="10,10,0,0">
+                    <Rectangle Margin="0" Opacity="0.22">
+                        <Rectangle.Fill>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                <GradientStop Color="#FF00B4D8" Offset="0.0"/>
+                                <GradientStop Color="#FF8B5CF6" Offset="1.0"/>
+                            </LinearGradientBrush>
+                        </Rectangle.Fill>
+                    </Rectangle>
+                </Border>
+
+                <StackPanel Grid.Row="1" Spacing="12" Padding="28,24">
+                    <StackPanel Orientation="Horizontal" Spacing="12">
+                        <Border Background="#FF00B4D8" CornerRadius="4" Padding="10,4">
+                            <TextBlock Text="01" FontSize="14" FontWeight="SemiBold" Foreground="White"/>
+                        </Border>
+                        <TextBlock Text="营养与烹饪"
+                                   FontSize="26" FontWeight="SemiBold"
+                                   Foreground="#FFF5F7FB"
+                                   VerticalAlignment="Center"/>
+                    </StackPanel>
+                    <TextBlock TextWrapping="Wrap" FontSize="18" Foreground="#FFC7CEDD" LineHeight="28">
+                        油脂是 <Run Text="热值最高" Foreground="#FF00B4D8" FontWeight="SemiBold"/>
+                        的营养物质（1 g ≈ 39 kJ）。
+                        烹饪中作热介质，产生特有风味。
+                        <Run Text="适量摄入" Foreground="#FF00B4D8" FontWeight="SemiBold"/>，
+                        过量影响健康。
+                    </TextBlock>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- Card 2: 化工原料 -->
+        <Border Grid.Column="1"
+                BorderThickness="1" CornerRadius="10"
+                BorderBrush="#FF252D48"
+                Background="#FF161D33"
+                Margin="6,0,6,0">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="240"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <Border Grid.Row="0"
+                        Background="#FF1E2747"
+                        CornerRadius="10,10,0,0">
+                    <Image Source="ms-fcourse:///assets/image22.png"
+                           Stretch="Uniform"
+                           Opacity="0.9"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"/>
+                </Border>
+
+                <StackPanel Grid.Row="1" Spacing="12" Padding="28,24">
+                    <StackPanel Orientation="Horizontal" Spacing="12">
+                        <Border Background="#FF00B4D8" CornerRadius="4" Padding="10,4">
+                            <TextBlock Text="02" FontSize="14" FontWeight="SemiBold" Foreground="White"/>
+                        </Border>
+                        <TextBlock Text="化工原料"
+                                   FontSize="26" FontWeight="SemiBold"
+                                   Foreground="#FFF5F7FB"
+                                   VerticalAlignment="Center"/>
+                    </StackPanel>
+                    <TextBlock TextWrapping="Wrap" FontSize="18" Foreground="#FFC7CEDD" LineHeight="28">
+                        皂化反应制 <Run Text="肥皂、甘油" Foreground="#FF00B4D8" FontWeight="SemiBold"/>。
+                        氢化植物油制 <Run Text="人造奶油、起酥油" Foreground="#FF00B4D8" FontWeight="SemiBold"/>。
+                        甘油广泛用于化妆品、药品、炸药。
+                    </TextBlock>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- Card 3: 生物能源 -->
+        <Border Grid.Column="2"
+                BorderThickness="1" CornerRadius="10"
+                BorderBrush="#FF252D48"
+                Background="#FF161D33"
+                Margin="12,0,0,0">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="240"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <Border Grid.Row="0"
+                        Background="#FF1E2747"
+                        CornerRadius="10,10,0,0">
+                    <Rectangle Margin="0" Opacity="0.22">
+                        <Rectangle.Fill>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                <GradientStop Color="#FF22C55E" Offset="0.0"/>
+                                <GradientStop Color="#FF00B4D8" Offset="1.0"/>
+                            </LinearGradientBrush>
+                        </Rectangle.Fill>
+                    </Rectangle>
+                </Border>
+
+                <StackPanel Grid.Row="1" Spacing="12" Padding="28,24">
+                    <StackPanel Orientation="Horizontal" Spacing="12">
+                        <Border Background="#FF00B4D8" CornerRadius="4" Padding="10,4">
+                            <TextBlock Text="03" FontSize="14" FontWeight="SemiBold" Foreground="White"/>
+                        </Border>
+                        <TextBlock Text="生物能源"
+                                   FontSize="26" FontWeight="SemiBold"
+                                   Foreground="#FFF5F7FB"
+                                   VerticalAlignment="Center"/>
+                    </StackPanel>
+                    <TextBlock TextWrapping="Wrap" FontSize="18" Foreground="#FFC7CEDD" LineHeight="28">
+                        <Run Text="生物柴油" Foreground="#FF00B4D8" FontWeight="SemiBold"/>
+                        （油脂甲酯化）替代石化柴油。
+                        用于 <Run Text="润滑油、表面活性剂、涂料" Foreground="#FF00B4D8" FontWeight="SemiBold"/>
+                        等。是重要的 <Run Text="可再生" Foreground="#FF00B4D8" FontWeight="SemiBold"/>
+                        生物质资源。
+                    </TextBlock>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+    </Grid>
+</Grid>

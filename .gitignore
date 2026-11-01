@@ -31,3 +31,11 @@ samples/**/assets.zip
 # Logs / temp
 *.log
 *.tmp
+
+# MSIX packaging output and signing keys.
+# 私钥(*.pfx)绝不入库;82MB 的 .msix 产物按需重新构建。
+# 公开证书 build/*.cer 可保留以便目标机器导入信任(已显式取消忽略)。
+build/msix/
+build/**/*.pfx
+*.pfx
+!build/*.cer

@@ -1,3 +1,4 @@
+using FluentCourse.Runtime.Animations;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Animation;
@@ -6,6 +7,18 @@ namespace FluentCourse.Runtime.Player;
 
 internal static class PageTransitionFactory
 {
+    // 元素尚未布局(ActualWidth/Height = 0)时滑动距离的兜底值。
+    // PagePlayer 会在调用前用舞台设计尺寸覆盖,这里仅作最后防线。
+    private static double s_fallbackWidth = 1920;
+    private static double s_fallbackHeight = 1080;
+
+    /// <summary>由 PagePlayer 用 manifest 的舞台设计尺寸设置,作为元素未布局时的滑动距离来源。</summary>
+    public static void SetStageExtent(double width, double height)
+    {
+        if (width > 0) s_fallbackWidth = width;
+        if (height > 0) s_fallbackHeight = height;
+    }
+
     public static Storyboard? None(FrameworkElement? from, FrameworkElement to)
     {
         to.Opacity = 1;
@@ -36,7 +49,7 @@ internal static class PageTransitionFactory
     public static Storyboard? SlidePush(FrameworkElement? from, FrameworkElement to, double ms = 320)
     {
         EnsureTranslateTransform(to);
-        var width = to.ActualWidth > 0 ? to.ActualWidth : 1920;
+        var width = to.ActualWidth > 0 ? to.ActualWidth : s_fallbackWidth;
         var sb = new Storyboard();
         sb.Children.Add(BuildTranslate(to, "X", width, 0, ms));
         if (from is not null)
@@ -75,8 +88,8 @@ internal static class PageTransitionFactory
     {
         EnsureTranslateTransform(to);
         var extent = axis == "X"
-            ? (to.ActualWidth > 0 ? to.ActualWidth : 1920)
-            : (to.ActualHeight > 0 ? to.ActualHeight : 1080);
+            ? (to.ActualWidth > 0 ? to.ActualWidth : s_fallbackWidth)
+            : (to.ActualHeight > 0 ? to.ActualHeight : s_fallbackHeight);
 
         var sb = new Storyboard();
         sb.Children.Add(BuildTranslate(to, axis, extent * toMultiplier, toTarget, ms));
@@ -132,16 +145,22 @@ internal static class PageTransitionFactory
 
     private static void EnsureCompositeTransform(FrameworkElement el)
     {
-        if (el.RenderTransform is not CompositeTransform)
-        {
-            el.RenderTransform = new CompositeTransform();
+        if (el.RenderTransform is CompositeTransform) return;
+        var existing = el.RenderTransform;
+        var composite = new CompositeTransform();
+        // 迁移已有变换数值,避免转场粗暴替换 RenderTransform 丢失页面声明的旋转/缩放/平移
+        TransformMigration.Migrate(existing, composite);
+        el.RenderTransform = composite;
+        if (existing is null)
             el.RenderTransformOrigin = new Windows.Foundation.Point(0.5, 0.5);
-        }
     }
 
     private static void EnsureTranslateTransform(FrameworkElement el)
     {
-        if (el.RenderTransform is not CompositeTransform)
-            el.RenderTransform = new CompositeTransform();
+        if (el.RenderTransform is CompositeTransform) return;
+        var existing = el.RenderTransform;
+        var composite = new CompositeTransform();
+        TransformMigration.Migrate(existing, composite);
+        el.RenderTransform = composite;
     }
 }

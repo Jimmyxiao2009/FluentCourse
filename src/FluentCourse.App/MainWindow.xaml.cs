@@ -48,7 +48,15 @@ public sealed partial class MainWindow : Window
     {
         try
         {
+            // 先释放旧播放器(解绑事件/停定时器/停媒体),再释放旧包
+            if (_player is not null)
+            {
+                _player.PageChanged -= OnPageChanged;
+                _player.Dispose();
+                _player = null;
+            }
             _package?.Dispose();
+
             _package = CoursePackage.Open(path);
             _player = new PagePlayer(_package, StageHost);
             _player.PageChanged += OnPageChanged;
@@ -60,10 +68,13 @@ public sealed partial class MainWindow : Window
         }
         catch (Exception ex)
         {
+            // 详细信息只进 Debug 输出,对用户显示友好文案
+            System.Diagnostics.Debug.WriteLine($"[MainWindow] 打开课件失败: {ex}");
+            if (Content?.XamlRoot is null) return;
             var dlg = new ContentDialog
             {
                 Title = "打开失败",
-                Content = $"{ex.GetType().Name}: {ex.Message}\n\n{ex.StackTrace}",
+                Content = $"无法打开该课件：文件可能已损坏或不是有效的 .fcourse 文件。\n\n{ex.Message}",
                 CloseButtonText = "确定",
                 XamlRoot = Content.XamlRoot
             };
@@ -93,6 +104,40 @@ public sealed partial class MainWindow : Window
         var item = items.FirstOrDefault(x => x.PageId == e.Descriptor.Id);
         if (item is not null && !ReferenceEquals(PageListView.SelectedItem, item))
             PageListView.SelectedItem = item;
+
+        UpdateStepControls();
+        UpdateNavButtons();
+    }
+
+    private void UpdateNavButtons()
+    {
+        // 首末页时禁用对应按钮,避免点击无反馈
+        PrevButton.IsEnabled = _player?.CanGoPrevious ?? false;
+        NextButton.IsEnabled = _player?.CanGoNext ?? false;
+    }
+
+    private void UpdateStepControls()
+    {
+        if (_player is null) { StepControls.Visibility = Visibility.Collapsed; return; }
+        // Only show the build control when the page actually has build steps.
+        StepControls.Visibility = _player.StepCount > 0 ? Visibility.Visible : Visibility.Collapsed;
+        StepLabel.Text = $"{_player.StepIndex}/{_player.StepCount}";
+        StepPrevBtn.IsEnabled = _player.StepIndex > 0;
+        StepNextBtn.IsEnabled = _player.StepIndex < _player.StepCount;
+    }
+
+    private async void OnStepNext(object sender, RoutedEventArgs e)
+    {
+        if (_player is null) return;
+        await _player.StepForwardAsync();
+        UpdateStepControls();
+    }
+
+    private void OnStepPrev(object sender, RoutedEventArgs e)
+    {
+        if (_player is null) return;
+        _player.StepBackward();
+        UpdateStepControls();
     }
 
     private async void OnPageListSelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -119,6 +164,11 @@ public sealed partial class MainWindow : Window
     }
 
     private void OnPresenterClicked(object sender, RoutedEventArgs e)
+    {
+        OpenPresenterView();
+    }
+
+    public void OpenPresenterView()
     {
         if (_player is null) return;
         if (_presenter is not null) { _presenter.Activate(); return; }
@@ -167,12 +217,30 @@ public sealed partial class MainWindow : Window
             case VirtualKey.Right:
             case VirtualKey.PageDown:
             case VirtualKey.Space:
-                await _player.NextAsync();
+                // 先消耗本页未播完的步进动画,步进播完才翻页(PPT 行为)
+                if (_player.StepIndex < _player.StepCount)
+                {
+                    await _player.StepForwardAsync();
+                    UpdateStepControls();
+                }
+                else
+                {
+                    await _player.NextAsync();
+                }
                 e.Handled = true;
                 break;
             case VirtualKey.Left:
             case VirtualKey.PageUp:
-                await _player.PreviousAsync();
+                // 先回退本页已播的步进,回退到 0 才回上一页
+                if (_player.StepIndex > 0)
+                {
+                    _player.StepBackward();
+                    UpdateStepControls();
+                }
+                else
+                {
+                    await _player.PreviousAsync();
+                }
                 e.Handled = true;
                 break;
             case VirtualKey.Escape:

@@ -100,9 +100,9 @@ public sealed partial class TriggerEditor : UserControl
 
     private sealed class ActionEditModel(ActionDescriptor a)
     {
-        public ActionDescriptor Descriptor = a;
-        public string Type { get => a.Type; set => a.Type = value; }
-        public string? Target { get => a.Target; set => a.Target = value; }
+        public ActionDescriptor Descriptor { get; } = a;
+        public string Type { get => Descriptor.Type; set => Descriptor.Type = value; }
+        public string? Target { get => Descriptor.Target; set => Descriptor.Target = value; }
     }
 
     private void OnAddAction(object sender, RoutedEventArgs e)

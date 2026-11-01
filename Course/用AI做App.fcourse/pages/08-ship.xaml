@@ -1,0 +1,88 @@
+<Grid xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      Background="#FF0E1424">
+
+    <Grid.RowDefinitions>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="*"/>
+    </Grid.RowDefinitions>
+
+    <!-- =================== HeaderStrip =================== -->
+    <Grid Grid.Row="0" Margin="100,72,100,0">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+        <Border Grid.Column="0" Background="#338B5CF6" BorderBrush="#FF8B5CF6"
+                BorderThickness="1" CornerRadius="4" Padding="14,6">
+            <TextBlock Text="方法" FontSize="16" FontWeight="SemiBold" Foreground="#FF8B5CF6"/>
+        </Border>
+        <TextBlock Grid.Column="1" Text="六、版本管理  &amp;  七、发布迭代" FontSize="40" FontWeight="SemiBold"
+                   Foreground="#FFF5F7FB" VerticalAlignment="Center" Margin="20,0,0,0"/>
+        <TextBlock Grid.Column="2" Text="8 / 13" FontSize="16"
+                   Foreground="#FF8893AC" VerticalAlignment="Center"/>
+    </Grid>
+    <Rectangle Grid.Row="0" Height="1" Margin="100,16,100,0"
+               VerticalAlignment="Bottom" Fill="#FF252D48"/>
+
+    <!-- =================== Body =================== -->
+    <Grid Grid.Row="1" Margin="100,40,100,60">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- 左：版本管理 -->
+        <Border Grid.Column="0" BorderThickness="3,1,1,1" CornerRadius="10"
+                BorderBrush="#FF8B5CF6" Background="#FF161D33" Padding="30,26" Margin="0,0,12,0">
+            <StackPanel Spacing="16">
+                <TextBlock Text="六、版本管理 git" FontSize="28" FontWeight="SemiBold" Foreground="#FFF5F7FB"/>
+                <TextBlock Text="AI 开发的「后悔药」—— 只记三个动作："
+                           TextWrapping="Wrap" FontSize="20" Foreground="#FFC7CEDD" LineHeight="30"/>
+                <Border BorderThickness="1" CornerRadius="8" BorderBrush="#FF3B4566" Background="#FF1E2747" Padding="20,14">
+                    <StackPanel Orientation="Horizontal" Spacing="14">
+                        <TextBlock Text="①" FontSize="22" FontWeight="SemiBold" Foreground="#FF8B5CF6"/>
+                        <TextBlock Text="改之前先存档" FontSize="21" Foreground="#FFF5F7FB" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Border>
+                <Border BorderThickness="1" CornerRadius="8" BorderBrush="#FF3B4566" Background="#FF1E2747" Padding="20,14">
+                    <StackPanel Orientation="Horizontal" Spacing="14">
+                        <TextBlock Text="②" FontSize="22" FontWeight="SemiBold" Foreground="#FF8B5CF6"/>
+                        <TextBlock Text="改坏了能回滚" FontSize="21" Foreground="#FFF5F7FB" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Border>
+                <Border BorderThickness="1" CornerRadius="8" BorderBrush="#FF3B4566" Background="#FF1E2747" Padding="20,14">
+                    <StackPanel Orientation="Horizontal" Spacing="14">
+                        <TextBlock Text="③" FontSize="22" FontWeight="SemiBold" Foreground="#FF8B5CF6"/>
+                        <TextBlock Text="定期提交一次" FontSize="21" Foreground="#FFF5F7FB" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Border>
+                <TextBlock Text="没有它，AI 一次大改崩了，就全完了。"
+                           TextWrapping="Wrap" FontSize="18" Foreground="#FF8893AC" LineHeight="28"/>
+            </StackPanel>
+        </Border>
+
+        <!-- 右：发布与迭代 -->
+        <Border Grid.Column="1" BorderThickness="3,1,1,1" CornerRadius="10"
+                BorderBrush="#FF00B4D8" Background="#FF161D33" Padding="30,26" Margin="12,0,0,0">
+            <StackPanel Spacing="16">
+                <TextBlock Text="七、发布与迭代" FontSize="28" FontWeight="SemiBold" Foreground="#FFF5F7FB"/>
+                <TextBlock TextWrapping="Wrap" FontSize="20" Foreground="#FFC7CEDD" LineHeight="32">
+                    <Run Text="做完不等于结束。" Foreground="#FF00B4D8" FontWeight="SemiBold"/>
+                    <Run Text="打包发给别人用，再把反馈变成新需求接着改 —— 这才是一个产品越做越好的循环。"/>
+                </TextBlock>
+                <Border BorderThickness="1" CornerRadius="6" BorderBrush="#FF3B4566" Background="#FF1E2747" Padding="20,14">
+                    <TextBlock TextWrapping="Wrap" FontSize="18" FontFamily="Consolas, Cambria Math"
+                               Foreground="#FFF5F7FB" LineHeight="28"
+                               Text="网页最简单：发个文件 / 丢到免费静态托管，别人点开就能用。"/>
+                </Border>
+                <TextBlock TextWrapping="Wrap" FontSize="20" Foreground="#FFC7CEDD" LineHeight="32">
+                    <Run Text="想装进手机？像 Wordie 那样用 " />
+                    <Run Text="一行打包命令" Foreground="#FF00B4D8" FontWeight="SemiBold"/>
+                    <Run Text="，一套代码出 Windows、安卓、苹果。"/>
+                </TextBlock>
+            </StackPanel>
+        </Border>
+    </Grid>
+</Grid>

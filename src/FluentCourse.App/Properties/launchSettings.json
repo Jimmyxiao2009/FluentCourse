@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "FluentCourse.App (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "FluentCourse.App (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}
